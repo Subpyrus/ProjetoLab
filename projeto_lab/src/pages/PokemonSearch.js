@@ -1,5 +1,5 @@
 import React from 'react';
-import SearchPokemon from '../components/SearchPokemon';
+import SearchPokemon from '../components/pokemonSearch/SearchPokemon';
 import PrintPokemonSearch from '../components/pokemonSearch/PrintPokemonSearch';
 import { Container, Row, Col } from 'reactstrap';
 
