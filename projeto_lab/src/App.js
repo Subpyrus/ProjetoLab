@@ -2,19 +2,19 @@ import './App.scss';
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Transition, animated } from 'react-spring/renderprops';
-import Layout from "./components/Layout";
-import AbsoluteWrapper from './components/AbsoluteWrapper';
-import NavigationBar from "./components/Navbar";
-import Footer from "./components/Footer";
+import Layout from "./components/layout/Layout";
+import AbsoluteWrapper from './components/layout/AbsoluteWrapper';
+import NavigationBar from "./components/layout/Navbar";
+import Footer from "./components/layout/Footer";
 import Home from './pages/Home'
 import PokemonList from "./pages/PokemonList";
 import PokemonSearch from "./pages/PokemonSearch";
 import PokemonPage from "./pages/PokemonPage";
 import Trivia from "./pages/Trivia";
-import Loading from './components/Loading';
-import Error from './components/Error';
-import NoMatch from './components/NoMatch';
-import ScrollToTop from './components/ScrollToTop'
+import Loading from './components/layout/Loading';
+import Error from './components/layout/Error';
+import NoMatch from './components/layout/NoMatch';
+import ScrollToTop from './components/layout/ScrollToTop'
 
 
 const AnimatedRoute = ({ children }) => (
@@ -65,13 +65,13 @@ export default class App extends Component {
   handleSearchEnter = (event) => {
     if (event.key === 'Enter') {
       this.getPokemon(this.state.inputValue)
-      this.getPokemonVideo(this.state.inputValue)
+      /*this.getPokemonVideo(this.state.inputValue)*/
     }
   }
 
   handleSearchClick = () => {
     this.getPokemon(this.state.inputValue)
-    this.getPokemonVideo(this.state.inputValue)
+    /*this.getPokemonVideo(this.state.inputValue)*/
   }
 
   getPokedex = async () => {

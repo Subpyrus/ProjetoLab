@@ -1,14 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Row, Col } from 'reactstrap';
-import Loading from '../components/Loading';
+import { Container, Row, Col, Button, Table } from 'reactstrap';
+import Loading from '../components/layout/Loading';
+import PokemonPageImages from '../components/pokemonPage/pokemonPageImages';
+import LazyLoad from 'react-lazyload';
+import { connect } from 'react-redux'
 import Slider from "react-slick";
 import YouTube from 'react-youtube';
 
 const PokePage = (props) => {
-    if (props.pokemonInfo.length === 0 || props.pokemonVideos.items === undefined) {
+    if (props.pokemonInfo.length === 0 /*|| props.pokemonVideos.items === undefined*/) {
         props.getPokemon(props.match.params.pokemon.toLocaleLowerCase());
-        props.getPokemonVideo(props.match.params.pokemon);
+        /*props.getPokemonVideo(props.match.params.pokemon);*/
         return (
             <Loading></Loading>
         )
@@ -16,14 +19,15 @@ const PokePage = (props) => {
         let { name, id, sprites, types, weight, height, stats, abilities, baseExperience } = props.pokemonInfo[0];
         const Gif = require('pokemon-gif');
         let pokemon = require('pokemon');
+        let currentPokemonName = pokemon.getName(props.pokemonInfo[0].id)
         let pokemonIds = [];
         var pokemonNextName,
             pokemonPreviousName;
 
-        if (id >= 1) {
+        if (id === 1) {
             pokemonIds.push(id += 1)
             pokemonNextName = pokemon.getName(`${pokemonIds[0]}`)
-        } else if (id <= 808) {
+        } else if (id === 808) {
             pokemonIds.push(id -= 1)
             pokemonPreviousName = pokemon.getName(`${pokemonIds[0]}`)
         } else {
@@ -32,10 +36,6 @@ const PokePage = (props) => {
             pokemonPreviousName = pokemon.getName(`${pokemonIds[0]}`)
             pokemonNextName = pokemon.getName(`${pokemonIds[1]}`)
         }
-
-        console.log(props.pokemonInfo[0].id)
-        console.log(id)
-        console.log(pokemonNextName, pokemonPreviousName);
 
         var settings = {
             dots: true,
@@ -53,40 +53,79 @@ const PokePage = (props) => {
         return (
             <Container>
                 <Row className="justify-content-center">
-                    <Col xs="12">
-                        <p>{name}</p>
-                        {types.map((typeItem, key) =>
-                            <p key={key}>
-                                {typeItem.type.name}
-                            </p>
-                        )}
+                    <Col xs='12'>
+                        <Row>
+                            <Col className='col-12 col-md-6 col-lg-8 pb-5'>
+                                <h1 className='d-inline mr-md-3'>
+                                    {pokemon.getName(props.pokemonInfo[0].id)}
+
+                                </h1>
+                                {types.map((typeItem, key) =>
+                                    <div className={`typeIcon type-${typeItem.type.name}`} key={key}>
+                                        {typeItem.type.name}
+                                    </div>
+                                )}
+                            </Col>
+                            <Col className='text-right' xs='12' md='3' lg='2'>
+                                <Button value={pokemon.getName(props.pokemonInfo[0].id)}>Add to Favorites</Button>
+                            </Col>
+                            <Col className='text-right' xs='12' md='3' lg='2'>
+                                <Button>Add to Team</Button>
+                            </Col>
+
+                        </Row>
+                    </Col>
+                    <PokemonPageImages name={currentPokemonName} />
+                    <Col xs='12'>
+                        <Row>
+                            <h3 className='col-12 text-center'>Info</h3>
+                        </Row>
+                    </Col>
+                    <Col xs='12'>
+                        <Row>
+                            <h3 className='col-12 text-center'>Stats</h3>
+                            <Table borderless className='text-center'>
+                                <thead>
+                                    <tr>
+                                        {stats.map((statsItem, key) =>
+                                            <th key={key}>{statsItem.stat.name}</th>
+                                        )}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr >
+                                        {stats.map((statsItem, key) =>
+                                            <td key={key}>{statsItem.base_stat}</td>
+                                        )}
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </Row>
+                    </Col>
+                    <Col xs='12'>
+                        <Row>
+                            <h3 className='col-12 text-center'>Evolutions</h3>
+                        </Row>
+                    </Col>
+                    <Col xs='12'>
+                        <Row>
+                            <h3 className='col-12 text-center'>Moves</h3>
+                        </Row>
+                    </Col>
+
+                    <Col xs='12'>
+
                         {abilities.map((abilityItem, key) =>
                             <p key={key}>
                                 {abilityItem.ability.name}
                             </p>
                         )}
-                        <p>Weight: {weight}</p>
-                        <p>Height: {height}</p>
-                        {stats.map((statsItem, key) =>
-                            <div key={key}>
-                                <p>{statsItem.stat.name}</p>
-                                <p>Base Stat: {statsItem.base_stat}</p>
-                                <p>Effort: {statsItem.effort}</p>
-                            </div>
-                        )}
+                        <p>Weight: {weight}kg</p>
+                        <p>Height: {height}m</p>
+
                     </Col>
                     <Col xs="12">
-                        <p></p>
-                    </Col>
-                    <Col xs="12">
-                        <img alt={1} src={sprites.back_default} />
-                        <img alt={2} src={sprites.front_default} />
-                        <img alt={3} src={sprites.back_shiny} />
-                        <img alt={4} src={sprites.front_shiny} />
-                        <img alt={5} src={Gif(`${name}`)} />
-                    </Col>
-                    <Col xs="12">
-                        <Slider {...settings}>
+                        {/*<Slider {...settings}>
                             {props.pokemonVideos.items.map((videoItem, key) =>
                                 <div key={key}>
                                     <YouTube
@@ -95,41 +134,51 @@ const PokePage = (props) => {
                                     />
                                 </div>
                             )}
-                        </Slider>
+                            </Slider>*/}
                     </Col>
                     <Col xs="12">
                         <Row className="justify-content-between">
                             <Col xs="6" className='text-left'>
                                 {props.pokemonInfo[0].id <= 808 && props.pokemonInfo[0].id !== 1 &&
-                                    <Link id={pokemonPreviousName.toLocaleLowerCase()} to={`/pokemon-list/pokemon-page/${pokemonPreviousName}`} onClick={(event) => {
-                                        props.getPokemon(event.currentTarget.id);
-                                        props.getPokemonVideo(event.currentTarget.id);
-                                    }}>
+                                    <div>
                                         <img className='img-fluid' alt={pokemonPreviousName} src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonIds[0]}.png`} />
-                                        <h5>{pokemonPreviousName}</h5>
-                                    </Link>
+                                        <Link className='basicLink' id={pokemonPreviousName.toLowerCase()} to={`/pokemon-list/pokemon-page/${pokemonPreviousName}`} onClick={(event) => {
+                                            props.getPokemon(event.currentTarget.id);
+                                            props.getPokemonVideo(event.currentTarget.id);
+                                        }}>
+                                            <h5>{pokemonPreviousName}</h5>
+                                        </Link>
+                                    </div>
                                 }
                             </Col>
                             <Col xs="6" className='text-right'>
                                 {props.pokemonInfo[0].id >= 1 && props.pokemonInfo[0].id !== 808 &&
-                                    <Link id={pokemonNextName.toLocaleLowerCase()} to={`/pokemon-list/pokemon-page/${pokemonNextName.toLowerCase()}`} onClick={(event) => {
-                                        props.getPokemon(event.currentTarget.id);
-                                        props.getPokemonVideo(event.currentTarget.id);
-                                    }}>
-                                        {props.pokemonInfo[0].id >= 1 ?
-                                        <img className='img-fluid' alt={pokemonNextName} src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonIds[0]}.png`} /> : <img className='img-fluid' alt={pokemonNextName} src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonIds[1].toLocaleLowerCase()}.png`} /> }
-                                        <h5>{pokemonNextName}</h5>
-                                    </Link>
+                                    <div>
+                                        {props.pokemonInfo[0].id === 1 ?
+                                            <img className='img-fluid' alt={pokemonNextName} src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonIds[0]}.png`} /> : <img className='img-fluid' alt={pokemonNextName} src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonIds[1]}.png`} />}
+                                        <Link id={pokemonNextName.toLowerCase()} to={`/pokemon-list/pokemon-page/${pokemonNextName.toLowerCase()}`} onClick={(event) => {
+                                            props.getPokemon(event.currentTarget.id);
+                                            props.getPokemonVideo(event.currentTarget.id);
+                                        }}>
+                                            <h5>{pokemonNextName}</h5>
+                                        </Link>
+                                    </div>
                                 }
                             </Col>
                         </Row>
                     </Col>
 
                 </Row>
-            </Container>
+            </Container >
         )
     }
 }
+
+/*const mapDispatchToProps = (dispatch) => {
+    return {
+        addFavorite: (favorite) => dispatch(createFavorite(favorite))
+    }
+}*/
 
 export default PokePage;
 
