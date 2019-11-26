@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import LazyLoad from 'react-lazyload';
 
 class PokemonList extends Component {
@@ -12,8 +13,55 @@ class PokemonList extends Component {
             allPokedexEntries: this.props.pokedexInfo,
             currentIndex: 1,
             resultsPerPage: 24,
-            items: []
+            items: [],
+            dropdownOpen: false,
+            dropDownValue: 'National',
+            getPokedexNames: []
         }
+    }
+
+    getPokedexNames = () => {
+        var url = `https://pokeapi.co/api/v2/pokedex/`
+    
+        const handleResponse = (response) => {
+          return response.json().then(function (json) {
+            return response.ok ? json : Promise.reject(json);
+          });
+        }
+    
+        const handleData = (data) => {
+          this.setState({ getPokedexNames: data.results});
+        }
+    
+        const handleError = (error) => {
+          this.setState({ error: error });
+        }
+    
+        fetch(url).then(handleResponse)
+          .then(handleData)
+          .catch(handleError);
+    }
+
+    getPokedex = (region) => {
+        var url = `https://pokeapi.co/api/v2/pokedex/${region}/`
+    
+        const handleResponse = (response) => {
+          return response.json().then(function (json) {
+            return response.ok ? json : Promise.reject(json);
+          });
+        }
+    
+        const handleData = (data) => {
+          this.setState({ allPokedexEntries: data.pokemon_entries});
+        }
+    
+        const handleError = (error) => {
+          this.setState({ error: error });
+        }
+    
+        fetch(url).then(handleResponse)
+          .then(handleData)
+          .catch(handleError);
     }
 
     componentDidMount() {
@@ -23,6 +71,7 @@ class PokemonList extends Component {
         const indexOfFirstResults = indexOfLastResults - resultsPerPage;
         const currentResults = allPokedexEntries.slice(indexOfFirstResults, indexOfLastResults);
         if (this._isMounted) {
+            this.getPokedexNames()
             this.setState({
                 items: currentResults
             });
@@ -48,11 +97,34 @@ class PokemonList extends Component {
         }
     };
 
+    toggle = (event) => {
+        this.setState({
+            dropdownOpen: !this.state.dropdownOpen
+        });
+    }
+
+    changeValue = (e) => {
+        this.getPokedex(e.currentTarget.textContent)
+        this.setState({dropDownValue: e.currentTarget.textContent})
+
+      }
+
     render() {
         var props = this.props
+        console.log(this.state)
         return (
             <>
-                <h1 className='col-12'>PokéList</h1>
+                <div className="row">
+                    <h1 className='col-6'>PokéList</h1>
+                    <Dropdown className='col-1 offset-4' isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+                        <DropdownToggle caret>{this.state.dropDownValue}</DropdownToggle>
+                        <DropdownMenu>
+                        {this.state.getPokedexNames.map((pokedexItem, key) => 
+                            <DropdownItem onClick={this.changeValue}>{pokedexItem.name}</DropdownItem>
+                        )}
+                        </DropdownMenu>
+                    </Dropdown>
+                </div>
                 <InfiniteScroll
                     className='row col-12'
                     dataLength={this.state.items.length}
@@ -78,7 +150,7 @@ class PokemonList extends Component {
                             </Col>
                         )
                     })}
-                </InfiniteScroll>
+                </InfiniteScroll>            
             </>
         )
     }

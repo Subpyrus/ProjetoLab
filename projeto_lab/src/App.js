@@ -136,9 +136,9 @@ class App extends PureComponent {
       .catch(handleError);
   }
 
-  getPokedex = () => {
+  getPokedex = (region) => {
     this.setState({ loading: true });
-    var url = `https://pokeapi.co/api/v2/pokedex/national/`
+    var url = `https://pokeapi.co/api/v2/pokedex/${region}/`
 
     const handleResponse = (response) => {
       return response.json().then(function (json) {
