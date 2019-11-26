@@ -21,7 +21,9 @@ const signedInLinks = (props) => {
             </NavItem>
             <NavItem>
                 <NavLink
-                    activeClassName="navbar__link-active" className="navbar__link" to="/sign-up">
+                    activeClassName="navbar__link-active" className="navbar__link" to={{
+                        pathname: `/profile/${props.username}`
+                    }}>
                     Profile
                 </NavLink>
             </NavItem>

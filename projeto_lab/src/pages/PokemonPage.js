@@ -6,6 +6,8 @@ import classnames from 'classnames';
 import Loading from '../components/layout/Loading';
 import PokemonPageImages from '../components/pokemonPage/pokemonPageImages';
 import PokemonPageMoves from '../components/pokemonPage/pokemonPageMoves';
+import PokemonPageGenericInfo from '../components/pokemonPage/pokemonPageGenericInfo';
+import PokemonPageEvChain from '../components/pokemonPage/pokemonPageEvChain';
 /*import LazyLoad from 'react-lazyload';
 import Slider from "react-slick";
 import YouTube from 'react-youtube';*/
@@ -17,16 +19,39 @@ class PokePage extends PureComponent {
             generation: '',
             modal: false,
             evolutionChain: [],
-            activeTab: '1'
+            activeTab: '1',
         }
     }
 
-    componentDidMount() {
-        /*if (this.props.pokemonInfo.length === 0) {
+    getPokemonEvolutionChain = (evolutionChainURL) => {
+        var url = evolutionChainURL
+
+        const handleResponse = (response) => {
+            return response.json().then(function (json) {
+                return response.ok ? json : Promise.reject(json);
+            });
+        }
+
+        const handleData = (data) => {
+            console.log(data)
+            this.setState({ evolutionChain: data });
+        }
+
+        const handleError = (error) => {
+            this.setState({ error: error });
+        }
+
+        fetch(url).then(handleResponse)
+            .then(handleData)
+            .catch(handleError);
+    }
+
+    /*componentDidMount() {
+        if (this.props.pokemonInfo.length === 0) {
             this.props.getPokemon(props.match.params.pokemon);
         }
-        this.props.getPokemonEvolutionChain(this.props.[1].evolution_chain)*/
-    }
+        this.props.getPokemonEvolutionChain(this.props[1].evolution_chain);
+    }*/
 
     toggle = (tab) => {
         if (this.state.activeTab !== tab) {
@@ -44,8 +69,10 @@ class PokePage extends PureComponent {
                 <Loading></Loading>
             )
         } else {
-            let { id, types, weight, height, stats, moves, abilities, game_indices, forms } = props.pokemonInfo[0][0];
-            let { egg_groups, genera, names, flavor_text_entries } = props.pokemonInfo[0][1];
+            let { id, moves, stats } = props.pokemonInfo[0][0];
+            let { genera, names, flavor_text_entries, evolution_chain } = props.pokemonInfo[0][1];
+
+
 
             let pokemon = require('pokemon');
             let pokemonName = pokemon.getName(props.pokemonInfo[0][0].id)
@@ -130,40 +157,7 @@ class PokePage extends PureComponent {
 
                         <PokemonPageImages name={pokemonName} />
 
-                        <Col xs='12' className='pb-4'>
-                            <Row className='justify-content-center text-center'>
-                                <h3 className='col-12 text-center'>General Info</h3>
-                                <Col xs='6' md='6' lg='3'>
-                                    <h4>Type(s)</h4>
-                                    {types.map((typeItem, key) =>
-                                        <Col xs='12' key={key}>
-                                            <Col xs='12' className={`text-center typeIcon type-${typeItem.type.name}`} key={key}>
-                                                {typeItem.type.name}
-                                            </Col>
-                                        </Col>
-                                    )}
-                                </Col>
-                                <Col xs='6' md='6' lg='3'>
-                                    <h4>Abilities</h4>
-                                    {abilities.map((abilityItem, key) =>
-                                        <p key={key}>
-                                            {abilityItem.ability.name}
-                                        </p>
-                                    )}
-                                </Col>
-                                <Col xs='6' md='6' lg='3'>
-                                    <h4>Egg Groups</h4>
-                                    {egg_groups.map((eggItem, key) =>
-                                        <p key={key}>{eggItem.name}</p>
-                                    )}
-                                </Col>
-                                <Col xs='6' md='6' lg='3'>
-                                    <h4>Others</h4>
-                                    <p>Weight: {weight}kg</p>
-                                    <p>Height: {height}m</p>
-                                </Col>
-                            </Row>
-                        </Col>
+                        <PokemonPageGenericInfo info={props.pokemonInfo} />
 
                         <Col xs='12' className='pb-4'>
                             <Row>
@@ -198,17 +192,13 @@ class PokePage extends PureComponent {
                             </Row>
                         </Col>
 
-                        <Col xs='12'>
-                            <Row>
-                                <h3 className='col-12 text-center'>Evolutions</h3>
-                            </Row>
-                        </Col>
+                        <PokemonPageEvChain EvChainURL={evolution_chain.url} />
 
                         <Col xs='12'>
                             <h3 className='col-12 text-center'>Moves</h3>
                             <div>
                                 <Nav pills className='d-flex justify-content-center'>
-                                    <NavItem className='col-12 col-md-4 p-0'>
+                                    <NavItem className='col-12 col-md-3 p-0'>
                                         <NavLink
                                             className={classnames({ active: this.state.activeTab === '1' })}
                                             onClick={() => { this.toggle('1'); }}
@@ -216,7 +206,7 @@ class PokePage extends PureComponent {
                                             Level-Up Moves
                                         </NavLink>
                                     </NavItem>
-                                    <NavItem className='col-12 col-md-4 p-0'>
+                                    <NavItem className='col-12 col-md-3 p-0'>
                                         <NavLink
                                             className={classnames({ active: this.state.activeTab === '2' })}
                                             onClick={() => { this.toggle('2'); }}
@@ -224,7 +214,7 @@ class PokePage extends PureComponent {
                                             TMs/HMs Moves
                                         </NavLink>
                                     </NavItem>
-                                    <NavItem className='col-12 col-md-4 p-0'>
+                                    <NavItem className='col-12 col-md-3 p-0'>
                                         <NavLink
                                             className={classnames({ active: this.state.activeTab === '3' })}
                                             onClick={() => { this.toggle('3'); }}
@@ -232,16 +222,27 @@ class PokePage extends PureComponent {
                                             Egg Moves
                                         </NavLink>
                                     </NavItem>
+                                    <NavItem className='col-12 col-md-3 p-0'>
+                                        <NavLink
+                                            className={classnames({ active: this.state.activeTab === '4' })}
+                                            onClick={() => { this.toggle('4'); }}
+                                        >
+                                            Tutor Moves
+                                        </NavLink>
+                                    </NavItem>
                                 </Nav>
                                 <TabContent activeTab={this.state.activeTab}>
                                     <TabPane tabId="1">
-                                        <PokemonPageMoves pokemonMoves={moves} generation={'gold-silver'} method={'level-up'} />
+                                        <PokemonPageMoves getMoveInfo={this.getMove} pokemonMoves={moves} generation={'gold-silver'} method={'level-up'} />
                                     </TabPane>
                                     <TabPane tabId="2">
-                                        <PokemonPageMoves pokemonMoves={moves} generation={'gold-silver'} method={'tutor'} />
+                                        <PokemonPageMoves getMoveInfo={this.getMove} pokemonMoves={moves} generation={'gold-silver'} method={'machine'} />
                                     </TabPane>
                                     <TabPane tabId="3">
-                                        <PokemonPageMoves pokemonMoves={moves} generation={'gold-silver'} method={'egg'} />
+                                        <PokemonPageMoves getMoveInfo={this.getMove} pokemonMoves={moves} generation={'gold-silver'} method={'egg'} />
+                                    </TabPane>
+                                    <TabPane tabId="4">
+                                        <PokemonPageMoves getMoveInfo={this.getMove} pokemonMoves={moves} generation={'gold-silver'} method={'tutor'} />
                                     </TabPane>
                                 </TabContent>
                             </div>
