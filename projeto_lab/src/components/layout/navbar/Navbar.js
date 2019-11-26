@@ -44,7 +44,7 @@ const NavBar = (props) => {
                             </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink onClick={props.getPokedex} isActive={(match, location) => {
+                            <NavLink onClick={props.getPokedex('national')} isActive={(match, location) => {
                                 let string = "/pokemon-list"
                                 let searchPokemonListURL = location.pathname.match(string);
                                 if (searchPokemonListURL !== null) {
