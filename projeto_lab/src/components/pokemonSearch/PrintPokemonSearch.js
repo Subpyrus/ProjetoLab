@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { ListGroup, ListGroupItem, Row } from 'reactstrap';
 
 const PrintPokemonSearch = (props) => {
-    const { id } = props.pokemonList[0]
+    console.log(props)
+    const { id } = props.pokemonList[0][0]
     let pokemon = require('pokemon');
     let pokemonName = pokemon.getName(id)
     
@@ -12,14 +13,13 @@ const PrintPokemonSearch = (props) => {
             <ListGroup>
                 {props.pokemonList.map((item, key) =>
                     <Link className='basicLink' key={key} to={{
-                        pathname: `/pokemon-search/pokemon-page/${item.name}`
+                        pathname: `/pokemon-search/pokemon-page/${item[0].name}`
                     }}>
                         <ListGroupItem>
                             <Row>
                                 <div className='col-12 col-md-4'>
                                     <img alt={item.name} src={`http://www.pokestadium.com/sprites/xy/${pokemonName.toLowerCase()}.gif`} />
                                 </div>
-                                <h4 className='col'></h4>
                                 <h3 className='col-12 col-md-8'>{pokemonName}</h3>
                             </Row>
                         </ListGroupItem>

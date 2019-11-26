@@ -1,4 +1,5 @@
-const initState = {}
+const initState = {
+}
 
 const favoriteReducer = (state = initState, action) => {
     if (action.type === "ADD_FAVORITE"){

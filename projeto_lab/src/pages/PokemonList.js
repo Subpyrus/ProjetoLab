@@ -1,42 +1,102 @@
-import React from 'react';
-import { Container, Row, Col, Button } from 'reactstrap';
+import React, { Component } from 'react';
+import { Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import InfiniteScroll from "react-infinite-scroll-component";
 import LazyLoad from 'react-lazyload';
 
-const PokemonList = (props) => {
-    return (
-        <Container>
-            <Row className="justify-content-center">
-                <Col xs="12">
-                    <Row className="justify-content-center">
-                    </Row>
-                </Col>
-                <Col xs="12">
-                    <Row>
-                        {props.pokedexInfo.map((pokedexItem, key) => {
-                            const pokemon = require('pokemon');
-                            let id = `${pokedexItem.entry_number}`;
-                            var pokemonName = pokemon.getName(id);
-                            return (
-                                <Link key={key} to={`/pokemon-list/${props.match.params.generation}/pokemon-page/${pokemonName.toLocaleLowerCase()}`} onClick={(event) => {
-                                    props.getPokemon(event.currentTarget.id);
-                                    props.getPokemonVideo(event.currentTarget.id);
-                                }}>
-                                    <Col key={key} xs='12' md='3' lg='2'>
-                                        {id}
-                                        {pokemonName}
-                                        <LazyLoad height={200} once={`true`} >
-                                            <img alt={pokemonName} src={`https://serebii.net/sunmoon/pokemon/${id}.png`} />
-                                        </LazyLoad>
-                                    </Col>
+class PokemonList extends Component {
+    _isMounted = false;
+    constructor(props) {
+        super(props)
+        this.state = {
+            allPokedexEntries: this.props.pokedexInfo,
+            currentIndex: 1,
+            resultsPerPage: 24,
+            items: []
+        }
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+        const { allPokedexEntries, currentIndex, resultsPerPage } = this.state;
+        const indexOfLastResults = currentIndex * resultsPerPage;
+        const indexOfFirstResults = indexOfLastResults - resultsPerPage;
+        const currentResults = allPokedexEntries.slice(indexOfFirstResults, indexOfLastResults);
+        console.log(currentResults)
+        console.log(this._isMounted);
+        if (this._isMounted) {
+            this.setState({
+                items: currentResults
+            });
+        }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
+    }
+
+    /*componentWillUnmount() {
+        this.setState({
+            items: [],
+            currentIndex: 1
+        });
+    }*/
+
+    fetchMoreData = () => {
+        if (!this._isMounted) return false
+        var { allPokedexEntries, currentIndex, resultsPerPage } = this.state;
+        const indexOfLastResults = currentIndex * resultsPerPage;
+        const indexOfFirstResults = indexOfLastResults - resultsPerPage;
+        const currentResults = allPokedexEntries.slice(indexOfFirstResults, indexOfLastResults);
+        var calculateIndex = currentIndex += 1;
+        console.log(calculateIndex);
+        if (this._isMounted) {
+            setTimeout(() => {
+                if (!this._isMounted) return false
+                this.setState({
+                    items: this.state.items.concat(currentResults),
+                    currentIndex: calculateIndex
+                });
+            }, 1500);
+        }
+    };
+
+    render() {
+        if (!this._isMounted) return false
+        var props = this.props
+        console.log(this.state.items)
+        return (
+            <>
+                <h1 className='col-12'>PokéList</h1>
+                <InfiniteScroll
+                    className='row col-12'
+                    dataLength={this.state.items.length}
+                    next={this.fetchMoreData}
+                    hasMore={true}
+                    loader={<h4>Loading...</h4>}
+                >
+                    {this.state.items.map((pokedexItem, key) => {
+                        const pokemon = require('pokemon');
+                        var pokemonName = pokemon.getName(pokedexItem.entry_number);
+                        return (
+                            <Col key={key} className='py-md-2' xs='12' sm='6' md='4' lg='2'>
+                                <Link to={`/pokemon-list/${props.match.params.generation}/pokemon-page/${pokemonName.toLocaleLowerCase()}`} onClick={props.getPokemon}>
+                                    <div>
+                                        <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
+                                            <LazyLoad height={200} once={true}>
+                                                <img alt={pokemonName} src={`https://img.pokemondb.net/sprites/x-y/normal/${pokemonName.toLowerCase()}.png`} />
+                                            </LazyLoad>
+                                        </div>
+                                        <h5 className='text-center'>{pokemonName}</h5>
+                                    </div>
                                 </Link>
-                            )
-                        })}
-                    </Row>
-                </Col>
-            </Row>
-        </Container>
-    )
+                            </Col>
+                        )
+                    })}
+                </InfiniteScroll>
+            </>
+        )
+    }
 }
 
 export default PokemonList;

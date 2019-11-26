@@ -10,11 +10,13 @@ var firebaseConfig = {
     storageBucket: "my-pokemon-project-aa51f.appspot.com",
     messagingSenderId: "689056309500",
     appId: "1:689056309500:web:3e193397afbc39624b7779",
-    measurementId: "G-07R5JMZ72F"
+    measurementId: "G-07R5JMZ72F",
+    userProfile: "users",
+    useFirestoreForProfile: true,
+    attachAuthIsReady: true
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-firebase.firestore().settings({ timestampsInSnapshots: true })
-firebase.analytics();
+firebase.firestore()
 
 export default firebase;

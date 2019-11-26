@@ -8,11 +8,15 @@ import {
     NavItem
 } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
+import SignedInLinks from './signedInLinks';
+import SignedOutLinks from './signedOutLinks';
 
 const NavBar = (props) => {
     const [isOpen, setIsOpen] = useState(false);
-
     const toggle = () => setIsOpen(!isOpen);
+    const { auth } = props;
+    const links = auth.uid ? (<SignedInLinks />) : (<SignedOutLinks />);
 
     return (
         <div>
@@ -25,12 +29,6 @@ const NavBar = (props) => {
                             <NavLink exact
                                 activeClassName="navbar__link-active" className="navbar__link" to="/">
                                 Home
-                            </NavLink>
-                        </NavItem>
-                        <NavItem>
-                            <NavLink exact
-                                activeClassName="navbar__link-active" className="navbar__link" to="/pokemon-trivia">
-                                PokéTrivia
                             </NavLink>
                         </NavItem>
                         <NavItem>
@@ -57,13 +55,9 @@ const NavBar = (props) => {
                                 PokéList
                             </NavLink>
                         </NavItem>
-                        <NavItem>
-                            {props.LoggedIn ? (
-                                <p>log-in</p>
-                            ) : (
-                                    <p>log-off</p>
-                                )}
-                        </NavItem>
+                        {auth.isLoaded &&
+                            links
+                        }
                     </Nav>
                 </Collapse>
             </Navbar>
@@ -71,4 +65,11 @@ const NavBar = (props) => {
     );
 }
 
-export default NavBar;
+const mapStateToProps = (state) => {
+    console.log(state)
+    return {
+        auth: state.firebase.auth
+    }
+}
+
+export default connect(mapStateToProps, null)(NavBar);
