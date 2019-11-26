@@ -22,8 +22,6 @@ class PokemonList extends Component {
         const indexOfLastResults = currentIndex * resultsPerPage;
         const indexOfFirstResults = indexOfLastResults - resultsPerPage;
         const currentResults = allPokedexEntries.slice(indexOfFirstResults, indexOfLastResults);
-        console.log(currentResults)
-        console.log(this._isMounted);
         if (this._isMounted) {
             this.setState({
                 items: currentResults
@@ -35,36 +33,23 @@ class PokemonList extends Component {
         this._isMounted = false
     }
 
-    /*componentWillUnmount() {
-        this.setState({
-            items: [],
-            currentIndex: 1
-        });
-    }*/
-
     fetchMoreData = () => {
-        if (!this._isMounted) return false
         var { allPokedexEntries, currentIndex, resultsPerPage } = this.state;
+        currentIndex = currentIndex += 1;
         const indexOfLastResults = currentIndex * resultsPerPage;
         const indexOfFirstResults = indexOfLastResults - resultsPerPage;
         const currentResults = allPokedexEntries.slice(indexOfFirstResults, indexOfLastResults);
-        var calculateIndex = currentIndex += 1;
-        console.log(calculateIndex);
         if (this._isMounted) {
-            setTimeout(() => {
-                if (!this._isMounted) return false
+            if (!this._isMounted) return false
                 this.setState({
-                    items: this.state.items.concat(currentResults),
-                    currentIndex: calculateIndex
-                });
-            }, 1500);
+                items: this.state.items.concat(currentResults),
+                currentIndex: currentIndex
+            });
         }
     };
 
     render() {
-        if (!this._isMounted) return false
         var props = this.props
-        console.log(this.state.items)
         return (
             <>
                 <h1 className='col-12'>PokéList</h1>
