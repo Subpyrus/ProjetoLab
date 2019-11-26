@@ -53,10 +53,10 @@ class PokemonList extends Component {
     
         const handleData = (data) => {
             this._isMounted = true;
-            const { allPokedexEntries, resultsPerPage } = this.state;
+            const { resultsPerPage } = this.state;
             const indexOfLastResults = 1 * resultsPerPage;
             const indexOfFirstResults = indexOfLastResults - resultsPerPage;
-            const currentResults = allPokedexEntries.slice(indexOfFirstResults, indexOfLastResults);
+            const currentResults = data.pokemon_entries.slice(indexOfFirstResults, indexOfLastResults);
 
             this.setState({ items:currentResults, currentIndex: 1, allPokedexEntries: data.pokemon_entries, dropDownValue: region});
         }
@@ -137,13 +137,11 @@ class PokemonList extends Component {
                     dataLength={this.state.items.length}
                     next={this.fetchMoreData}
                     hasMore={true}
-                    loader={<h4>Loading...</h4>}
                 >
                     {this.state.items.map((pokedexItem, key) => {
                         const pokemon = require('pokemon');
                         var url = pokedexItem.pokemon_species.url.trim();
-                        console.log(url)
-                        var pokemonName = pokemon.getName(pokedexItem.entry_number);
+                        var pokemonName = pokemon.getName(url.split('/')[6]);
                         return (
                             <Col key={key} className='py-md-2' xs='12' sm='6' md='4' lg='2'>
                                 <Link to={`/pokemon-list/${props.match.params.generation}/pokemon-page/${pokemonName.toLocaleLowerCase()}`} onClick={props.getPokemon}>
