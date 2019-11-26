@@ -15,7 +15,7 @@ class PokemonList extends Component {
             resultsPerPage: 24,
             items: [],
             dropdownOpen: false,
-            dropDownValue: 'National',
+            dropDownValue: 'national',
             getPokedexNames: []
         }
     }
@@ -52,7 +52,13 @@ class PokemonList extends Component {
         }
     
         const handleData = (data) => {
-          this.setState({ allPokedexEntries: data.pokemon_entries});
+            this._isMounted = true;
+            const { allPokedexEntries, resultsPerPage } = this.state;
+            const indexOfLastResults = 1 * resultsPerPage;
+            const indexOfFirstResults = indexOfLastResults - resultsPerPage;
+            const currentResults = allPokedexEntries.slice(indexOfFirstResults, indexOfLastResults);
+
+            this.setState({ items:currentResults, currentIndex: 1, allPokedexEntries: data.pokemon_entries, dropDownValue: region});
         }
     
         const handleError = (error) => {
@@ -76,6 +82,10 @@ class PokemonList extends Component {
                 items: currentResults
             });
         }
+    }
+
+    componentDidUpdate() {
+        console.log(this.state.allPokedexEntries)
     }
 
     componentWillUnmount() {
@@ -105,13 +115,10 @@ class PokemonList extends Component {
 
     changeValue = (e) => {
         this.getPokedex(e.currentTarget.textContent)
-        this.setState({dropDownValue: e.currentTarget.textContent})
-
-      }
+    }
 
     render() {
         var props = this.props
-        console.log(this.state)
         return (
             <>
                 <div className="row">
@@ -134,6 +141,8 @@ class PokemonList extends Component {
                 >
                     {this.state.items.map((pokedexItem, key) => {
                         const pokemon = require('pokemon');
+                        var url = pokedexItem.pokemon_species.url.trim();
+                        console.log(url)
                         var pokemonName = pokemon.getName(pokedexItem.entry_number);
                         return (
                             <Col key={key} className='py-md-2' xs='12' sm='6' md='4' lg='2'>
