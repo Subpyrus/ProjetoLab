@@ -124,7 +124,6 @@ class App extends PureComponent {
     }
 
     const handleData = (data) => {
-      console.log(data)
       this.setState({ getPokedex: data.pokemon_entries, loading: false });
     }
 
@@ -165,7 +164,6 @@ class App extends PureComponent {
   render() {
     const { error, loading, isLoggedIn } = this.state;
     const { auth } = this.props
-    console.log(this.state)
     let content;
 
     if (!auth.isLoaded) {
@@ -235,7 +233,6 @@ class App extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state.firebase.auth);
   return {
     auth: state.firebase.auth
   }

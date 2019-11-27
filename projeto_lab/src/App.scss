@@ -55,6 +55,37 @@ body {
   }
 }
 
+div.modal-content {
+  background-color: $background-color;
+  border: 1px solid yellow;
+  border-radius: none;
+
+  button.close{
+    color: $white;
+    transition: all 0.5s;
+
+    &:hover{
+      color: $yellow;
+    }
+  }
+
+  div.modal-header {
+    border-bottom: none !important;
+    border-bottom-right-radius: none !important;
+    border-bottom-left-radius: none !important;
+  }
+
+  .modal-title{
+    font-weight: 700;
+  }
+
+  div.modal-footer {
+    border-top: none;
+    border-bottom-right-radius: none !important;
+    border-bottom-left-radius: none !important;
+  }
+}
+
 .form-group {
   input {
     background-color: $blue;

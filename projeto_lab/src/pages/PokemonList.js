@@ -127,7 +127,7 @@ class PokemonList extends Component {
                         <DropdownToggle caret>{this.state.dropDownValue}</DropdownToggle>
                         <DropdownMenu>
                         {this.state.getPokedexNames.map((pokedexItem, key) => 
-                            <DropdownItem onClick={this.changeValue}>{pokedexItem.name}</DropdownItem>
+                            <DropdownItem key={key} onClick={this.changeValue}>{pokedexItem.name}</DropdownItem>
                         )}
                         </DropdownMenu>
                     </Dropdown>

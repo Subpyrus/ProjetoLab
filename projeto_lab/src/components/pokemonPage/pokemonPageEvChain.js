@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Col, Row } from 'reactstrap';
 
 export default class pokemonPageEvChain extends Component {
+    _isMounted = false;
     constructor(props) {
         super(props)
         this.state = {
@@ -16,6 +17,10 @@ export default class pokemonPageEvChain extends Component {
         this.getPokemonEvolutionChain(EvChainURL);
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     getPokemonEvolutionChain = (evolutionChainURL) => {
         var url = evolutionChainURL
 
@@ -27,6 +32,7 @@ export default class pokemonPageEvChain extends Component {
 
         const handleData = (data) => {
             console.log(data)
+            this._isMounted = true;
             this.setState({ evolutionChain: data, loading: false });
         }
 
@@ -41,35 +47,43 @@ export default class pokemonPageEvChain extends Component {
 
     render() {
         const { loading, error, evolutionChain } = this.state;
-
-        let evolutionContent;
         let pokemonName = [];
         let evolutionMethod = [];
         let evolutionMethodName = [];
         var url
         let pokemon = require('pokemon');
 
-        if (evolutionChain.chain.evolves_to.lenght > 1) {
-            url = evolutionChain.chain.species.url.trim()
-            pokemonName.push(pokemon.getName(url.split('/')[6]))
-            evolutionMethodName.push(evolutionChain.chain.evolves_to[0].evolution_details.trigger.name)
-            Object.values(evolutionChain.chain.evolves_to[0].evolution_details.trigger).forEach(
-                (val) => val != null && val != '' && val != false && (evolutionMethod.push(val))
-            );
-            if (evolutionChain.chain.evolves_to[0].evolves_to.lenght > 1) {
-                url = evolutionChain.chain.evolves_to.species.url.trim()
-                pokemonName.push(pokemon.getName(url.split('/')[6]))
-                evolutionMethodName.push(evolutionChain.chain.evolves_to[0].evolves_to[0].evolution_details.trigger.name)
-                Object.values(evolutionChain.chain.evolves_to[0].evolves_to[0].evolution_details.trigger).forEach(
-                    (val) => val != null && val != '' && val != false && (evolutionMethod.push(val))
-                );
-            }
-        } else {
-            url = evolutionChain.chain.species.url.trim()
-            pokemonName.push(pokemon.getName(url.split('/')[6]))
-        }
+        console.log(this._isMounted)
 
-        console.log(evolutionChain);
+        /*if (this._isMounted) {
+            console.log(evolutionChain);
+            console.log(evolutionChain.chain.evolution_details.length > 1)
+            if (evolutionChain.chain.evolves_to[0] !== '') {
+                console.log("olá")
+                url = evolutionChain.chain.species.url.trim()
+                pokemonName.push(pokemon.getName(url.split('/')[6]))
+                evolutionMethodName.push(evolutionChain.chain.evolves_to[0].evolution_details.trigger.name)
+
+                Object.values(evolutionChain.chain.evolves_to[0].evolution_details[0].trigger).forEach(
+                    (val) => {
+                        if (val !== null && val !== '' && val !== false) {
+                            console.log(val)
+                        }
+                    }
+                )
+                if (evolutionChain.chain.evolves_to[0].evolves_to[0] !== '') {
+                    url = evolutionChain.chain.evolves_to.species.url.trim()
+                    pokemonName.push(pokemon.getName(url.split('/')[6]))
+                    evolutionMethodName.push(evolutionChain.chain.evolves_to[0].evolves_to[0].evolution_details.trigger.name)
+                    Object.values(evolutionChain.chain.evolves_to[0].evolves_to[0].evolution_details.trigger).forEach(
+                        (val) => val !== null && val !== '' && val !== false && evolutionMethod.push(val)
+                    );
+                }
+            } else {
+                url = evolutionChain.chain.species.url.trim()
+                pokemonName.push(pokemon.getName(url.split('/')[6]))
+            }
+        }*/
 
         return (
             <Row>
@@ -87,7 +101,7 @@ export default class pokemonPageEvChain extends Component {
                                         <>
                                             {pokemonName.map((pokeEvName, key) =>
                                                 <div key={key}>
-                                                    <img src={`https://img.pokemondb.net/sprites/x-y/normal/${pokeEvName.toLowerCase()}.png`} alt={`${pokeEvName.toLowerCase()}-chain`} />
+                                                    <img src={`http://www.pokestadium.com/sprites/xy/${pokeEvName.toLowerCase()}.gif`} alt={`${pokeEvName.toLowerCase()}-chain`} />
                                                     {evolutionMethodName.length > 1 &&
                                                         <>
                                                             <p>{evolutionMethodName[key]}</p>

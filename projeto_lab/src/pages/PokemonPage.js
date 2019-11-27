@@ -70,9 +70,7 @@ class PokePage extends PureComponent {
             )
         } else {
             let { id, moves, stats } = props.pokemonInfo[0][0];
-            let { genera, names, flavor_text_entries, evolution_chain } = props.pokemonInfo[0][1];
-
-
+            const { genera, names, flavor_text_entries, evolution_chain } = props.pokemonInfo[0][1];
 
             let pokemon = require('pokemon');
             let pokemonName = pokemon.getName(props.pokemonInfo[0][0].id)
@@ -264,10 +262,10 @@ class PokePage extends PureComponent {
                         <Col xs="12">
                             <Row className="justify-content-between align-items-center">
                                 <Col xs="12" md='6' className='text-left'>
-                                    {props.pokemonInfo[0].id <= 808 && props.pokemonInfo[0].id !== 1 &&
+                                    {props.pokemonInfo[0][0].id <= 808 && props.pokemonInfo[0][0].id !== 1 &&
                                         <Row className='justify-content-between align-items-center'>
                                             <Col xs='2'>
-
+                                                <i className="fas fa-arrow-left"></i>
                                             </Col>
                                             <Col xs='10'>
                                                 <img className='img-fluid' alt={pokemonPreviousName} src={`http://www.pokestadium.com/sprites/xy/${pokemonPreviousName.toLowerCase()}.gif`} />
@@ -281,7 +279,7 @@ class PokePage extends PureComponent {
                                     }
                                 </Col>
                                 <Col xs="12" md="6" lg="2" className='text-right'>
-                                    {props.pokemonInfo[0].id >= 1 && props.pokemonInfo[0].id !== 808 &&
+                                    {props.pokemonInfo[0][0].id >= 1 && props.pokemonInfo[0][0].id !== 808 &&
                                         <Link className='basicLink' id={pokemonNextName.toLowerCase()} to={`/pokemon-list/pokemon-page/${pokemonNextName.toLowerCase()}`} onClick={(event) => {
                                             props.getPokemon(event.currentTarget.id);
                                         }}>
@@ -293,7 +291,7 @@ class PokePage extends PureComponent {
                                                     </p>
                                                 </Col>
                                                 <Col xs='2'>
-
+                                                    <i className="fas fa-arrow-right"></i>
                                                 </Col>
                                             </Row>
                                         </Link>
