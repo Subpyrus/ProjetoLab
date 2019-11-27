@@ -17,7 +17,7 @@ class PokemonList extends Component {
             items: [],
             dropdownOpen: false,
             dropDownValue: 'national',
-            getPokedexNames: []
+            getPokedexNames: [],
         }
     }
 
@@ -84,15 +84,12 @@ class PokemonList extends Component {
             });
         }
     }
-
     componentDidUpdate() {
-        console.log(this.state.allPokedexEntries)
+        //console.log(this.state.allPokedexEntries)
     }
-
     componentWillUnmount() {
         this._isMounted = false
     }
-
     fetchMoreData = () => {
         var { allPokedexEntries, currentIndex, resultsPerPage } = this.state;
         currentIndex = currentIndex += 1;
@@ -108,23 +105,58 @@ class PokemonList extends Component {
         }
     };
 
+
+    // Dropdown Menu Region
     toggle = (event) => {
         this.setState({
             dropdownOpen: !this.state.dropdownOpen
         });
     }
-
     changeValue = (e) => {
         this.getPokedex(e.currentTarget.textContent)
     }
 
+    //Search
+    handleSearchChange = (event) => {
+        if(event.target.value != "") {
+            this.getInfoPokemonPage(event.target.value);
+        }else {
+            this.getPokedex(this.state.dropDownValue);
+        }
+        
+    }
+    
+    getInfoPokemonPage = (event) => {
+        var pokemon;
+        var pokemonSearched = [];
+        if (event === undefined) {
+            pokemon = event;
+        } else {
+            pokemon = event.toLowerCase();
+            this.state.allPokedexEntries.map((pokedexItem, key) => {
+                if(pokedexItem.pokemon_species.name.startsWith(pokemon)) {
+                    pokemonSearched.push(pokedexItem)
+                }
+            })
+            const { resultsPerPage } = this.state;
+            const indexOfLastResults = 1 * resultsPerPage;
+            const indexOfFirstResults = indexOfLastResults - resultsPerPage;
+            const currentResults = pokemonSearched.slice(indexOfFirstResults, indexOfLastResults);
+            this.setState({ items:currentResults, currentIndex: 1, allPokedexEntries: pokemonSearched});
+        }
+    }
+
+
+
+
+    //Render
     render() {
         var props = this.props
         return (
             <>
                 <div className="row">
                     <h1 className='col-6'>PokéList</h1>
-                    <SearchPokemon className='col-4' inputEnter={props.functionEnter} inputClick={props.functionClick} inputChange={props.functionChange} />
+                    <SearchPokemon className='col-4' inputChange={this.handleSearchChange} />
                     <Dropdown className='col-1 offset-1' isOpen={this.state.dropdownOpen} toggle={this.toggle}>
                         <DropdownToggle caret>{this.state.dropDownValue}</DropdownToggle>
                         <DropdownMenu>
