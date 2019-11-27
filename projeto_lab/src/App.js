@@ -11,6 +11,7 @@ import PokemonList from "./pages/PokemonList";
 import PokemonSearch from "./pages/PokemonSearch";
 import PokemonPage from "./pages/PokemonPage";
 import Trivia from "./pages/Trivia";
+import Profile from './pages/Profile';
 import SignUp from './pages/auth/SignUp';
 import SignIn from './pages/auth/SignIn';
 import Loading from './components/layout/Loading';
@@ -112,6 +113,7 @@ class App extends PureComponent {
       fetch(url).then(handleResponse))).then(handleData).catch(handleError)
   }
 
+<<<<<<< Updated upstream
   getPokemonEvolutionChain = (evolutionChainURL) => {
     this.setState({ loading: true });
     var url = evolutionChainURL
@@ -137,6 +139,9 @@ class App extends PureComponent {
   }
 
   getPokedex = (region) => {
+=======
+  getPokedex = () => {
+>>>>>>> Stashed changes
     this.setState({ loading: true });
     var url = `https://pokeapi.co/api/v2/pokedex/${region}/`
 
@@ -233,6 +238,7 @@ class App extends PureComponent {
                 {(props) => (
                   <Trivia {...props} functionTrivia={this.getTriviaQuestions} triviaQuestion={this.state.getTrivia} />
                 )} />
+              <Route exact path="/profile/:username" render={(props) => <Profile />} />
               <Route exact path="/sign-up" render={(props) => <SignUp />} />
               <Route exact path="/sign-in" render={(props) => <SignIn />} />
               <Route render={(props) => <NoMatch />} />
