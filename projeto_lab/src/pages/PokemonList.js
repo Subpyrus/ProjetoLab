@@ -125,7 +125,6 @@ class PokemonList extends Component {
         }
         
     }
-    
     getInfoPokemonPage = (event) => {
         var pokemon;
         var pokemonSearched = [];
