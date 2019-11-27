@@ -15,8 +15,9 @@ import SignedOutLinks from './signedOutLinks';
 const NavBar = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
-    const { auth } = props;
-    const links = auth.uid ? (<SignedInLinks />) : (<SignedOutLinks />);
+    const { auth, username } = props;
+    console.log(username)
+    const links = auth.uid ? (<SignedInLinks username={username} />) : (<SignedOutLinks />);
 
     return (
         <div>
@@ -68,7 +69,8 @@ const NavBar = (props) => {
 const mapStateToProps = (state) => {
     console.log(state)
     return {
-        auth: state.firebase.auth
+        auth: state.firebase.auth,
+        username: state.firebase.profile.username
     }
 }
 

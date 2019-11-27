@@ -113,35 +113,7 @@ class App extends PureComponent {
       fetch(url).then(handleResponse))).then(handleData).catch(handleError)
   }
 
-<<<<<<< Updated upstream
-  getPokemonEvolutionChain = (evolutionChainURL) => {
-    this.setState({ loading: true });
-    var url = evolutionChainURL
-
-    const handleResponse = (response) => {
-      return response.json().then(function (json) {
-        return response.ok ? json : Promise.reject(json);
-      });
-    }
-
-    const handleData = (data) => {
-      console.log(data)
-      this.setState({ evolutionChain: data });
-    }
-
-    const handleError = (error) => {
-      this.setState({ error: error });
-    }
-
-    fetch(url).then(handleResponse)
-      .then(handleData)
-      .catch(handleError);
-  }
-
   getPokedex = (region) => {
-=======
-  getPokedex = () => {
->>>>>>> Stashed changes
     this.setState({ loading: true });
     var url = `https://pokeapi.co/api/v2/pokedex/${region}/`
 
