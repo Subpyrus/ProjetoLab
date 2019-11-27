@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import InfiniteScroll from "react-infinite-scroll-component";
+import SearchPokemon from '../components/pokemonSearch/SearchPokemon';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import LazyLoad from 'react-lazyload';
 
@@ -123,7 +124,8 @@ class PokemonList extends Component {
             <>
                 <div className="row">
                     <h1 className='col-6'>PokéList</h1>
-                    <Dropdown className='col-1 offset-4' isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+                    <SearchPokemon className='col-4' inputEnter={props.functionEnter} inputClick={props.functionClick} inputChange={props.functionChange} />
+                    <Dropdown className='col-1 offset-1' isOpen={this.state.dropdownOpen} toggle={this.toggle}>
                         <DropdownToggle caret>{this.state.dropDownValue}</DropdownToggle>
                         <DropdownMenu>
                         {this.state.getPokedexNames.map((pokedexItem, key) => 

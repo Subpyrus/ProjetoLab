@@ -194,7 +194,7 @@ class App extends PureComponent {
                 )} />
               <Route exact path="/pokemon-list/:generation" render=
                 {(props) => (
-                  <PokemonList {...props} getPokemon={this.getInfoPokemonPage} pokedexInfo={this.state.getPokedex} getPokedex={this.getPokedex} getPokemonVideo={this.getPokemonVideo} />
+                  <PokemonList {...props} functionClick={this.handleSearchClick} functionEnter={this.handleSearchEnter} functionChange={this.handleSearchChange} getPokemon={this.getInfoPokemonPage} pokedexInfo={this.state.getPokedex} getPokedex={this.getPokedex} getPokemonVideo={this.getPokemonVideo} />
                 )} />
               <Route exact path="/pokemon-search/pokemon-page/:pokemon" render=
                 {(props) => (
