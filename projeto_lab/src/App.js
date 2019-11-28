@@ -8,7 +8,6 @@ import NavigationBar from "./components/layout/navbar/Navbar";
 import Footer from "./components/layout/Footer";
 import Home from './pages/Home'
 import PokemonList from "./pages/PokemonList";
-import PokemonSearch from "./pages/PokemonSearch";
 import PokemonPage from "./pages/PokemonPage";
 import Trivia from "./pages/Trivia";
 import Profile from './pages/Profile';
@@ -188,10 +187,6 @@ class App extends PureComponent {
           {location => (
             <Switch location={location}>
               <Route exact path="/" render={(props) => (<Home {...props} />)} />
-              <Route exact path="/pokemon-search" render=
-                {(props) => (
-                  <PokemonSearch {...props} functionClick={this.handleSearchClick} functionEnter={this.handleSearchEnter} functionChange={this.handleSearchChange} pokemonList={this.state.getPokemon} />
-                )} />
               <Route exact path="/pokemon-list/:generation" render=
                 {(props) => (
                   <PokemonList {...props} functionClick={this.handleSearchClick} functionEnter={this.handleSearchEnter} functionChange={this.handleSearchChange} getPokemon={this.getInfoPokemonPage} pokedexInfo={this.state.getPokedex} getPokedex={this.getPokedex} getPokemonVideo={this.getPokemonVideo} />

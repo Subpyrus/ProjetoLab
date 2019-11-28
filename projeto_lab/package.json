@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.7.0",
     "firebase": "^7.4.0",
+    "lodash": "^4.17.15",
     "node-sass": "^4.13.0",
     "pokemon": "^2.0.1",
     "pokemon-gif": "^1.0.14",
@@ -23,7 +24,8 @@
     "reactstrap": "^8.1.1",
     "redux": "^4.0.4",
     "redux-firestore": "^0.10.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "svg-loaders-react": "^2.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

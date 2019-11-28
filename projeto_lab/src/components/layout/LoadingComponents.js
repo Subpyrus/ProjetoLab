@@ -2,12 +2,12 @@ import React from 'react';
 import { SpinningCircles } from 'svg-loaders-react'
 import { Row } from 'reactstrap';
 
-const Loading = (props) => {
+const LoadingComponents = (props) => {
     return (
-        <Row style={{height:'68vh'}} className='d-flex justify-content-center align-items-center'>
+        <Row style={{height:'50vh'}} className='d-flex justify-content-center align-items-center'>
             <SpinningCircles />
         </Row>
     )
 }
 
-export default Loading;
+export default LoadingComponents;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Table, Modal, ModalBody, ModalHeader, ModalFooter, Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Row, Col, Table, Modal, ModalBody, ModalHeader, ModalFooter, Button } from 'reactstrap';
+import LoadingComponents from '../layout/LoadingComponents';
+import Error from '../layout/Error'
 
 class pokemonPageMoves extends Component {
     constructor(props) {
@@ -14,8 +15,6 @@ class pokemonPageMoves extends Component {
     }
 
     getMove = (move) => {
-        console.log(move)
-        console.log(move.currentTarget.className)
         var url = `https://pokeapi.co/api/v2/move/${move.currentTarget.className}/`
 
         const handleResponse = (response) => {
@@ -38,7 +37,23 @@ class pokemonPageMoves extends Component {
             .catch(handleError);
     }
 
-    conditionMove = (condition) => {
+    conditionMove = (firstName, firstString, firstCondition) => {
+        return firstName !== firstCondition &&
+            <>
+                {firstCondition !== 0 ? (
+                    <Col xs='6'>
+                        <h5>{firstString}:</h5>
+                        <p>{firstName}</p>
+                    </Col>
+                ) : (
+                        <Col className='py-2' xs='12' sm='6'>
+                            <h5>{firstString}:</h5>
+                            <p>{firstName}%</p>
+                        </Col>
+                    )
+                }
+            </>
+
 
     }
 
@@ -49,130 +64,99 @@ class pokemonPageMoves extends Component {
     }
 
     render() {
+        var string = require('lodash/string')
         const { move } = this.state;
         const { pokemonMoves, method, generation, moves } = this.props;
 
-        let tableContent;
-        let tableHeader;
-        switch (method) {
-            case 'level-up':
-                tableHeader =
-                    <>
-                        <th>Level</th>
-                        <th>Name</th>
-                    </>
-                tableContent =
-                    <>
-                        {pokemonMoves.map((moveItem, firstKey) =>
-                            moveItem.version_group_details.map((moveDetailsItem, secondKey) =>
-                                moveDetailsItem.version_group.name === `${generation}` && moveDetailsItem.move_learn_method.name === `${method}` &&
-                                <tr className={moveItem.move.name} onClick={(event) => { this.toggle(); this.getMove(event); }} key={secondKey}>
-                                    <td className={moveItem.move.name}>{moveDetailsItem.level_learned_at}</td>
-                                    <td className={moveItem.move.name}>{moveItem.move.name}</td>
-                                </tr>
-                            )
-                        )}
-                    </>
-                break;
-            default:
-                tableHeader =
-                    <>
-                        <th>Name</th>
-                    </>
-                tableContent =
-                    <>
-                        {pokemonMoves.map((moveItem, firstKey) =>
-                            moveItem.version_group_details.map((moveDetailsItem, secondKey) =>
-                                moveDetailsItem.version_group.name === `${generation}` && moveDetailsItem.move_learn_method.name === `${method}` &&
-                                <tr className={moveItem.move.name} onClick={(event) => { this.toggle(); this.getMove(event); }} key={secondKey}>
-                                    <td className={moveItem.move.name}>{moveItem.move.name}</td>
-                                </tr>
-                            )
-                        )}
-                    </>
-                break;
-        }
-
         return (
             <>
-                <Table dark>
+                <Table dark responsive hover>
                     <thead>
                         <tr>
-                            {tableHeader}
+                            {method === 'level-up' &&
+                                <th>Level</th>
+                            }
+                            <th>Name</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {tableContent}
+                        {pokemonMoves.map((moveItem, firstKey) =>
+                            moveItem.version_group_details.map((moveDetailsItem, secondKey) =>
+                                moveDetailsItem.version_group.name === `${generation}` && moveDetailsItem.move_learn_method.name === `${method}` &&
+                                <tr className={moveItem.move.name} onClick={(event) => { this.toggle(); this.getMove(event); }} key={secondKey}>
+                                    {method === 'level-up' ? (
+                                        <>
+                                            <td className={moveItem.move.name}>{moveDetailsItem.level_learned_at}</td>
+                                            <td className={moveItem.move.name}>{string.startCase(moveItem.move.name)}</td>
+                                        </>
+                                    ) : (
+                                            <>
+                                                <td className={moveItem.move.name}>{string.startCase(moveItem.move.name)}</td>
+                                            </>
+                                        )}
+                                </tr>
+                            )
+                        )}
                     </tbody>
                 </Table>
                 <Modal size='lg' isOpen={this.state.modal} toggle={this.toggle}>
-                    {this.state.loading ? (
+                    {this.state.loading ? (<LoadingComponents />) : this.state.error ? (<Error />) : (
                         <>
-                            <p>loading...</p>
+                            <ModalHeader toggle={this.toggle}></ModalHeader>
+                            <ModalBody>
+                                <Row className='justify-content-center text-center'>
+                                    <h4 className='col-12'>{move.names[2].name}</h4>
+                                    <p className='col-12 py-2'>{move.flavor_text_entries[2].flavor_text}
+                                    </p>
+                                    <Col className='py-2' xs='12' sm='6'>
+                                        <h5 className='col-12'>Power:</h5>
+                                        {move.power === null ? (<p>None</p>) : (<p>{move.power}</p>)}
+                                    </Col>
+                                    <Col className='py-2' xs='12' sm='6'>
+                                        <Row>
+                                            <h5 className='col-12'>Type:</h5>
+                                            <Col xs='4' className={`mx-auto text-center typeIcon type-${move.type.name}`}>
+                                                {move.type.name}
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                    <Col className='py-2' xs='12' sm='4'>
+                                        <h5>PP:</h5>
+                                        <p>{move.pp}</p>
+                                    </Col>
+                                    <Col className='py-2' xs='12' sm='4'>
+                                        <h5>Accuracy:</h5>
+                                        {move.accuracy === null ? (<p>100</p>) : (<p>{move.accuracy}</p>)}
+                                    </Col>
+                                    <Col className='py-2' xs='12' sm='4'>
+                                        <h5>Move Type:</h5>
+                                        <p>{string.startCase(move.damage_class.name)}</p>
+                                    </Col>
+                                    <Col xs='12'>
+                                        <Row className='justify-content-center'>
+                                            {this.conditionMove(move.meta.crit_rate, 'Crit Chance', 0)}
+                                            {this.conditionMove(move.meta.flinch_chance, 'Flinch Chance', 0)}
+                                            {this.conditionMove(move.priority, 'Priority', 0)}
+                                            {this.conditionMove(move.meta.stat_chance, 'Status Chance', 0)}
+                                            {this.conditionMove(move.meta.max_hits, 'Max Hits', null)}
+                                            {this.conditionMove(move.meta.max_turns, 'Max Turns', null)}
+                                            {this.conditionMove(move.meta.min_hits, 'Min Hits', null)}
+                                            {this.conditionMove(move.meta.min_turns, 'Min Turns', null)}
+                                            {this.conditionMove(move.meta.drain, 'Drain Amount', 0)}
+                                            {this.conditionMove(move.meta.healing, 'Healing Amount', 0)}
+                                        </Row>
+                                    </Col>
+                                </Row>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="primary mx-auto w-50" onClick={this.toggle}>Close</Button>
+                            </ModalFooter>
                         </>
-                    ) : (
-                            <>
-                                <ModalHeader className='text-center' toggle={this.toggle}>{move.names[2].name}</ModalHeader>
-                                <ModalBody>
-                                    <Table hover responsive size="sm">
-                                        <tbody>
-                                            <tr>
-                                                <td colSpan="2">{move.flavor_text_entries[2].flavor_text}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Power: {move.power}</td>
-                                                <td>Type: {move.type.name}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>PP: {move.pp}</td>
-                                                <td>Accuracy: {move.accuracy}</td>
-                                                <td>Attack Type: {move.damage_class.name}</td>
-                                            </tr>
-                                            {move.meta.crit_rate !== 0 && move.meta.flinch_chance !== 0 &&
-                                                <tr>
-                                                    <td>Crit Chance: {move.meta.crit_rate}</td>
-                                                    <td>Flinch Chance: {move.meta.flinch_chance}</td>
-
-                                                </tr>
-                                            }
-                                            {move.meta.stat_chance !== 0 && move.priority !== 0 &&
-                                                <tr>
-                                                    <td>Status Chance: {move.meta.stat_chance}</td>
-                                                    <td>Priority: {move.priority}</td>
-                                                </tr>
-                                            }
-                                            {move.meta.max_hits !== 0 && move.meta.max_turns !== 0 &&
-                                                <tr>
-                                                    <td>{move.meta.max_hits}</td>
-                                                    <td>{move.meta.max_turns}</td>
-                                                </tr>
-                                            }
-
-                                            <tr>
-                                                <td>{move.meta.min_hits}</td>
-                                                <td>{move.meta.min_turns}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>{move.meta.drain}</td>
-                                                <td>{move.meta.healing}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>{move.meta.ailment.name}</td>
-                                                <td>{move.meta.ailment_chance}</td>
-                                            </tr>
-                                        </tbody>
-                                    </Table>
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button color="primary mx-auto w-50" onClick={this.toggle}>Close</Button>{' '}
-                                </ModalFooter>
-                            </>
-                        )}
+                    )}
                 </Modal>
             </>
         )
     }
-
 }
 
 export default pokemonPageMoves

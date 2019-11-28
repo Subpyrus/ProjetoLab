@@ -33,18 +33,6 @@ const NavBar = (props) => {
                             </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink isActive={(match, location) => {
-                                let string = "/pokemon-search"
-                                let searchPokemonListURL = location.pathname.match(string);
-                                if (searchPokemonListURL !== null) {
-                                    return true;
-                                }
-                            }}
-                                activeClassName="navbar__link-active" className="navbar__link" to="/pokemon-search">
-                                PokéSearch
-                            </NavLink>
-                        </NavItem>
-                        <NavItem>
                             <NavLink onClick={props.getPokedex('national')} isActive={(match, location) => {
                                 let string = "/pokemon-list"
                                 let searchPokemonListURL = location.pathname.match(string);

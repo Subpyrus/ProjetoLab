@@ -1,10 +1,11 @@
 $text-font: "Roboto", sans-serif;
 $title-font: "Rubick", sans-serif;
 $background-color: #3c3c3b;
+$dark: #343a40;
 $white: #ebebd3;
 $yellow: #ffe066;
 $red: #f24643;
-$blue: #1376a0;
+$blue: #1688b9;
 
 body {
   background-color: $background-color;
@@ -45,26 +46,65 @@ body {
     color: $blue;
     font-weight: bold;
     font-family: $title-font;
-    padding-bottom: 1rem;
+    padding-bottom: 1.75rem;
   }
 
   h4 {
-    color: $blue;
+    color: $red;
     font-family: $title-font;
     padding-bottom: 1rem;
   }
+
+  h5{
+    color: $blue;
+    font-family: $title-font;
+  }
+}
+
+table {
+  border: 1px solid $yellow !important;
+
+  th {
+    color: $red;
+    border: none !important;
+  }
+
+  td {
+    border: none !important;
+    padding: 10px;
+    color: $white;
+  }
+}
+
+.nav-pills > li > a {
+  transition: all 0.5s;
+}
+
+.nav-pills > li > a.active,
+.nav-pills > li > a:focus {
+  background-color: $yellow !important;
+  color: $red !important;
+}
+
+.nav-pills > li > a:hover {
+  background-color: $yellow !important;
+  color: $blue !important;
 }
 
 div.modal-content {
-  background-color: $background-color;
-  border: 1px solid yellow;
+  table {
+    border: none !important;
+  }
+
+  background-color: $dark;
+  border: 1px solid $yellow;
   border-radius: none;
 
-  button.close{
+  button.close {
     color: $white;
     transition: all 0.5s;
 
-    &:hover{
+    &:hover {
       color: $yellow;
     }
   }
@@ -75,7 +115,7 @@ div.modal-content {
     border-bottom-left-radius: none !important;
   }
 
-  .modal-title{
+  .modal-title {
     font-weight: 700;
   }
 
@@ -139,6 +179,7 @@ div.typeIcon {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
   text-transform: uppercase;
   transition: opacity 0.4s;
+  margin-bottom: 1rem;
 
   &:hover {
     opacity: 0.85;

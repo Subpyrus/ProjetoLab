@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import InfiniteScroll from "react-infinite-scroll-component";
-import SearchPokemon from '../components/pokemonSearch/SearchPokemon';
+import SearchPokemon from '../components/pokemonList/SearchPokemon';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import LazyLoad from 'react-lazyload';
 
@@ -125,6 +125,7 @@ class PokemonList extends Component {
         }
         
     }
+    
     getInfoPokemonPage = (event) => {
         var pokemon;
         var pokemonSearched = [];

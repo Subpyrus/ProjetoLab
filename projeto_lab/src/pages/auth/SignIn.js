@@ -57,9 +57,9 @@ class SignIn extends Component {
     }
 }
 
-const mapDispatchToProps = (dipatch) => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        signIn: (credentials) => dipatch(signIn(credentials))
+        signIn: (credentials) => dispatch(signIn(credentials))
     }
 }
 
