@@ -66,7 +66,7 @@ class pokemonPageMoves extends Component {
     render() {
         var string = require('lodash/string')
         const { move } = this.state;
-        const { pokemonMoves, method, generation, moves } = this.props;
+        const { pokemonMoves, method, generation } = this.props;
 
         return (
             <>

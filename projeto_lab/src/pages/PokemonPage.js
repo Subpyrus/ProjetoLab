@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Table, Button, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import { Row, Col, Button, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import Loading from '../components/layout/Loading';
@@ -17,7 +17,7 @@ class PokePage extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            generation: 'crystal',
+            generation: 'platinum',
             modal: false,
             evolutionChain: [],
             activeTab: '1',
@@ -40,21 +40,21 @@ class PokePage extends PureComponent {
 
     render() {
         const props = this.props;
-        const { auth, profileTeam, profileFavorites } = this.props;
-
         if (props.pokemonInfo.length === 0) {
             props.getPokemon(props.match.params.pokemon);
             return (
                 <Loading></Loading>
             )
         } else {
-            var string = require('lodash/string')
-            const { generation } = this.state
-            let { moves, stats } = props.pokemonInfo[0][0];
+            const { auth, profilePokemonTeam, profilePokemonFavorites } = this.props;
+            const { moves, stats } = props.pokemonInfo[0][0];
             const { genera, names, flavor_text_entries, evolution_chain } = props.pokemonInfo[0][1];
-
+            const { generation } = this.state
+            var string = require('lodash/string')
             let pokemon = require('pokemon');
             let pokemonName = pokemon.getName(props.pokemonInfo[0][0].id)
+            const foundPokemonTeam = profilePokemonTeam.find(pokemon => pokemon === pokemonName);
+            const foundPokemonFavorites = profilePokemonFavorites.find(pokemon => pokemon === pokemonName);
             var descriptions = new Set();
             var uniqueNames = new Set();
             var generations = []
@@ -100,6 +100,26 @@ class PokePage extends PureComponent {
                             {auth.uid &&
                                 <Col xs='12' lg='4'>
                                     <Row className='d-flex justify-content-end'>
+                                        {foundPokemonTeam !== undefined ?
+                                            (
+                                                <Button color="danger">Remove Pokemon From Favorite Team</Button>
+                                            ) : profilePokemonTeam.length === 6 ?
+                                                (
+                                                    <Button color="warning" disabled>Your Favorite Team is Full</Button>
+                                                ) :
+                                                (
+                                                    <Button color="warning">Add Pokémon to Favorite Team</Button>
+                                                )}
+                                        {foundPokemonFavorites !== undefined ?
+                                            (
+                                                <Button color="danger">Remove Pokemon From Favorites</Button>
+                                            ) : profilePokemonFavorites.length === 50 ?
+                                                (
+                                                    <Button color="warning" disabled>Your Favorites are Full</Button>
+                                                ) :
+                                                (
+                                                    <Button color="warning">Add Pokémon to Favorites</Button>
+                                                )}
                                     </Row>
                                 </Col>
                             }
@@ -236,8 +256,8 @@ class PokePage extends PureComponent {
 const mapStateToProps = (state) => {
     return {
         auth: state.firebase.auth,
-        profileTeam: state.firebase.favoriteTeam,
-        profileFavorites: state.firebase.favoritePokemons
+        profilePokemonTeam: state.firebase.profile.favoriteTeam,
+        profilePokemonFavorites: state.firebase.profile.favoritePokemons
     }
 }
 

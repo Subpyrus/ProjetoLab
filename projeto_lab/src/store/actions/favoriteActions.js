@@ -1,6 +1,5 @@
 export const addFavoritePokemon = (favorite) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
-        const firebase = getFirebase();
         const firestore = getFirestore();
         firestore.collection('users').where("uid", "==", getState.uid).get()
             .then((response) => {
@@ -17,7 +16,6 @@ export const addFavoritePokemon = (favorite) => {
 
 export const removeFavoritePokemon = (favorite) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
-        const firebase = getFirebase();
         const firestore = getFirestore();
         firestore.collection('users').where("uid", "==", getState.uid).get()
             .then((response) => {
@@ -34,7 +32,6 @@ export const removeFavoritePokemon = (favorite) => {
 
 export const addPokemonToTeam = (pokemon) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
-        const firebase = getFirebase();
         const firestore = getFirestore();
         firestore.collection('users').where("uid", "==", getState.uid).get()
             .then((response) => {
@@ -51,7 +48,6 @@ export const addPokemonToTeam = (pokemon) => {
 
 export const removePokemonToTeam = (pokemon) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
-        const firebase = getFirebase();
         const firestore = getFirestore();
         firestore.collection('users').where("uid", "==", getState.uid).get()
             .then((response) => {

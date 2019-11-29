@@ -162,22 +162,10 @@ class App extends PureComponent {
 
   render() {
     const { error, loading, isLoggedIn } = this.state;
-    const { auth } = this.props
+    const { auth, profile } = this.props
     let content;
 
-    if (!auth.isLoaded) {
-      content = <Loading />
-      return (
-        <Router>
-          <ScrollToTop />
-          <AbsoluteWrapper>
-            <Layout>
-              {content}
-            </Layout>
-          </AbsoluteWrapper>
-        </Router>
-      );
-    } else if (loading) {
+    if (loading) {
       content = <Loading />
     } else if (error) {
       content = <Error>{error.message}</Error>
@@ -212,24 +200,39 @@ class App extends PureComponent {
         </AnimatedRoute>
     }
 
-    return (
-      <Router>
-        <ScrollToTop />
-        <NavigationBar getPokedex={this.getPokedex} LoggedIn={isLoggedIn} />
-        <AbsoluteWrapper>
-          <Layout>
-            {content}
-          </Layout>
-          <Footer />
-        </AbsoluteWrapper>
-      </Router>
-    );
+    if (!auth.isLoaded && !profile.isLoaded) {
+      return (
+        <Router>
+          <ScrollToTop />
+          <AbsoluteWrapper>
+            <Layout>
+            <Loading />
+            </Layout>
+          </AbsoluteWrapper>
+        </Router>
+      )
+    } else {
+      return (
+        <Router>
+          <ScrollToTop />
+          <NavigationBar getPokedex={this.getPokedex} LoggedIn={isLoggedIn} />
+          <AbsoluteWrapper>
+            <Layout>
+              {content}
+            </Layout>
+            <Footer />
+          </AbsoluteWrapper>
+        </Router>
+      );
+    }
+
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    auth: state.firebase.auth
+    auth: state.firebase.auth,
+    profile: state.firebase.profile.isLoaded
   }
 }
 

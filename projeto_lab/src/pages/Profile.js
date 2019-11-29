@@ -5,9 +5,7 @@ import { connect } from 'react-redux';
 
 const Profile = (props) => {
     console.log(props);
-    const { profileUsername, state, profileTeam, profileFavorites, profileQuizzRecord } = props
-
-    console.log(state)
+    const { profileUsername, profileTeam, profileFavorites, profileQuizzRecord } = props
 
     return (
         <Row>
@@ -15,8 +13,9 @@ const Profile = (props) => {
                 <h1>{profileUsername}</h1>
 
             </Col>
-            {/*<Col className='position-static position-md-fixed' xs='12' md='4'>
+            <Col xs='12'>
                 <img />
+                <p>Gender: Male</p>
                 <p>Favorite City:</p>
                 <p>Favorite Gen:</p>
             </Col>
@@ -38,12 +37,21 @@ const Profile = (props) => {
                 }
             </Col>
             <Col xs='12' md='6'>
-                <h3>Favorite Team</h3>
-                {profileTeam.map((item, key) =>
-                    <Col key={key}>
-
+                <h3>Favorite Pokémon Team</h3>
+                {profileTeam.length === 0 ? (
+                    <Col xs='12'>
+                        <p>You don't have any favorite pokémons yet! Search for your favorites in the PokéList!</p>
                     </Col>
-                )}
+                ) : (
+                        <>
+                            {profileTeam.map((item, key) =>
+                                <Col key={key}>
+                                    <img />
+                                </Col>)
+                            }
+                        </>
+                    )
+                }
             </Col>
             <Col xs='12' md='6'>
                 <h3>Inner IQ Pokémon</h3>
@@ -61,18 +69,17 @@ const Profile = (props) => {
                         </>
                     )
                 }
-            </Col>*/}
+            </Col>
         </Row>
     )
 }
 
 const mapStateToProps = (state) => {
     return {
-        state: state.firebase,
         profileUsername: state.firebase.profile.username,
-        profileFavorites: state.firebase.favoritePokemons,
-        profileTeam: state.firebase.favoriteTeam,
-        profileQuizzRecord: state.firebase.quizzRecord,
+        profileFavorites: state.firebase.profile.favoritePokemons,
+        profileTeam: state.firebase.profile.favoriteTeam,
+        profileQuizzRecord: state.firebase.profile.quizzRecord,
         profileAvatar: ''
     }
 }
