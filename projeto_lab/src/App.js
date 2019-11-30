@@ -35,6 +35,9 @@ const AnimatedRoute = ({ children }) => (
     )}
   />
 )
+
+
+
 class App extends PureComponent {
   _isMounted = false;
   constructor(props) {
@@ -42,24 +45,33 @@ class App extends PureComponent {
     this.state = {
       getPokemonSearch: [],
       getPokemon: [],
-      getPokemonSpecificantions: [],
       getPokemonVideo: [],
-      evolutionChain: [],
       getPokedex: [],
-      getTrivia: [],
+      getTrivia: ['zxzxzxz'],
       loading: false,
       error: null,
-      inputValue: '',
-      isLoggedIn: false
+      inputValue: 'asdsaasdasdd',
     }
   }
 
   componentDidMount() {
-    this._isMounted = true;
-  }
+    /*const LocalStorageState = localStorage.getItem('state');
+    console.log(LocalStorageState);
+    if (LocalStorageState !== null || LocalStorageState !== undefined) {
+      const parsedState = JSON.parse(LocalStorageState)
+      this.setState({ ...parsedState });
+    }
 
-  componentWillUnmount() {
-    this._isMounted = false;
+    const hello = () => {
+      console.log(this.state)
+      localStorage.clear();
+      localStorage.setItem("state", JSON.stringify(this.state))
+    }
+
+    console.log(hello())
+
+    window.addEventListener("beforeunload", hello)*/
+    this._isMounted = true;
   }
 
   handleSearchChange = (event) => {
@@ -161,44 +173,11 @@ class App extends PureComponent {
   }
 
   render() {
-    const { error, loading, isLoggedIn } = this.state;
-    const { auth, profile } = this.props
-    let content;
+    const { error, loading } = this.state;
+    const { auth, profile } = this.props;
 
-    if (loading) {
-      content = <Loading />
-    } else if (error) {
-      content = <Error>{error.message}</Error>
-    } else {
-      content =
-        <AnimatedRoute>
-          {location => (
-            <Switch location={location}>
-              <Route exact path="/" render={(props) => (<Home {...props} />)} />
-              <Route exact path="/pokemon-list/:generation" render=
-                {(props) => (
-                  <PokemonList {...props} functionClick={this.handleSearchClick} functionEnter={this.handleSearchEnter} functionChange={this.handleSearchChange} getPokemon={this.getInfoPokemonPage} pokedexInfo={this.state.getPokedex} getPokedex={this.getPokedex} getPokemonVideo={this.getPokemonVideo} />
-                )} />
-              <Route exact path="/pokemon-search/pokemon-page/:pokemon" render=
-                {(props) => (
-                  <PokemonPage {...props} pokemonInfo={this.state.getPokemon} getPokemon={this.getInfoPokemonPage} />
-                )} />
-              <Route exact path="/pokemon-list/:generation/pokemon-page/:pokemon" render=
-                {(props) => (
-                  <PokemonPage {...props} pokemonInfo={this.state.getPokemon} getPokemon={this.getInfoPokemonPage} getPokemonEvolutionChain={this.getPokemonEvolutionChain} />
-                )} />
-              <Route exact path="/trivia" render=
-                {(props) => (
-                  <Trivia {...props} functionTrivia={this.getTriviaQuestions} triviaQuestion={this.state.getTrivia} />
-                )} />
-              <Route exact path="/profile/:username" render={(props) => <Profile />} />
-              <Route exact path="/sign-up" render={(props) => <SignUp />} />
-              <Route exact path="/sign-in" render={(props) => <SignIn />} />
-              <Route render={(props) => <NoMatch />} />
-            </Switch>
-          )}
-        </AnimatedRoute>
-    }
+    console.log(this.state)
+    console.log(loading)
 
     if (!auth.isLoaded && !profile.isLoaded) {
       return (
@@ -206,7 +185,7 @@ class App extends PureComponent {
           <ScrollToTop />
           <AbsoluteWrapper>
             <Layout>
-            <Loading />
+              <Loading />
             </Layout>
           </AbsoluteWrapper>
         </Router>
@@ -215,10 +194,43 @@ class App extends PureComponent {
       return (
         <Router>
           <ScrollToTop />
-          <NavigationBar getPokedex={this.getPokedex} LoggedIn={isLoggedIn} />
+          <NavigationBar getPokedex={this.getPokedex} />
           <AbsoluteWrapper>
             <Layout>
-              {content}
+              {loading ? (
+                <Loading />
+              ) : error ? (
+                <Error>{error.message}</Error>
+              ) : (
+                    <AnimatedRoute>
+                      {location => (
+                        <Switch location={location}>
+                          <Route exact path="/" render={(props) => (<Home {...props} />)} />
+                          <Route exact path="/pokemon-list/:generation" render=
+                            {(props) => (
+                              <PokemonList {...props} functionClick={this.handleSearchClick} functionEnter={this.handleSearchEnter} functionChange={this.handleSearchChange} getPokemon={this.getInfoPokemonPage} pokedexInfo={this.state.getPokedex} getPokedex={this.getPokedex} getPokemonVideo={this.getPokemonVideo} />
+                            )} />
+                          <Route exact path="/pokemon-search/pokemon-page/:pokemon" render=
+                            {(props) => (
+                              <PokemonPage {...props} pokemonInfo={this.state.getPokemon} getPokemon={this.getInfoPokemonPage} />
+                            )} />
+                          <Route exact path="/pokemon-list/:generation/pokemon-page/:pokemon" render=
+                            {(props) => (
+                              <PokemonPage {...props} pokemonInfo={this.state.getPokemon} getPokemon={this.getInfoPokemonPage} />
+                            )} />
+                          <Route exact path="/trivia" render=
+                            {(props) => (
+                              <Trivia {...props} functionTrivia={this.getTriviaQuestions} triviaQuestion={this.state.getTrivia} />
+                            )} />
+                          <Route exact path="/profile/:username" render={(props) => <Profile {...props} />} />
+                          <Route exact path="/sign-up" render={(props) => <SignUp />} />
+                          <Route exact path="/sign-in" render={(props) => <SignIn />} />
+                          <Route render={(props) => <NoMatch />} />
+                        </Switch>
+                      )}
+                    </AnimatedRoute>
+                  )
+              }
             </Layout>
             <Footer />
           </AbsoluteWrapper>
@@ -230,6 +242,7 @@ class App extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state)
   return {
     auth: state.firebase.auth,
     profile: state.firebase.profile.isLoaded

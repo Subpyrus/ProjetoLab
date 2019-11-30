@@ -16,7 +16,8 @@ const NavBar = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
     const { auth, username } = props;
-    console.log(username)
+    console.log(auth);
+    console.log(username);
     const links = auth.uid ? (<SignedInLinks username={username} />) : (<SignedOutLinks />);
 
     return (
@@ -33,7 +34,7 @@ const NavBar = (props) => {
                             </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink onClick={props.getPokedex('national')} isActive={(match, location) => {
+                            <NavLink onClick={(event) => { props.getPokedex('national'); }} isActive={(match, location) => {
                                 let string = "/pokemon-list"
                                 let searchPokemonListURL = location.pathname.match(string);
                                 if (searchPokemonListURL !== null) {

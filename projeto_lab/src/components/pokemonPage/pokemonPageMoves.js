@@ -67,6 +67,7 @@ class pokemonPageMoves extends Component {
         var string = require('lodash/string')
         const { move } = this.state;
         const { pokemonMoves, method, generation } = this.props;
+        console.log(pokemonMoves)
 
         return (
             <>
@@ -81,8 +82,8 @@ class pokemonPageMoves extends Component {
                     </thead>
                     <tbody>
                         {pokemonMoves.map((moveItem, firstKey) =>
-                            moveItem.version_group_details.map((moveDetailsItem, secondKey) =>
-                                moveDetailsItem.version_group.name === `${generation}` && moveDetailsItem.move_learn_method.name === `${method}` &&
+                            moveItem.version_group_details.map((moveDetailsItem, secondKey) => {
+                                return moveDetailsItem.version_group.name === `${generation}` && moveDetailsItem.move_learn_method.name === `${method}` &&
                                 <tr className={moveItem.move.name} onClick={(event) => { this.toggle(); this.getMove(event); }} key={secondKey}>
                                     {method === 'level-up' ? (
                                         <>
@@ -95,7 +96,7 @@ class pokemonPageMoves extends Component {
                                             </>
                                         )}
                                 </tr>
-                            )
+                            })
                         )}
                     </tbody>
                 </Table>

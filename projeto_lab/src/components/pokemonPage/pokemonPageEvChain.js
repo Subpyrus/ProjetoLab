@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Col, Row } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import LazyLoad from 'react-lazyload';
 
 export default class pokemonPageEvChain extends Component {
@@ -50,98 +51,61 @@ export default class pokemonPageEvChain extends Component {
         return otherKeys;
     }
 
+    getPokemonEvolutionMethodsAndNames = (item, arrayPokemonName, arrayMethodName, arrayMethod) => {
+        let pokemon = require('pokemon');
+        let url = item.species.url.trim()
+        arrayPokemonName.push(pokemon.getName(url.split('/')[6]))
+        arrayMethodName.push(item.evolution_details[0].trigger.name)
+        const NewEvolutionObject = this.objectWithoutKey(item.evolution_details[0], 'trigger');
+        const checkConditions = []
+
+        Object.entries(NewEvolutionObject).forEach(
+            (val) => {
+                if (val[1] !== null && val[1] !== '' && val[1] !== false) {
+                    checkConditions.push(val);
+                }
+            }
+        )
+        arrayMethod.push([...checkConditions])
+    }
+
     render() {
         var string = require('lodash/string')
         const { loading, error, evolutionChain } = this.state;
-        let pokemonName = [];
+        const { getPokemonInfo } = this.props
         let evolutionMethod = [''];
         let evolutionMethodName = [''];
         var url
         let pokemon = require('pokemon');
-
-        console.log(this._isMounted)
-        console.log(evolutionChain);
+        let pokemonName = [];
 
         if (this._isMounted) {
             url = evolutionChain.chain.species.url.trim()
             pokemonName.push(pokemon.getName(url.split('/')[6]))
             if (evolutionChain.chain.evolves_to[0] !== '') {
                 if (evolutionChain.chain.evolves_to.length !== 0) {
-                    url = evolutionChain.chain.species.url.trim()
                     for (let item of evolutionChain.chain.evolves_to) {
-                        url = item.species.url.trim()
-                        pokemonName.push(pokemon.getName(url.split('/')[6]))
-                        evolutionMethodName.push(item.evolution_details[0].trigger.name)
-                        const NewEvolutionObject = this.objectWithoutKey(item.evolution_details[0], 'trigger');
-
-                        Object.values(NewEvolutionObject).forEach(
-                            (val) => {
-                                if (val !== null && val !== '' && val !== false) {
-                                    console.log(val)
-                                    console.log(typeof val === 'object')
-                                    if (typeof val === 'object') {
-                                        console.log("olá")
-                                        evolutionMethod.push(val.name);
-                                    } else {
-                                        evolutionMethod.push(val);
-                                    }
-                                }
-                            }
-                        )
+                        this.getPokemonEvolutionMethodsAndNames(item, pokemonName, evolutionMethodName, evolutionMethod)
                     }
                 } else {
-                    evolutionMethodName.push(evolutionChain.chain.evolves_to[0].evolution_details[0].trigger.name)
-                    const NewEvolutionObject = this.objectWithoutKey(evolutionChain.chain.evolves_to[0].evolution_details[0], 'trigger');
-
-                    Object.values(NewEvolutionObject).forEach(
-                        (val) => {
-                            if (val !== null && val !== '' && val !== false) {
-                                console.log(val)
-                                console.log(typeof val === 'object')
-                                if (typeof val === 'object') {
-                                    console.log("olá")
-                                    evolutionMethod.push(val.name);
-                                } else {
-                                    evolutionMethod.push(val);
-                                }
-                            }
-                        }
-                    )
+                    this.getPokemonEvolutionMethodsAndNames(evolutionChain.chain.evolves_to[0], pokemonName, evolutionMethodName, evolutionMethod)
                 }
 
-                if (evolutionChain.chain.evolves_to.length !== 0) {
+                if (evolutionChain.chain.evolves_to[0].evolves_to.length !== 0) {
                     if (evolutionChain.chain.evolves_to[0].evolves_to.length !== 0) {
-                        url = evolutionChain.chain.evolves_to[0].evolves_to[0].species.url.trim()
-                        pokemonName.push(pokemon.getName(url.split('/')[6]))
-                        evolutionMethodName.push(evolutionChain.chain.evolves_to[0].evolves_to[0].evolution_details[0].trigger.name)
-
-                        const NewerEvolutionObject = this.objectWithoutKey(evolutionChain.chain.evolves_to[0].evolves_to[0].evolution_details[0], 'trigger');
-
-                        Object.values(NewerEvolutionObject).forEach(
-                            (val) => {
-                                if (val !== null && val !== '' && val !== false) {
-                                    console.log(val)
-                                    console.log(typeof val === 'object')
-                                    if (typeof val === 'object') {
-                                        console.log("olá")
-                                        evolutionMethod.push(val.name);
-                                    } else {
-                                        evolutionMethod.push(val);
-                                    }
-                                }
-                            }
-                        )
+                        for (let item of evolutionChain.chain.evolves_to[0].evolves_to) {
+                            this.getPokemonEvolutionMethodsAndNames(item, pokemonName, evolutionMethodName, evolutionMethod)
+                        }
+                    } else {
+                        this.getPokemonEvolutionMethodsAndNames(evolutionChain.chain.evolves_to[0].evolves_to[0], pokemonName, evolutionMethodName, evolutionMethod)
                     }
                 }
-
             } else {
                 url = evolutionChain.chain.species.url.trim()
                 pokemonName.push(pokemon.getName(url.split('/')[6]))
             }
         }
 
-        console.log(pokemonName)
-        console.log(evolutionMethodName);
         console.log(evolutionMethod)
 
         return (
@@ -157,19 +121,33 @@ export default class pokemonPageEvChain extends Component {
                                 {loading ? (
                                     <p> loading...</p>
                                 ) : (
-                                        <Row>
+                                        <Row className='d-flex align-items-center justify-content-center text-center'>
                                             {pokemonName.map((pokeEvName, key) =>
                                                 <Col xs='12' sm='4' key={key}>
-                                                    <Row className='d-flex align-items-center justify-content-center'>
-                                                        <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
+                                                    <Row>
+                                                        <Col xs='12' className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
                                                             <LazyLoad height={200} once={true}>
-                                                                <img alt={pokemonName} src={`http://www.pokestadium.com/sprites/xy/${pokeEvName.toLowerCase()}.gif`} />
+                                                                <Link to id={pokeEvName.toLowerCase()} to={`/pokemon-list/national/pokemon-page/${pokeEvName.toLowerCase()}`} onClick={(event) => {
+                                                                    getPokemonInfo(event.currentTarget.id);
+                                                                }}>
+                                                                    <img alt={pokeEvName} src={`http://www.pokestadium.com/sprites/xy/${pokeEvName.toLowerCase()}.gif`} />
+                                                                </Link>
+                                                                
                                                             </LazyLoad>
-                                                        </div>
+                                                        </Col>
                                                         {evolutionMethodName.length > 1 && evolutionMethodName[key] !== '' &&
                                                             <Col xs='12' className='text-center'>
                                                                 <p>Method: {string.startCase(`${evolutionMethodName[key]}`)}</p>
-                                                                <p>Requirement: {evolutionMethod[key]}</p>
+                                                                <div>Requirement:
+                                                                    {evolutionMethod[key].map((methodSpecifics) =>
+                                                                    methodSpecifics.map((methodSpecifics, key) => {
+                                                                        if (typeof methodSpecifics === 'object') {
+                                                                            return <p className='small' key={key}>{string.startCase(methodSpecifics.name)}</p>
+                                                                        } else {
+                                                                            return <p className='small' key={key}>{string.startCase(methodSpecifics)}</p>
+                                                                        }
+                                                                    }))}
+                                                                </div>
                                                             </Col>
                                                         }
                                                     </Row>

@@ -21,16 +21,16 @@ class PokePage extends PureComponent {
             modal: false,
             evolutionChain: [],
             activeTab: '1',
+            buttonAction: false
         }
     }
 
-    /*componentDidMount() {
-        if (this.props.pokemonInfo.length === 0) {
-            this.props.getPokemon(props.match.params.pokemon);
+    componentDidMount() {
+        const props = this.props;
+        if (props.pokemonInfo.length === 0) {
+            this.props.getPokemon(this.props.match.params.pokemon);
         }
-        this.props.getPokemonEvolutionChain(this.props[1].evolution_chain);
-    }*/
-
+    }
 
     toggle = (tab) => {
         if (this.state.activeTab !== tab) {
@@ -40,21 +40,20 @@ class PokePage extends PureComponent {
 
     render() {
         const props = this.props;
+
         if (props.pokemonInfo.length === 0) {
-            props.getPokemon(props.match.params.pokemon);
             return (
                 <Loading></Loading>
             )
         } else {
-            const { auth, profilePokemonTeam, profilePokemonFavorites } = this.props;
+            const { auth } = this.props;
             const { moves, stats } = props.pokemonInfo[0][0];
             const { genera, names, flavor_text_entries, evolution_chain } = props.pokemonInfo[0][1];
             const { generation } = this.state
             var string = require('lodash/string')
             let pokemon = require('pokemon');
             let pokemonName = pokemon.getName(props.pokemonInfo[0][0].id)
-            const foundPokemonTeam = profilePokemonTeam.find(pokemon => pokemon === pokemonName);
-            const foundPokemonFavorites = profilePokemonFavorites.find(pokemon => pokemon === pokemonName);
+
             var descriptions = new Set();
             var uniqueNames = new Set();
             var generations = []
@@ -70,6 +69,17 @@ class PokePage extends PureComponent {
                 nameItem.language.name !== "en" && nameItem.name !== pokemonName &&
                     uniqueNames.add(nameItem.name);
             })
+
+            if (auth.uid) {
+                var { profilePokemonTeam, profilePokemonFavorites } = this.props;
+                console.log(profilePokemonTeam);
+                console.log(profilePokemonFavorites);
+                var foundPokemonTeam = profilePokemonTeam.find(pokemon => pokemon === pokemonName);
+                console.log(foundPokemonTeam)
+                var foundPokemonFavorites = profilePokemonFavorites.find(pokemon => pokemon === pokemonName);
+                console.log(foundPokemonFavorites)
+            }
+
 
             /*
             var settings = {
@@ -87,7 +97,6 @@ class PokePage extends PureComponent {
 
             return (
                 <Row className="justify-content-center">
-
                     <Col xs='12' className='pb-4'>
                         <Row>
                             <Col xs='12' lg='8'>
@@ -102,23 +111,31 @@ class PokePage extends PureComponent {
                                     <Row className='d-flex justify-content-end'>
                                         {foundPokemonTeam !== undefined ?
                                             (
-                                                <Button color="danger">Remove Pokemon From Favorite Team</Button>
+                                                <Button onClick={() => { 
+                                                    props.removePokemonToTeam(pokemonName);
+                                                }} color="danger">Remove Pokemon From Favorite Team</Button>
                                             ) : profilePokemonTeam.length === 6 ?
                                                 (
                                                     <Button color="warning" disabled>Your Favorite Team is Full</Button>
                                                 ) :
                                                 (
-                                                    <Button color="warning">Add Pokémon to Favorite Team</Button>
+                                                    <Button onClick={() => { 
+                                                        props.addPokemonToTeam(pokemonName);
+                                                    }} color="warning">Add Pokémon to Favorite Team</Button>
                                                 )}
                                         {foundPokemonFavorites !== undefined ?
                                             (
-                                                <Button color="danger">Remove Pokemon From Favorites</Button>
+                                                <Button onClick={() => {
+                                                    props.removeFavoritePokemon(pokemonName);
+                                                }} color="danger">Remove Pokemon From Favorites</Button>
                                             ) : profilePokemonFavorites.length === 50 ?
                                                 (
                                                     <Button color="warning" disabled>Your Favorites are Full</Button>
                                                 ) :
                                                 (
-                                                    <Button color="warning">Add Pokémon to Favorites</Button>
+                                                    <Button onClick={() => {
+                                                        props.addFavoritePokemon(pokemonName);
+                                                    }} color="warning">Add Pokémon to Favorites</Button>
                                                 )}
                                     </Row>
                                 </Col>
@@ -168,7 +185,7 @@ class PokePage extends PureComponent {
                         </Row>
                     </Col>
 
-                    <PokemonPageEvChain EvChainURL={evolution_chain.url} />
+                    <PokemonPageEvChain getPokemonInfo={props.getPokemon} EvChainURL={evolution_chain.url} />
 
                     <Col xs='12' className='py-4 py-lg-5'>
                         <h3 className='col-12 text-center'>Moves</h3>
@@ -257,7 +274,7 @@ const mapStateToProps = (state) => {
     return {
         auth: state.firebase.auth,
         profilePokemonTeam: state.firebase.profile.favoriteTeam,
-        profilePokemonFavorites: state.firebase.profile.favoritePokemons
+        profilePokemonFavorites: state.firebase.profile.favoritePokemon
     }
 }
 
