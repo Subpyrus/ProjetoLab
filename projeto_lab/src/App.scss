@@ -35,6 +35,23 @@ body {
     }
   }
 
+  .active-avatar{
+    border: solid 1px $blue;
+    border-radius: .25rem;
+  }
+
+  .avatar{
+    border: solid 1px $yellow;
+    border-radius: .25rem;
+  }
+
+  span.error{
+    color: #ec4643;
+    display: block;
+    font-size: 14px;
+    padding-top: 10px;
+  }
+
   h1 {
     color: $yellow;
     font-weight: bold;

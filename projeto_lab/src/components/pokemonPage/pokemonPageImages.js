@@ -9,16 +9,16 @@ const pokemonPageImages = (props) => {
     <Col xs='12' className='py-4 py-lg-5'>
       <Row className='justify-content-center text-center'>
         <Col xs='6' lg='3' className='py-3'>
-          <img alt={5} src={`http://www.pokestadium.com/sprites/xy/${name}.gif`} />
+          <img alt={name} src={`http://www.pokestadium.com/sprites/xy/${name}.gif`} />
         </Col>
         <Col xs='6' lg='3' className='py-3'>
-          <img alt={5} src={`http://www.pokestadium.com/sprites/xy/back/${name}.gif`} />
+          <img alt={name} src={`http://www.pokestadium.com/sprites/xy/back/${name}.gif`} />
         </Col>
         <Col xs='6' lg='3' className='py-3'>
-          <img alt={5} src={`http://www.pokestadium.com/sprites/xy/shiny/${name}.gif`} />
+          <img alt={name} src={`http://www.pokestadium.com/sprites/xy/shiny/${name}.gif`} />
         </Col>
         <Col xs='6' lg='3' className='py-3'>
-          <img alt={5} src={`http://www.pokestadium.com/sprites/xy/shiny/back/${name}.gif`} />
+          <img alt={name} src={`http://www.pokestadium.com/sprites/xy/shiny/back/${name}.gif`} />
         </Col>
       </Row>
     </Col>

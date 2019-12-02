@@ -19,9 +19,7 @@ class PokePage extends PureComponent {
         this.state = {
             generation: 'platinum',
             modal: false,
-            evolutionChain: [],
             activeTab: '1',
-            buttonAction: false
         }
     }
 
@@ -43,7 +41,7 @@ class PokePage extends PureComponent {
 
         if (props.pokemonInfo.length === 0) {
             return (
-                <Loading></Loading>
+                <Loading height={'68vh'} />
             )
         } else {
             const { auth } = this.props;
@@ -53,31 +51,17 @@ class PokePage extends PureComponent {
             var string = require('lodash/string')
             let pokemon = require('pokemon');
             let pokemonName = pokemon.getName(props.pokemonInfo[0][0].id)
-
-            var descriptions = new Set();
             var uniqueNames = new Set();
-            var generations = []
 
-            flavor_text_entries.map((descriptionItem) => {
-                if (descriptionItem.language.name === 'en') {
-                    descriptions.add(descriptionItem.flavor_text);
-                    generations.push(descriptionItem.version.name)
-                }
-            })
-
-            names.map((nameItem) => {
-                nameItem.language.name !== "en" && nameItem.name !== pokemonName &&
-                    uniqueNames.add(nameItem.name);
-            })
+            for (let item of names) {
+                item.language.name !== "en" && item.name !== pokemonName &&
+                    uniqueNames.add(item.name);
+            }
 
             if (auth.uid) {
                 var { profilePokemonTeam, profilePokemonFavorites } = this.props;
-                console.log(profilePokemonTeam);
-                console.log(profilePokemonFavorites);
-                var foundPokemonTeam = profilePokemonTeam.find(pokemon => pokemon === pokemonName);
-                console.log(foundPokemonTeam)
-                var foundPokemonFavorites = profilePokemonFavorites.find(pokemon => pokemon === pokemonName);
-                console.log(foundPokemonFavorites)
+                var foundPokemonTeam = profilePokemonTeam.find(pokemon => pokemon.name === pokemonName);
+                var foundPokemonFavorites = profilePokemonFavorites.find(pokemon => pokemon.name === pokemonName);
             }
 
 
@@ -111,7 +95,7 @@ class PokePage extends PureComponent {
                                     <Row className='d-flex justify-content-end'>
                                         {foundPokemonTeam !== undefined ?
                                             (
-                                                <Button onClick={() => { 
+                                                <Button onClick={() => {
                                                     props.removePokemonToTeam(pokemonName);
                                                 }} color="danger">Remove Pokemon From Favorite Team</Button>
                                             ) : profilePokemonTeam.length === 6 ?
@@ -119,8 +103,8 @@ class PokePage extends PureComponent {
                                                     <Button color="warning" disabled>Your Favorite Team is Full</Button>
                                                 ) :
                                                 (
-                                                    <Button onClick={() => { 
-                                                        props.addPokemonToTeam(pokemonName);
+                                                    <Button onClick={() => {
+                                                        props.addPokemonToTeam([pokemonName, stats]);
                                                     }} color="warning">Add Pokémon to Favorite Team</Button>
                                                 )}
                                         {foundPokemonFavorites !== undefined ?
@@ -134,7 +118,7 @@ class PokePage extends PureComponent {
                                                 ) :
                                                 (
                                                     <Button onClick={() => {
-                                                        props.addFavoritePokemon(pokemonName);
+                                                        props.addFavoritePokemon([pokemonName, stats]);
                                                     }} color="warning">Add Pokémon to Favorites</Button>
                                                 )}
                                     </Row>
@@ -156,23 +140,21 @@ class PokePage extends PureComponent {
 
                     <PokemonPageGenericInfo info={props.pokemonInfo} />
 
-                    <Col xs='12' className='py-4 py-lg-5'>
+                    <Col xs='12' md='6' className='py-4 py-lg-5'>
                         <Row>
                             <h3 className='col-12 text-center'>Description</h3>
                             <Col xs='12'>
-                                {Array.from(descriptions).map((descriptionItem, key) =>
-                                    <p key={key}>{descriptionItem}{generations[key]}{generations[key += 1]}</p>
-                                )}
+                                <p>{flavor_text_entries[1].flavor_text}</p>
                             </Col>
                         </Row>
                     </Col>
 
-                    <Col xs='12' className='py-4 py-lg-5'>
+                    <Col xs='12' md='6' className='py-4 py-lg-5'>
                         <Row>
                             <h3 className='col-12 text-center'>Stats</h3>
                             {stats.map((statsItem, key) =>
                                 <Col key={key} xs='6' sm='6' md='4' lg='2'>
-                                    <Row className='d-flex text-center justify-content-center'>
+                                    <Row className='d-flex text-center align-items-center justify-content-center'>
                                         <Col xs='12'>
                                             <h5>{string.startCase(statsItem.stat.name)}</h5>
                                         </Col>
@@ -274,7 +256,7 @@ const mapStateToProps = (state) => {
     return {
         auth: state.firebase.auth,
         profilePokemonTeam: state.firebase.profile.favoriteTeam,
-        profilePokemonFavorites: state.firebase.profile.favoritePokemon
+        profilePokemonFavorites: state.firebase.profile.favoritePokemons
     }
 }
 
