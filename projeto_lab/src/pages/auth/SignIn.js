@@ -25,7 +25,6 @@ class SignIn extends Component {
     }
 
     render() {
-        console.log(this.props)
         const { authError, auth } = this.props
 
         if(auth.uid){

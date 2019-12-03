@@ -381,24 +381,94 @@ let Books = {
                 ]
         },
         {
-            question: 'Who is the fourth Gym Leader of the Kanto Region?',
-            correct_answer: 'Erika',
+            question: 'The nature mechanic was introduced in which generation?',
+            correct_answer: 'Generation 3 (Ruby/Saphire/Emerald)',
             incorrect_answers:
                 [
-                    'Gardenia',
-                    'Koga',
-                    'Skyla'
+                    'Generation 2 (Gold/Silver/Crystal)',
+                    'Generation 4 (Diamond/Pearl/Platinum)',
+                    'Generation 1 (Red/Blue/Yellow)'
                 ]
         },
         {
-            question: 'Which character is featured in the 10th episode of Pokémon Generations?',
-            correct_answer: 'Cheryl',
+            question: 'Which of these pokémon does not belongs to the Mineral Egg Group?',
+            correct_answer: 'Gastrodon',
             incorrect_answers:
                 [
-                    'Barry',
-                    'Marley',
-                    'Riley'
+                    'Onix',
+                    'Bronzor',
+                    'Garbodor'
                 ]
-        }
+        },
+        {
+            question: 'Charizard belongs in which Egg Group?',
+            correct_answer: 'Dragon Egg Group',
+            incorrect_answers:
+                [
+                    'Flying Egg Group',
+                    'Field Egg Group',
+                    'Monster Egg Group'
+                ]
+        },
+        {
+            question: 'The Lonely nature lowers which stat?',
+            correct_answer: 'Defense',
+            incorrect_answers:
+                [
+                    'Special Defense',
+                    'Special Attack',
+                    'Speed'
+                ]
+        },
+        {
+            question: 'The Sassy nature raises which stat?',
+            correct_answer: 'Special Defense',
+            incorrect_answers:
+                [
+                    'Special Attack',
+                    'Attack',
+                    'Defense'
+                ]
+        },
+        {
+            question: 'The Timid nature is known to...',
+            correct_answer: 'Raise Speed and lower Attack',
+            incorrect_answers:
+                [
+                    'Raise Speed and lower Special Attack',
+                    'Raise Attack and lower Speed',
+                    'Raise Attack and lower Special Attack'
+                ]
+        },
+        {
+            question: 'Which of these move does not possess a possibility to confuse the enemy?',
+            correct_answer: 'Fake Out',
+            incorrect_answers:
+                [
+                    'Water Pulse',
+                    'Confusion',
+                    'Dizzy Punch'
+                ]
+        },
+        {
+            question: 'What move possess the HM07?',
+            correct_answer: 'Dive',
+            incorrect_answers:
+                [
+                    'Surf',
+                    'Strength',
+                    'Rock Smash'
+                ]
+        },
+        {
+            question: 'What move possess the HM06?',
+            correct_answer: 'Rock Smash',
+            incorrect_answers:
+                [
+                    'Waterfall',
+                    'Cut',
+                    'Flash'
+                ]
+        },
     ]
 }

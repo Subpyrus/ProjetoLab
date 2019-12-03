@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { Col, ListGroup, ListGroupItem } from 'reactstrap';
 import { Redirect, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { firestoreConnect } from 'react-redux-firebase';
 
 class PokemonTrainers extends Component {
     constructor(props) {
@@ -33,7 +30,9 @@ class PokemonTrainers extends Component {
                         <ListGroup>
                             {users.map((item, key) =>
                                 <ListGroupItem key={key}>
-                                    <Link to={`/pokemon-trainers/profile/${item.username}`}>{item.username}</Link>
+                                    <Link to={`/pokemon-trainers/profile/${item.username}`}>
+                                        {item.username}
+                                    </Link>
                                 </ListGroupItem>
                             )}
                         </ListGroup>
@@ -44,14 +43,4 @@ class PokemonTrainers extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        auth: state.firebase.auth,
-        users: state.firestore.ordered.users
-    }
-}
-
-export default compose(
-    connect(mapStateToProps),
-    firestoreConnect([{ collection: 'users' }])
-)(PokemonTrainers)
+export default PokemonTrainers;

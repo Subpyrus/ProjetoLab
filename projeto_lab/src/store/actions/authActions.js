@@ -33,10 +33,12 @@ export const signUp = (newUser) => {
             newUser.password
         ).then((response) => {
             return firestore.collection('users').doc(response.user.uid).set({
+                createdAt: new Date(),
                 email: newUser.email,
                 username: newUser.username,
                 gender: newUser.gender,
                 avatar: newUser.avatar,
+                friends: [],
                 favoriteTeam: [],
                 favoritePokemons: [],
                 quizzRecord: []

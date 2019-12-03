@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Row, Col, Button, Form, FormGroup, Input, CustomInput, Label } from 'reactstrap';
+import { Row, Col, Button, Form, FormGroup, Input, CustomInput } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signUp } from '../../store/actions/authActions';
 
 const validEmailRegex = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-
 
 class SignUp extends Component {
     constructor(props) {
@@ -109,7 +108,7 @@ class SignUp extends Component {
     }
 
     render() {
-        const { errors, gender, avatar } = this.state;
+        const { errors, gender } = this.state;
         const { auth, authError } = this.props
 
         const femaleAvatars = ['acetrainerf', 'lady', 'lass', 'idol', 'battlegirl', 'cowgirl']

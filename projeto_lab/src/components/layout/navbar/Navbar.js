@@ -16,8 +16,6 @@ const NavBar = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
     const { auth, username } = props;
-    console.log(auth);
-    console.log(username);
     const links = auth.uid ? (<SignedInLinks username={username} />) : (<SignedOutLinks />);
 
     return (
@@ -56,7 +54,6 @@ const NavBar = (props) => {
 }
 
 const mapStateToProps = (state) => {
-    console.log(state)
     return {
         auth: state.firebase.auth,
         username: state.firebase.profile.username

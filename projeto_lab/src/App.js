@@ -47,31 +47,18 @@ class App extends PureComponent {
       getPokemon: [],
       getPokemonVideo: [],
       getPokedex: [],
-      getTrivia: ['zxzxzxz'],
       loading: false,
       error: null,
-      inputValue: 'asdsaasdasdd',
+      inputValue: '',
     }
   }
 
   componentDidMount() {
-    /*const LocalStorageState = localStorage.getItem('state');
-    console.log(LocalStorageState);
-    if (LocalStorageState !== null || LocalStorageState !== undefined) {
-      const parsedState = JSON.parse(LocalStorageState)
-      this.setState({ ...parsedState });
-    }
-
-    const hello = () => {
-      console.log(this.state)
-      localStorage.clear();
-      localStorage.setItem("state", JSON.stringify(this.state))
-    }
-
-    console.log(hello())
-
-    window.addEventListener("beforeunload", hello)*/
     this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   handleSearchChange = (event) => {
@@ -147,37 +134,11 @@ class App extends PureComponent {
       .catch(handleError);
   }
 
-  getTriviaQuestions = async (difficulty) => {
-    this.setState({ loading: true });
-    var url = `https://opentdb.com/api.php?amount=10&category=15&difficulty=${difficulty}&type=multiple`
-
-    const handleResponse = (response) => {
-      return response.json().then(function (json) {
-        return response.ok ? json : Promise.reject(json);
-      });
-    }
-
-    const handleData = (data) => {
-      this.setState({ getTrivia: data, loading: false });
-      console.log(data);
-    }
-
-    const handleError = (error) => {
-      this.setState({ error: error, loading: false });
-      console.error(error);
-    }
-
-    await fetch(url).then(handleResponse)
-      .then(handleData)
-      .catch(handleError);
-  }
-
   render() {
     const { error, loading } = this.state;
     const { profile } = this.props;
 
     console.log(this.state)
-    console.log(profile)
 
     if (!profile) {
       return (
@@ -202,7 +163,7 @@ class App extends PureComponent {
                     <AnimatedRoute>
                       {location => (
                         <Switch location={location}>
-                          <Route exact path="/" render={(props) => (<Home {...props} />)} />
+                          <Route exact path="/" render={(props) => (<Home {...props} isLoggedIn={this.props.isLoggedIn} notifications={this.props.notifications} />)} />
                           <Route exact path="/pokemon-list/:generation" render=
                             {(props) => (
                               <PokemonList {...props} functionClick={this.handleSearchClick} functionEnter={this.handleSearchEnter} functionChange={this.handleSearchChange} getPokemon={this.getInfoPokemonPage} pokedexInfo={this.state.getPokedex} getPokedex={this.getPokedex} getPokemonVideo={this.getPokemonVideo} />
@@ -216,36 +177,47 @@ class App extends PureComponent {
                               <PokemonPage {...props} pokemonInfo={this.state.getPokemon} getPokemon={this.getInfoPokemonPage} />
                             )} />
                           <Route exact path="/pokemon-trivia" render={(props) => (<Trivia {...props} />)} />
-                          <Route exact path="/pokemon-trainers" render={(props) => <PokemonTrainers />} />
-                          <Route exact path="/pokemon-trainers/profile/:username" render={(props) => <Profile />} />
-                          <Route exact path="/profile/:username" render={(props) => <Profile {...props} />} />
+                          <Route exact path="/pokemon-trainers" render={(props) =>
+                            <PokemonTrainers auth={this.props.auth} users={this.props.users} />}
+                          />
+                          <Route exact path="/pokemon-trainers/profile/:username" render={(props) =>
+                            <Profile {...props} profileContent={this.props.profileContent} />}
+                          />
+                          <Route exact path="/profile/:username" render={(props) =>
+                            <Profile {...props} profileContent={this.props.profileContent} />}
+                          />
                           <Route exact path="/sign-up" render={(props) => <SignUp />} />
                           <Route exact path="/sign-in" render={(props) => <SignIn />} />
                           <Route render={(props) => <NoMatch />} />
                         </Switch>
                       )}
                     </AnimatedRoute>
-                  )
-              }
+                  )}
             </Layout>
             <Footer />
           </AbsoluteWrapper>
         </Router>
       );
     }
-
-
   }
 }
 
 const mapStateToProps = (state) => {
-  console.log(state)
   return {
+    isLoggedIn: state.auth.isLoggedIn,
     auth: state.firebase.auth,
     authError: state.authError,
     profile: state.firebase.profile.isLoaded,
+    profileContent: state.firebase.profile,
+    users: state.firestore.ordered.users,
     notifications: state.firestore.ordered.notifications
   }
 }
 
-export default compose(connect(mapStateToProps), firestoreConnect([{ collection: 'notifications' }]))(App)
+export default compose(
+  connect(mapStateToProps),
+  firestoreConnect([
+    { collection: 'notifications', limit: 5, orderedBy: ['time', 'desc'] },
+    { collection: 'users' }
+  ])
+)(App)

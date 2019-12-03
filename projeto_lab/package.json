@@ -5,6 +5,7 @@
   "dependencies": {
     "firebase": "^7.4.0",
     "lodash": "^4.17.15",
+    "moment": "^2.24.0",
     "node-sass": "^4.13.0",
     "pokemon": "^2.0.1",
     "react": "^16.12.0",

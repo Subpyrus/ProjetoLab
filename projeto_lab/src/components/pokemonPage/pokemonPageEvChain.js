@@ -68,16 +68,16 @@ export default class pokemonPageEvChain extends Component {
                 }
             }
         )
-        arrayMethod.push([...checkConditions])
+        arrayMethod.push([...checkConditions]);
     }
 
     render() {
-        var string = require('lodash/string')
+        var url;
+        var string = require('lodash/string');
         const { loading, error, evolutionChain } = this.state;
         const { getPokemonInfo } = this.props
         let evolutionMethod = [''];
         let evolutionMethodName = [''];
-        var url
         let pokemon = require('pokemon');
         let pokemonName = [];
 
@@ -112,45 +112,40 @@ export default class pokemonPageEvChain extends Component {
             <Row className='py-4 py-lg-5'>
                 <h3 className='col-12 text-center'>Evolution Chain</h3>
                 <Col xs='12'>
-                    {error ? (<Error error={this.state.error} />) : (
-                        <>
-                            {loading ? (<Loading height='100vh' />) : (
-                                <Row className='d-flex align-items-center justify-content-center text-center'>
-                                    {pokemonName.map((pokeEvName, key) =>
-                                        <Col xs='12' sm='4' key={key}>
-                                            <Row>
-                                                <Col xs='12' className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
-                                                    <LazyLoad height={200} once={true}>
-                                                        <Link to id={pokeEvName.toLowerCase()} to={`/pokemon-list/national/pokemon-page/${pokeEvName.toLowerCase()}`} onClick={(event) => {
-                                                            getPokemonInfo(event.currentTarget.id);
-                                                        }}>
-                                                            <img alt={pokeEvName} src={`http://www.pokestadium.com/sprites/xy/${pokeEvName.toLowerCase()}.gif`} />
-                                                        </Link>
-
-                                                    </LazyLoad>
-                                                </Col>
-                                                {evolutionMethodName.length > 1 && evolutionMethodName[key] !== '' &&
-                                                    <Col xs='12' className='text-center'>
-                                                        <p>Method: {string.startCase(`${evolutionMethodName[key]}`)}</p>
-                                                        <div>Requirement:
+                    {error ? (<Error error={this.state.error} />) : loading ? (<Loading height='100vh' />) :
+                        (
+                            <Row className='d-flex align-items-center justify-content-center text-center'>
+                                {pokemonName.map((pokeEvName, key) =>
+                                    <Col xs='12' sm='4' key={key}>
+                                        <Row>
+                                            <Col xs='12' className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
+                                                <LazyLoad height={200} once={true}>
+                                                    <Link to id={pokeEvName.toLowerCase()} to={`/pokemon-list/national/pokemon-page/${pokeEvName.toLowerCase()}`} onClick={(event) => {
+                                                        getPokemonInfo(event.currentTarget.id);
+                                                    }}>
+                                                        <img alt={pokeEvName} src={`http://www.pokestadium.com/sprites/xy/${pokeEvName.toLowerCase()}.gif`} />
+                                                    </Link>
+                                                </LazyLoad>
+                                            </Col>
+                                            {evolutionMethodName.length > 1 && evolutionMethodName[key] !== '' &&
+                                                <Col xs='12' className='text-center'>
+                                                    <p>Method: {string.startCase(`${evolutionMethodName[key]}`)}</p>
+                                                    <div>Requirement:
                                                                     {evolutionMethod[key].map((methodSpecifics) =>
-                                                            methodSpecifics.map((methodSpecifics, key) => {
-                                                                if (typeof methodSpecifics === 'object') {
-                                                                    return <p className='small' key={key}>{string.startCase(methodSpecifics.name)}</p>
-                                                                } else {
-                                                                    return <p className='small' key={key}>{string.startCase(methodSpecifics)}</p>
-                                                                }
-                                                            }))}
-                                                        </div>
-                                                    </Col>
-                                                }
-                                            </Row>
-                                        </Col>
-                                    )}
-                                </Row>
-                            )}
-                        </>
-                    )}
+                                                        methodSpecifics.map((methodSpecifics, key) => {
+                                                            if (typeof methodSpecifics === 'object') {
+                                                                return <p className='small' key={key}>{string.startCase(methodSpecifics.name)}</p>
+                                                            } else {
+                                                                return <p className='small' key={key}>{string.startCase(methodSpecifics)}</p>
+                                                            }
+                                                        }))}
+                                                    </div>
+                                                </Col>}
+                                        </Row>
+                                    </Col>)}
+                            </Row>
+                        )
+                    }
                 </Col>
             </Row >
         )
