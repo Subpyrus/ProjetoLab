@@ -123,10 +123,6 @@ class PokemonList extends Component {
     }
 
     fetchMoreData = () => {
-        if (this.state.items.length >= this.state.allPokedexEntries.length) {
-            this.setState({ hasMore: false });
-            return;
-          }
         var { allPokedexEntries, currentIndex, resultsPerPage } = this.state;
         currentIndex = currentIndex += 1;
         const indexOfLastResults = currentIndex * resultsPerPage;
