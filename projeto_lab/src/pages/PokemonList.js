@@ -197,14 +197,14 @@ class PokemonList extends Component {
                 <div className="row">
                     <h1 className='col-4'>PokéList</h1>
                     <SearchPokemon className='col-3' inputChange={this.handleSearchChange} />
-                    <Dropdown className='col-1 offset-1' isOpen={this.state.dropdownOpen2} toggle={this.toggle2}>
+                    <Dropdown className='col-1 offset-3' isOpen={this.state.dropdownOpen2} toggle={this.toggle2}>
                         <DropdownToggle caret>{this.state.typeSearch}</DropdownToggle>
                         <DropdownMenu>
                             <DropdownItem onClick={this.changeTypeSearch}>Region</DropdownItem>
                             <DropdownItem onClick={this.changeTypeSearch}>Type</DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
-                    <Dropdown className='col-1 offset-1' isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+                    <Dropdown className='col-1' isOpen={this.state.dropdownOpen} toggle={this.toggle}>
                         <DropdownToggle caret>{this.state.dropDownValue}</DropdownToggle>
                         <DropdownMenu>
                         {this.state.dropDownList.map((pokedexItem, key) => 
