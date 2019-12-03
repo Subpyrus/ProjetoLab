@@ -5,6 +5,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import SearchPokemon from '../components/pokemonList/SearchPokemon';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import LazyLoad from 'react-lazyload';
+import Loading  from '../components/layout/Loading';
 
 class PokemonList extends Component {
     constructor(props) {
@@ -17,11 +18,12 @@ class PokemonList extends Component {
             dropdownOpen: false,
             dropdownOpen2: false,
             dropDownValue: 'national',
+            typeSearch: 'Region',
             getPokedexNames: [],
-            hasMore: this.props.pokedexInfo.length
+            hasMore: this.props.pokedexInfo.length,
+            dropDownList: []
         }
     }
-
     componentDidMount() {
         this._isMounted = true;
         const { allPokedexEntries, currentIndex, resultsPerPage } = this.state;
@@ -34,33 +36,23 @@ class PokemonList extends Component {
             items: currentResults
         });
     }
-
-    componentDidUpdate() {
-        console.log("ola")
-    }
-
     getPokedexNames = () => {
         var url = `https://pokeapi.co/api/v2/pokedex/`
-    
         const handleResponse = (response) => {
           return response.json().then(function (json) {
             return response.ok ? json : Promise.reject(json);
           });
         }
-
         const handleData = (data) => {
           this.setState({Regions:data.results,dropDownList:data.results}) ;
         }
-
         const handleError = (error) => {
           this.setState({ error: error });
         }
-
         fetch(url).then(handleResponse)
           .then(handleData)
           .catch(handleError);
     }
-
     getTypes = () => {
         var url = `https://pokeapi.co/api/v2/type/`
     
@@ -123,25 +115,13 @@ class PokemonList extends Component {
                 const currentResults = data.pokemon.slice(indexOfFirstResults, indexOfLastResults);
                 this.setState({items:currentResults,currentIndex:1, allPokedexEntries: data.pokemon , dropDownValue:param, dropDownList:this.state.Types})
             }
-        
             const handleError = (error) => {
                 this.setState({ error: error });
             }
             fetch(url).then(handleResponse).then(handleData).catch(handleError);
         }
     }
-    componentDidUpdate() {
-        //console.log(this.state.allPokedexEntries)
-    }
-    componentWillUnmount() {
-        if (this.el) {
-            this.el.removeEventListener('scroll', e => {
-              this.throttledOnScrollListener(e);
-            });
-            this.el.removeEventListener('scroll', this.throttledOnScrollListener);
-          }
-        this._isMounted = false
-    }
+
     fetchMoreData = () => {
         if (this.state.items.length >= this.state.allPokedexEntries.length) {
             this.setState({ hasMore: false });
@@ -171,14 +151,12 @@ class PokemonList extends Component {
         });
     }
 
-
-
     changeValue = (e) => {
         this.getPokedex(e.currentTarget.textContent,this.state.typeSearch)
     }
     changeTypeSearch = (e) => {
         if(e.currentTarget.textContent === 'Region') {
-            this.getPokedex('nacional','Region')
+            this.getPokedex('national','Region')
             this.setState({typeSearch: 'Region', dropDownList: this.state.Regions, dropDownValue: 'national'})
         }else if(e.currentTarget.textContent == 'Type') {
             this.getPokedex('normal','Type')
@@ -186,9 +164,6 @@ class PokemonList extends Component {
         }
     }
 
-    
-    
-    
     //Search
     handleSearchChange = (event) => {
         if(event.target.value != "") {
@@ -250,7 +225,7 @@ class PokemonList extends Component {
                 >
                     {this.state.items.map((pokedexItem, key) => {
                         const pokemon = require('pokemon');
-                        if(this.state.typeSearch == "Region") {
+                        if(this.state.typeSearch == "Region" && pokedexItem.pokemon_species != undefined) {
                             var url = pokedexItem.pokemon_species.url.trim();
                             var pokemonName = pokemon.getName(url.split('/')[6]);
                             return (
@@ -267,23 +242,32 @@ class PokemonList extends Component {
                                     </Link>
                                 </Col>
                             )
-                        }else if(this.state.typeSearch == "Type") {
-                            var url = pokedexItem.pokemon.url.trim();
-                            var pokemonName = pokemon.getName(url.split('/')[6]);
-                            return (
-                                <Col key={key} className='py-md-2' xs='12' sm='6' md='4' lg='2'>
-                                    <Link to={`/pokemon-list/${props.match.params.generation}/pokemon-page/${pokemonName.toLocaleLowerCase()}`} onClick={props.getPokemon}>
-                                        <div>
-                                            <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
-                                                <LazyLoad height={200} once={true}>
-                                                    <img alt={pokemonName} src={`https://img.pokemondb.net/sprites/x-y/normal/${pokemonName.toLowerCase()}.png`} />
-                                                </LazyLoad>
-                                            </div>
-                                            <h5 className='text-center'>{pokemonName}</h5>
-                                        </div>
-                                    </Link>
-                                </Col>
-                            )
+                        }else {
+                            if(this.state.typeSearch == "Type" && pokedexItem.pokemon != undefined) {
+                                var url = pokedexItem.pokemon.url.trim();
+                                var pokeNumber = url.split('/')[6];
+                                if(pokeNumber < 10000) {
+                                    var pokemonName = pokemon.getName(pokeNumber);
+                                    return (
+                                        <Col key={key} className='py-md-2' xs='12' sm='6' md='4' lg='2'>
+                                            <Link to={`/pokemon-list/${props.match.params.generation}/pokemon-page/${pokemonName.toLocaleLowerCase()}`} onClick={props.getPokemon}>
+                                                <div>
+                                                    <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
+                                                        <LazyLoad height={200} once={true}>
+                                                            <img alt={pokemonName} src={`https://img.pokemondb.net/sprites/x-y/normal/${pokemonName.toLowerCase()}.png`} />
+                                                        </LazyLoad>
+                                                    </div>
+                                                    <h5 className='text-center'>{pokemonName}</h5>
+                                                </div>
+                                            </Link>
+                                        </Col>
+                                    )
+                                }else {
+                                    return(<></>)
+                                }
+                            }else {
+                                return(<></>)      
+                            }
                         }
                     })}
                 </InfiniteScroll>            
