@@ -1,28 +1,12 @@
 import React from 'react'
-import { Row, InputGroup, Input, InputGroupButtonDropdown } from 'reactstrap';
+import { Row } from 'reactstrap';
 
-const Trivia = (props) => {
+const PokemonTrivia = (props) => {
     return (
-        <Row className='justify-content-center mt-4'>
-            <InputGroup size="sm">
-                <InputGroupButtonDropdown addonType="append" isOpen={dropdownOpen} toggle={toggleDropDown}>
-                    <DropdownToggle caret>
-                        Dificuldade
-                    </DropdownToggle>
-                    <DropdownMenu>
-                        <DropdownItem>Easy</DropdownItem>
-                        <DropdownItem>Medium</DropdownItem>
-                        <DropdownItem>Hard</DropdownItem>
-                    </DropdownMenu>
-                </InputGroupButtonDropdown>
-                <Input
-                    type="button"
-                    value="Generate Trivia"
-                    onClick={props.inputClick}
-                />
-            </InputGroup>
-        </Row >
+        <>
+            <h1 className='col-12'>PokéTrivia</h1>
+        </>
     )
 }
 
-export default Trivia;
+export default PokemonTrivia;

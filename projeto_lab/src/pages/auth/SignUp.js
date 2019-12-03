@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Button, Form, FormGroup, Input } from 'reactstrap';
+import { Row, Col, Button, Form, FormGroup, Input, CustomInput, Label } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signUp } from '../../store/actions/authActions';
@@ -14,12 +14,16 @@ class SignUp extends Component {
             email: '',
             username: '',
             password: '',
+            gender: 'female',
+            avatar: '',
             reEnterPassword: '',
             errors: {
                 username: '',
                 email: '',
                 password: '',
-                reEnterPassword: ''
+                reEnterPassword: '',
+                gender: '',
+                avatar: 'You must choose an avatar before you continue!'
             }
         }
     }
@@ -38,7 +42,9 @@ class SignUp extends Component {
             let informationForUser = {
                 email: this.state.email,
                 username: this.state.username,
-                password: this.state.password
+                password: this.state.password,
+                gender: this.state.gender,
+                avatar: this.state.avatar
             }
             this.props.signUp(informationForUser)
         }
@@ -88,46 +94,98 @@ class SignUp extends Component {
         })
     }
 
+    handleAvatarChange = (event) => {
+        let errors = this.state.errors;
+        errors.avatar = '';
+        this.setState({
+            avatar: event
+        })
+    }
+
+    handleGenderChange = (event) => {
+        this.setState({
+            gender: event.target.id
+        });
+    }
+
     render() {
-        const { errors } = this.state;
+        const { errors, gender, avatar } = this.state;
         const { auth, authError } = this.props
+
+        const femaleAvatars = ['acetrainerf', 'lady', 'lass', 'idol', 'battlegirl', 'cowgirl']
+        const maleAvatars = ['acetrainerm', 'richboy', 'ruinmaniac', 'blackbelt', 'roughneck', 'bugcatcher']
 
         if (auth.uid) {
             return <Redirect to='/' />
         }
-
-        console.log(errors)
-
         return (
             <Row className='d-flex justify-content-center align-items-center'>
-                <Col xs='10' lg='8' className='text-center'>
+                <Col xs='12' md='10' className='text-center'>
                     <h1>Sign Up</h1>
                     <Form onSubmit={this.handleSubmit}>
+                        <Row>
+                            <FormGroup className='col-12 col-md-6'>
+                                <Input onChange={this.handleChange} type="email" name="email" id="email" placeholder="email address" />
+                                {errors.email.length > 0 &&
+                                    <span className='error'>{errors.email}</span>}
+                            </FormGroup>
+                            <FormGroup className='col-12 col-md-6'>
+                                <Input onChange={this.handleChange} type="text" name="username" id="username" placeholder="username" />
+                                {errors.username.length > 0 &&
+                                    <span className='error'>{errors.username}</span>}
+                            </FormGroup>
+                            <FormGroup className='col-12 col-md-6'>
+                                <Input onChange={this.handleChange} type="password" name="password" id="password" placeholder="password" />
+                                {errors.password.length > 0 &&
+                                    <span className='error'>{errors.password}</span>}
+                            </FormGroup>
+                            <FormGroup className='col-12 col-md-6'>
+                                <Input onChange={this.handleChange} type="password" name="reEnterPassword" id="reEnterPassword" placeholder="re-enter password" />
+                                {errors.reEnterPassword.length > 0 &&
+                                    <span className='error'>{errors.reEnterPassword}</span>}
+                            </FormGroup>
+                        </Row>
                         <FormGroup>
-                            <Input onChange={this.handleChange} type="email" name="email" id="email" placeholder="email address" />
-                            {errors.email.length > 0 &&
-                                <span className='error'>{errors.email}</span>}
+                            <h3 className='pt-2'>Gender</h3>
+                            <div>
+                                <CustomInput checked={this.state.gender === "female"}
+                                    onChange={this.handleGenderChange} type="radio" id="female" name="female" label="Female" inline />
+                                <CustomInput checked={this.state.gender === "male"}
+                                    onChange={this.handleGenderChange} type="radio" id="male" name="male" label="Male" inline />
+                            </div>
                         </FormGroup>
-                        <FormGroup>
-                            <Input onChange={this.handleChange} type="text" name="username" id="username" placeholder="username" />
-                            {errors.username.length > 0 &&
-                                <span className='error'>{errors.username}</span>}
+                        <FormGroup className='pb-3'>
+                            <h4>Avatar</h4>
+                            {gender === 'female' ? (
+                                <Row>
+                                    {femaleAvatars.map((item, key) =>
+                                        <Col className='p-1' sm='4' md='2' key={key} onClick={() => { this.handleAvatarChange(item) }}>
+                                            <img alt={item} className={this.state.avatar === item ? 'active-avatar pb-2' : 'avatar pb-2'} src={`https://www.serebii.net/diamondpearl/avatar/${item}.png`} />
+
+                                        </Col>
+
+                                    )}
+                                    <span className='error'>{errors.avatar}</span>
+                                </Row>
+                            ) : (
+                                    <Row>
+                                        {maleAvatars.map((item, key) =>
+                                            <Col className='p-1' sm='4' md='2' key={key} onClick={() => { this.handleAvatarChange(item) }}>
+                                                <img alt={item} className={this.state.avatar === item ? 'active-avatar pb-2' : 'avatar pb-2'} src={`https://www.serebii.net/diamondpearl/avatar/${item}.png`} />
+
+                                            </Col>
+
+                                        )}
+                                        <span className='error'>{errors.avatar}</span>
+                                    </Row>
+                                )}
                         </FormGroup>
-                        <FormGroup>
-                            <Input onChange={this.handleChange} type="password" name="password" id="password" placeholder="password" />
-                            {errors.password.length > 0 &&
-                                <span className='error'>{errors.password}</span>}
-                        </FormGroup>
-                        <FormGroup>
-                            <Input onChange={this.handleChange} type="password" name="reEnterPassword" id="reEnterPassword" placeholder="re-enter password" />
-                            {errors.reEnterPassword.length > 0 &&
-                                <span className='error'>{errors.reEnterPassword}</span>}
-                        </FormGroup>
+
                         <Button block>Submit</Button>
                         {authError ? <p>{authError}</p> : null}
                     </Form>
                 </Col>
-            </Row>
+            </Row >
         )
     }
 }

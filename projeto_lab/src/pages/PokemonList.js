@@ -17,10 +17,8 @@ class PokemonList extends Component {
             dropdownOpen: false,
             dropdownOpen2: false,
             dropDownValue: 'national',
-            typeSearch: 'Region',
-            Regions: [],
-            Types: [],
-            dropDownList: []
+            getPokedexNames: [],
+            hasMore: this.props.pokedexInfo.length
         }
     }
 
@@ -132,8 +130,23 @@ class PokemonList extends Component {
             fetch(url).then(handleResponse).then(handleData).catch(handleError);
         }
     }
-
+    componentDidUpdate() {
+        //console.log(this.state.allPokedexEntries)
+    }
+    componentWillUnmount() {
+        if (this.el) {
+            this.el.removeEventListener('scroll', e => {
+              this.throttledOnScrollListener(e);
+            });
+            this.el.removeEventListener('scroll', this.throttledOnScrollListener);
+          }
+        this._isMounted = false
+    }
     fetchMoreData = () => {
+        if (this.state.items.length >= this.state.allPokedexEntries.length) {
+            this.setState({ hasMore: false });
+            return;
+          }
         var { allPokedexEntries, currentIndex, resultsPerPage } = this.state;
         currentIndex = currentIndex += 1;
         const indexOfLastResults = currentIndex * resultsPerPage;
@@ -233,7 +246,7 @@ class PokemonList extends Component {
                     className='row col-12'
                     dataLength={this.state.items.length}
                     next={this.fetchMoreData}
-                    hasMore={true}
+                    hasMore={this.state.hasMore}
                 >
                     {this.state.items.map((pokedexItem, key) => {
                         const pokemon = require('pokemon');

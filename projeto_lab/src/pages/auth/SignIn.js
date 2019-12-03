@@ -38,10 +38,10 @@ class SignIn extends Component {
                     <h1>Sign In</h1>
                     <Form onSubmit={this.handleSubmit}>
                         <FormGroup>
-                            <Input onChange={this.handleChange} type="email" name="email" id="email" placeholder="with a placeholder" />
+                            <Input onChange={this.handleChange} type="email" name="email" id="email" placeholder="type your e-mail" />
                         </FormGroup>
                         <FormGroup>
-                            <Input onChange={this.handleChange} type="password" name="password" id="password" placeholder="password placeholder" />
+                            <Input onChange={this.handleChange} type="password" name="password" id="password" placeholder="type your password" />
                         </FormGroup>
                         <FormGroup>
                             <Button block>Submit</Button>

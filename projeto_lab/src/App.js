@@ -9,7 +9,8 @@ import Footer from "./components/layout/Footer";
 import Home from './pages/Home'
 import PokemonList from "./pages/PokemonList";
 import PokemonPage from "./pages/PokemonPage";
-import Trivia from "./pages/Trivia";
+import PokemonTrainers from './pages/PokemonTrainers';
+import Trivia from "./pages/PokemonTrivia";
 import Profile from './pages/Profile';
 import SignUp from './pages/auth/SignUp';
 import SignIn from './pages/auth/SignIn';
@@ -18,7 +19,8 @@ import Error from './components/layout/Error';
 import NoMatch from './components/layout/NoMatch';
 import ScrollToTop from './components/layout/ScrollToTop';
 import { connect } from 'react-redux';
-
+import { firestoreConnect } from 'react-redux-firebase';
+import { compose } from 'redux';
 
 const AnimatedRoute = ({ children }) => (
   <Route
@@ -35,8 +37,6 @@ const AnimatedRoute = ({ children }) => (
     )}
   />
 )
-
-
 
 class App extends PureComponent {
   _isMounted = false;
@@ -174,18 +174,17 @@ class App extends PureComponent {
 
   render() {
     const { error, loading } = this.state;
-    const { auth, profile } = this.props;
+    const { profile } = this.props;
 
     console.log(this.state)
-    console.log(loading)
+    console.log(profile)
 
-    if (!auth.isLoaded && !profile.isLoaded) {
+    if (!profile) {
       return (
         <Router>
-          <ScrollToTop />
           <AbsoluteWrapper>
             <Layout>
-              <Loading />
+              <Loading height={'100vh'} />
             </Layout>
           </AbsoluteWrapper>
         </Router>
@@ -197,11 +196,9 @@ class App extends PureComponent {
           <NavigationBar getPokedex={this.getPokedex} />
           <AbsoluteWrapper>
             <Layout>
-              {loading ? (
-                <Loading />
-              ) : error ? (
-                <Error>{error.message}</Error>
-              ) : (
+              {loading ? (<Loading height={'68vh'} />) :
+                error ? (<Error error={this.state.error} />) :
+                  (
                     <AnimatedRoute>
                       {location => (
                         <Switch location={location}>
@@ -218,10 +215,9 @@ class App extends PureComponent {
                             {(props) => (
                               <PokemonPage {...props} pokemonInfo={this.state.getPokemon} getPokemon={this.getInfoPokemonPage} />
                             )} />
-                          <Route exact path="/trivia" render=
-                            {(props) => (
-                              <Trivia {...props} functionTrivia={this.getTriviaQuestions} triviaQuestion={this.state.getTrivia} />
-                            )} />
+                          <Route exact path="/pokemon-trivia" render={(props) => (<Trivia {...props} />)} />
+                          <Route exact path="/pokemon-trainers" render={(props) => <PokemonTrainers />} />
+                          <Route exact path="/pokemon-trainers/profile/:username" render={(props) => <Profile />} />
                           <Route exact path="/profile/:username" render={(props) => <Profile {...props} />} />
                           <Route exact path="/sign-up" render={(props) => <SignUp />} />
                           <Route exact path="/sign-in" render={(props) => <SignIn />} />
@@ -238,6 +234,7 @@ class App extends PureComponent {
       );
     }
 
+
   }
 }
 
@@ -245,8 +242,10 @@ const mapStateToProps = (state) => {
   console.log(state)
   return {
     auth: state.firebase.auth,
-    profile: state.firebase.profile.isLoaded
+    authError: state.authError,
+    profile: state.firebase.profile.isLoaded,
+    notifications: state.firestore.ordered.notifications
   }
 }
 
-export default connect(mapStateToProps)(App)
+export default compose(connect(mapStateToProps), firestoreConnect([{ collection: 'notifications' }]))(App)

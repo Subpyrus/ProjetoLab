@@ -11,7 +11,8 @@ import { store, persistor } from './store/store'
 
 const rrfConfig = {
     userProfile: "users",
-    useFirestoreForProfile: true
+    useFirestoreForProfile: true,
+    attachAuthIsReady: true,
 };
 
 const rrfProps = {

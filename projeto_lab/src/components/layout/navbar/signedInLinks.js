@@ -15,8 +15,8 @@ const signedInLinks = (props) => {
             </NavItem>
             <NavItem>
                 <NavLink
-                    activeClassName="navbar__link-active" className="navbar__link" to="/sign-up">
-                    PokeTrainers
+                    activeClassName="navbar__link-active" className="navbar__link" to="/pokemon-trainers">
+                    PokéTrainers
                 </NavLink>
             </NavItem>
             <NavItem>
@@ -24,7 +24,7 @@ const signedInLinks = (props) => {
                     activeClassName="navbar__link-active" className="navbar__link" to={{
                         pathname: `/profile/${props.username}`
                     }}>
-                    Profile
+                    {props.username}
                 </NavLink>
             </NavItem>
             <NavItem>

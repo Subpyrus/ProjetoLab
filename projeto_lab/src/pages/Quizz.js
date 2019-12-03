@@ -241,46 +241,164 @@ let Books = {
                 ]
         },
         {
-            question: 'Who is the leader of Team Galatic?',
-            correct_answer: 'Cyrus',
+            question: 'What Legendary Pokémon can you find in Cerulean Cave?',
+            correct_answer: 'Mewtow',
             incorrect_answers:
                 [
-                    'Giovanni',
-                    'N',
-                    'Saturn'
+                    'Mew',
+                    'Articuno',
+                    'Lugia'
                 ]
         },
         {
-            question: 'Who is the leader of Team Galatic?',
-            correct_answer: 'Cyrus',
+            question: 'Who is the champion of the Unova League in Black2/White2?',
+            correct_answer: 'Iris',
             incorrect_answers:
                 [
-                    'Giovanni',
+                    'Adler',
                     'N',
-                    'Saturn'
+                    'Caitlin'
                 ]
         },
         {
-            question: 'Who is the leader of Team Galatic?',
-            correct_answer: 'Cyrus',
+            question: 'Who is the signature Pokémon of Cynthia?',
+            correct_answer: 'Garchomp',
             incorrect_answers:
                 [
-                    'Giovanni',
-                    'N',
-                    'Saturn'
+                    'Roserade',
+                    'Lucario',
+                    'Milotic'
                 ]
         },
         {
-            question: 'Who is the leader of Team Galatic?',
-            correct_answer: 'Cyrus',
+            question: 'What do you need to evolve Gligar?',
+            correct_answer: 'Night + Razor Fang',
             incorrect_answers:
                 [
-                    'Giovanni',
-                    'N',
-                    'Saturn'
+                    'Day + Razor Fang',
+                    'Hapiness + Razor Fang',
+                    'Night + Razor Claw'
+                ]
+        },
+        {
+            question: 'Who is the Pokémon that possesses the Battle Bond ability?',
+            correct_answer: 'Ash-Greninja',
+            incorrect_answers:
+                [
+                    'Greninja',
+                    'Pikachu',
+                    'Charizard'
+                ]
+        },
+        {
+            question: 'Which of the Pokémon have the Intimidate Ability?',
+            correct_answer: 'Stantler',
+            incorrect_answers:
+                [
+                    'Miltank',
+                    'Snorlax',
+                    'Tyranitar'
+                ]
+        },
+        {
+            question: 'Which of the Pokémon do not have the Intimidate Ability?',
+            correct_answer: 'Metagross',
+            incorrect_answers:
+                [
+                    'Mightyena',
+                    'Staraptor',
+                    'Arbok'
+                ]
+        },
+        {
+            question: "What is Paul's, Ash's Rival iconic Pokémon?",
+            correct_answer: 'Electivire',
+            incorrect_answers:
+                [
+                    'Drapion',
+                    'Infernape',
+                    'Torterra'
+                ]
+        },
+        {
+            question: 'How much HP does a Energy Root restore?',
+            correct_answer: '200',
+            incorrect_answers:
+                [
+                    '175',
+                    '150',
+                    '250'
+                ]
+        },
+        {
+            question: 'What is the effect of a Chesto Berry?',
+            correct_answer: 'Recover a Pokémon from sleep',
+            incorrect_answers:
+                [
+                    'Recover a Pokémon from poison',
+                    'Recover a Pokémon from confusion',
+                    'Defrost a Pokémon'
+                ]
+        },
+        {
+            question: 'What is the effect of a Focus Sash?',
+            correct_answer: 'When this item is held by a Pokémon, if the Pokémon has full HP but is hit by an attack that would knock it out, this item prevents the holder from fainting and keeps it at 1HP. The Focus Sash disappears after use',
+            incorrect_answers:
+                [
+                    'This item, when attached to a Pokémon, causes it to be immune from Ground-type attacks and entry hazards',
+                    'When this item is held, if the holder uses an attack on the opponent which is Super Effective, its power is increased by 20%',
+                    'When this item is held by a Pokémon, if the holder moves last, its accuracy is increased by 20%'
+                ]
+        },
+        {
+            question: 'What is the effect of a Carbos?',
+            correct_answer: "Increases the Effort Values for the Pokémon's Speed stat up by 10EVs until the Pokémon hits 100EVs in this stat. Increases the Pokémon's Happiness",
+            incorrect_answers:
+                [
+                    "Increases the Effort Values for the Pokémon's Special Attack stat up by 10EVs until the Pokémon hits 100EVs in this stat. Increases the Pokémon's Happiness",
+                    "Increases the Effort Values for the Pokémon's Attack stat up by 10EVs until the Pokémon hits 100EVs in this stat. Increases the Pokémon's Happiness",
+                    "Increases the Effort Values for the Pokémon's Special Defence stat up by 10EVs until the Pokémon hits 100EVs in this stat. Increases the Pokémon's Happiness"
+                ]
+        },
+        {
+            question: 'Dubious Disc is required to evolve which Pokémon?',
+            correct_answer: 'Recover a Pokémon from sleep',
+            incorrect_answers:
+                [
+                    'Porygon',
+                    'Porygon-2',
+                    'Dusclops'
+                ]
+        },
+        {
+            question: 'Who is the seventh Gym Leader of the Sinnoh Region?',
+            correct_answer: 'Candice',
+            incorrect_answers:
+                [
+                    'Byron',
+                    'Volkner',
+                    'Gardenia'
+                ]
+        },
+        {
+            question: 'Who is the fourth Gym Leader of the Kanto Region?',
+            correct_answer: 'Erika',
+            incorrect_answers:
+                [
+                    'Gardenia',
+                    'Koga',
+                    'Skyla'
+                ]
+        },
+        {
+            question: 'Which character is featured in the 10th episode of Pokémon Generations?',
+            correct_answer: 'Cheryl',
+            incorrect_answers:
+                [
+                    'Barry',
+                    'Marley',
+                    'Riley'
                 ]
         }
-
-
     ]
 }
