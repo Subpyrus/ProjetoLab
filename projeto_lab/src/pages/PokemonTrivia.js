@@ -11,6 +11,7 @@ class PokemonTrivia extends Component{
             ready: false,
             arrayRandom: [],
             correctAnswers: 0,
+            incorrectAnswers: 0,
             ObjectQuestion: [],
             question: "",
             answers: [],
@@ -25,7 +26,7 @@ class PokemonTrivia extends Component{
         var arrayInput = [];
         for(let i = 0; i < 4; i++) {
             if(arrayInput.length === 0) {
-                arrayInput.push(Math.floor(Math.random() * 4))
+                arrayInput.push(Math.floor((Math.random() * 4)) - 1)
             }else {
                 do{
                     repeated = 0;
@@ -50,11 +51,15 @@ class PokemonTrivia extends Component{
     }
 
     correctAnswer = () => {
-        console.log("correct")
+        var changeQuestion = this.state.questionNumber + 1;
+        var correct = this.state.correctAnswers + 1;
+        this.setState({randomized:false, correctAnswers: correct, ObjectQuestion: this.state.questions[this.state.arrayRandom[changeQuestion]], questionNumber: changeQuestion})
     }
 
     incorrectAnswer = () => {
-        console.log("incorrect")
+        var changeQuestion = this.state.questionNumber + 1;
+        var incorrect = this.state.incorrectAnswers + 1;
+        this.setState({randomized:false, incorrectAnswers: incorrect, ObjectQuestion: this.state.questions[this.state.arrayRandom[changeQuestion]], questionNumber: changeQuestion})
     }
 
     start = () => {
@@ -80,7 +85,6 @@ class PokemonTrivia extends Component{
     }
 
     render() {
-        console.log(this.state)
         if(this.state.ready === false) {
             return(<>
                 <h1>Welcome to the PokéTrivia</h1>
@@ -89,36 +93,43 @@ class PokemonTrivia extends Component{
                 <button onClick={this.start}>Start</button>
             </>)
         }else {
-            if(this.state.randomized === false) {
+            if((this.state.randomized === false) && (this.state.ObjectQuestion != undefined)) {
                 this.randomizeAnswers()
                 return(<></>)
             }else {
-                return(<>
-                    <h1>Question {this.state.questionNumber + 1}</h1>
-                    <h2>{this.state.question}</h2>
-                    {this.state.answers.map((index, key) => {
-                        if(index.res === 'correct') {
-                            return(
-                                <>
-                                    <button onClick={this.correctAnswer}>{index.answer}</button>
-                                </>
-                            )
-                        }else {
-                            return(
-                                <>
-                                    <button onClick={this.incorrectAnswer}>{index.answer}</button>
-                                </>
-                            )
-                        }
-                        
-                    })}
-                </>)
+                if((this.state.randomized === true) && (this.state.ObjectQuestion != undefined)) {
+                    return(<>
+                        <h1>Question {this.state.questionNumber + 1}</h1>
+                        <h2>{this.state.question}</h2>
+                        {this.state.answers.map((index, key) => {
+                            if(index.res === 'correct') {
+                                return(
+                                    <>
+                                        <button onClick={this.correctAnswer}>{index.answer}</button>
+                                        <br></br>
+                                    </>
+                                )
+                            }else {
+                                return(
+                                    <>
+                                        <button onClick={this.incorrectAnswer}>{index.answer}</button>
+                                        <br></br>
+                                    </>
+                                )
+                            }
+                            
+                        })}
+                    </>)
+                }else {
+                    return(<>
+                        <h1>PokéTrivia Results</h1>
+                        <p>Correct Answers: {this.state.correctAnswers}</p>
+                        <p>Incorrect Answers: {this.state.incorrectAnswers}</p>
+                    </>)
+                }
             }
-            
         }
-        
     }
-
 }
 
 export default PokemonTrivia;
