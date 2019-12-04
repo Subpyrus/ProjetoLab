@@ -1,5 +1,4 @@
-let Books = {
-    trivia: [
+    export let trivia = [
         {
             question: 'In the Pokémon series, which type is Sudowoodo, the Imitation Pokémon?',
             correct_answer: 'Rock',
@@ -471,4 +470,3 @@ let Books = {
                 ]
         },
     ]
-}
