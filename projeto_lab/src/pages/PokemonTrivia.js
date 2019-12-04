@@ -127,6 +127,8 @@ class PokemonTrivia extends Component {
                         <h1>PokéTrivia Results</h1>
                         <p>Correct Answers: {this.state.correctAnswers}</p>
                         <p>Incorrect Answers: {this.state.incorrectAnswers}</p>
+                        <button onClick={() => this.props.addTriviaResult({correctAnswers:this.state.correctAnswers,wrongAnswers:this.state.incorrectAnswers})}>Save Results</button>
+                        <button onClick={() => window.location.reload()}>Play Again</button>
                     </>)
                 }
             }
