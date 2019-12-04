@@ -1,12 +1,12 @@
 export const signIn = (credentials) => {
     return (dispatch, getState, { getFirebase }) => {
-        console.log(credentials);
         const firebase = getFirebase();
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION).then(() => 
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => 
         firebase.auth().signInWithEmailAndPassword(
             credentials.email,
             credentials.password
-        )).then(() => {
+        )).then((response) => {
+            console.log(response)
             dispatch({ type: 'LOGIN_SUCCESS' })
         }).catch((error) => {
             dispatch({ type: 'LOGIN_ERROR', error })
@@ -27,7 +27,6 @@ export const signUp = (newUser) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
         const firebase = getFirebase();
         const firestore = getFirestore();
-
         firebase.auth().createUserWithEmailAndPassword(
             newUser.email,
             newUser.password
@@ -48,6 +47,5 @@ export const signUp = (newUser) => {
         }).catch(() => {
             dispatch({ type: 'SIGNUP-ERROR' })
         })
-
     }
 } 

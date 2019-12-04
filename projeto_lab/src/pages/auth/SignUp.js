@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col, Button, Form, FormGroup, Input, CustomInput } from 'reactstrap';
+import Select from 'react-select';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signUp } from '../../store/actions/authActions';
@@ -13,7 +14,8 @@ class SignUp extends Component {
             email: '',
             username: '',
             password: '',
-            gender: 'female',
+            selectedGender: 'select your gender',
+            selectedNationality: 'select your nationality',
             avatar: '',
             reEnterPassword: '',
             errors: {
@@ -42,7 +44,7 @@ class SignUp extends Component {
                 email: this.state.email,
                 username: this.state.username,
                 password: this.state.password,
-                gender: this.state.gender,
+                gender: this.state.selectedGender,
                 avatar: this.state.avatar
             }
             this.props.signUp(informationForUser)
@@ -102,15 +104,27 @@ class SignUp extends Component {
     }
 
     handleGenderChange = (event) => {
-        this.setState({
-            gender: event.target.id
-        });
+        this.setState({ selectGender: event.value });
+    }
+
+    handleNationalityChange = (event) => {
+        this.setState({ selectNationality: event.value });
     }
 
     render() {
         const { errors, gender } = this.state;
         const { auth, authError } = this.props
 
+        console.log(this.state)
+
+        const optionsGender = [
+            { value: 'Female', label: 'Female' },
+            { value: 'Male', label: 'Male' }
+        ];
+        const optionsNationality = [
+            { value: 'Female', label: 'Female' },
+            { value: 'Male', label: 'Male' }
+        ];
         const femaleAvatars = ['acetrainerf', 'lady', 'lass', 'idol', 'battlegirl', 'cowgirl']
         const maleAvatars = ['acetrainerm', 'richboy', 'ruinmaniac', 'blackbelt', 'roughneck', 'bugcatcher']
 
@@ -143,17 +157,22 @@ class SignUp extends Component {
                                 {errors.reEnterPassword.length > 0 &&
                                     <span className='error'>{errors.reEnterPassword}</span>}
                             </FormGroup>
+                            <FormGroup className='col-12 col-md-6'>
+                                <Select
+                                    value={this.selectedGender}
+                                    onChange={this.handleGenderChange}
+                                    options={optionsGender}
+                                />
+                            </FormGroup>
+                            <FormGroup className='col-12 col-md-6'>
+                                <Select
+                                    value={this.selectedNationality}
+                                    onChange={this.handleNationalityChange}
+                                    options={optionsNationality}
+                                />
+                            </FormGroup>
                         </Row>
-                        <FormGroup>
-                            <h3 className='pt-2'>Gender</h3>
-                            <div>
-                                <CustomInput checked={this.state.gender === "female"}
-                                    onChange={this.handleGenderChange} type="radio" id="female" name="female" label="Female" inline />
-                                <CustomInput checked={this.state.gender === "male"}
-                                    onChange={this.handleGenderChange} type="radio" id="male" name="male" label="Male" inline />
-                            </div>
-                        </FormGroup>
-                        <FormGroup className='pb-3'>
+                        <FormGroup className='py-3'>
                             <h4>Avatar</h4>
                             {gender === 'female' ? (
                                 <Row>
@@ -175,12 +194,13 @@ class SignUp extends Component {
                                             </Col>
 
                                         )}
-                                        <span className='error'>{errors.avatar}</span>
+                                        <span className='error text-center'>{errors.avatar}</span>
                                     </Row>
                                 )}
                         </FormGroup>
-
-                        <Button block>Submit</Button>
+                        <Col xs='8' md='6' className='mx-auto'>
+                            <Button color='warning' block>Submit</Button>
+                        </Col>
                         {authError ? <p>{authError}</p> : null}
                     </Form>
                 </Col>

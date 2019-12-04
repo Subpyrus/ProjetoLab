@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Row, Col, Button } from 'reactstrap';
 import { personalityFavorites, personalityTeams } from '../components/profile/personalityContent';
-import LazyLoad from 'react-lazyload';
-
+import { Redirect } from 'react-router-dom';
+import OwnProfile from '../components/profile/ownProfile';
+import OthersProfile from '../components/profile/othersProfile';
 class Profile extends Component {
 
     getStats = (array) => {
@@ -98,102 +98,30 @@ class Profile extends Component {
     }
 
     getStatsMessages = (array, type) => {
-        let arrayStats = this.getStats(array[0].stats);
-        this.getStatsValues(array, array[0].stats, arrayStats[0]);
-        arrayStats[0].sort((a, b) => a.value[0] - b.value[0]);
-        return this.compareStats(arrayStats[0], type);
+        if (!array[0]) {
+            return [];
+        } else {
+            let arrayStats = this.getStats(array[0].stats);
+            this.getStatsValues(array, array[0].stats, arrayStats[0]);
+            arrayStats[0].sort((a, b) => a.value[0] - b.value[0]);
+            return this.compareStats(arrayStats[0], type);
+        }
     }
 
     render() {
-        const { username, avatar, gender, favoritePokemons, favoriteTeam, quizzRecord, email } = this.props.profileContent
+        const { isLoggedIn, location, profileContent } = this.props
 
-        return (
-            <Row>
-                <Col xs='12' md='6' className='text-center text-md-left'>
-                    <h1>{username}</h1>
-                </Col>
-                <Col xs='6' className='text-center p-2 p-md-0 text-md-right'>
-                    <Button color='warning'>Edit Profile</Button>
-                </Col>
-                <Col xs='12' md='6' lg='4'>
-                    <h3 className='col-12'>Generic Info</h3>
-                    <img alt={avatar} src={`https://www.serebii.net/diamondpearl/avatar/${avatar}.png`} />
-                    <p>Gender:{gender}</p>
-                    <p>Favorite Generation:</p>
-                    <p>Favorite Game:</p>
-                    <p>Favorite City:</p>
-                    <p>Favorite Pokéball:</p>
-                </Col>
-                <Col xs='12' md='6' lg='4'>
-                    <h3>Personality</h3>
-                    <h4>Personality wise</h4>
-                    {
-                        favoritePokemons.length !== 0 ? (
-                            <p>{this.getStatsMessages(favoritePokemons, 'favorites')}</p>
-                        ) : (
-                                <p>You still don't have any pokémons on your Favorites to calculate this result! Search for your favorites in the PokéList!</p>
-                            )
-                    }
-                    <h4>Battle wise</h4>
-                    {
-                        favoriteTeam.length !== 0 ? (
-                            <p>{this.getStatsMessages(favoriteTeam, 'team')}</p>
-                        ) : (
-                                <p>You still don't have any pokémons on your Favorite Team to calculate this result! Search for your team members in the PokéList!</p>
-                            )
-                    }
-                </Col>
-                <Col xs='12' md='6' lg='4'>
-                    <h3>Inner Pokémon IQ</h3>
-                    {quizzRecord.length === 0 ? (
-                        <p>Quizz</p>
-                    ) : (
-                            <>
-                                {quizzRecord.map((item, key) =>
-                                    <Col key={key}>
-
-                                    </Col>
-                                )}
-                            </>
-                        )
-                    }
-                </Col>
-                <Col xs='12' md='6'>
-                    <h3>Favorite Pokémons</h3>
-                    {favoritePokemons.length === 0 ? (
-                        <p>You still haven't added any Favorite Pokémons to your list yet! Search for your favorites in the PokéList!</p>
-                    ) : (
-                            <Row className='justify-content-center'>
-                                {favoritePokemons.map((item, key) =>
-                                    <Col className='d-flex align-items-center justify-content-center' xs='6' md='4' key={key}>
-                                        <LazyLoad height={200} once={true}>
-                                            <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
-                                        </LazyLoad>
-                                    </Col>
-                                )}
-                            </Row>
-                        )
-                    }
-                </Col>
-                <Col xs='12' md='6'>
-                    <h3>Favorite Pokémon Team</h3>
-                    {favoriteTeam.length === 0 ? (
-                        <p>You still haven't added any Pokémon to your Favorite Team! Search for your team members in the PokéList!</p>
-                    ) : (
-                            <Row className='justify-content-center'>
-                                {favoriteTeam.map((item, key) =>
-                                    <Col className='d-flex align-items-center justify-content-center' xs='6' md='4' key={key}>
-                                        <LazyLoad height={200} once={true}>
-                                            <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
-                                        </LazyLoad>
-                                    </Col>
-                                )}
-                            </Row>
-                        )}
-                </Col>
-            </Row>
-        )
+        if (!isLoggedIn) {
+            return <Redirect to='/sign-in' />
+        } else if (!location.state) {
+            let { favoritePokemons, favoriteTeam } = this.props.profileContent
+            return <OwnProfile ownProfileContent={profileContent} favoritesResults={this.getStatsMessages(favoritePokemons, 'favorites')} teamResults={this.getStatsMessages(favoriteTeam, 'team')} />
+        } else {
+            let { favoritePokemons, favoriteTeam } = this.props.location.state.user
+            return <OthersProfile othersProfileContent={location.state.user} loggedUserFriends={this.props.profileContent.friends} favoritesResults={this.getStatsMessages(favoritePokemons, 'favorites')} teamResults={this.getStatsMessages(favoriteTeam, 'team')} />
+        }
     }
 }
+
 
 export default Profile;

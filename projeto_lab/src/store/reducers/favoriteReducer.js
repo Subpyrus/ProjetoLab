@@ -5,49 +5,41 @@ const initState = {
 const favoriteReducer = (state = initState, action) => {
     switch (action.type) {
         case 'ADD_FAVORITE_SUCCESS':
-            console.log('Action Success')
             return {
                 ...state,
-                actionError: null
+                actionError: 'Favorite Added'
             }
         case 'ADD_FAVORITE_ERROR':
-            console.log('Action failed')
             return {
                 ...state,
                 actionError: action.error.message
             }
         case 'REMOVE_FAVORITE_SUCCESS':
-            console.log('Action Success')
             return {
                 ...state,
-                actionError: null
+                actionError: 'Favorite Removed'
             }
         case 'REMOVE_FAVORITE_ERROR':
-            console.log('Action failed')
             return {
                 ...state,
                 actionError: action.error.message
             }
         case 'ADD_POKEMON_TEAM_SUCCESS':
-            console.log('Action Success')
             return {
                 ...state,
-                actionError: null
+                actionError: 'Added Pokémon to Team'
             }
         case 'ADD_POKEMON_TEAM_ERROR':
-            console.log('Action failed')
             return {
                 ...state,
                 actionError: action.error.message
             }
         case 'REMOVE_POKEMON_TEAM_SUCCESS':
-            console.log('Action Success')
             return {
                 ...state,
-                actionError: null
+                actionError: 'Removed Pokémon from Team'
             }
         case 'REMOVE_POKEMON_TEAM_ERROR':
-            console.log('Action failed')
             return {
                 ...state,
                 actionError: action.error.message
