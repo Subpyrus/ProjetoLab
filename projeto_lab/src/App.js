@@ -47,6 +47,7 @@ class App extends PureComponent {
       getPokemon: [],
       getPokemonVideo: [],
       getPokedex: [],
+      getCountries: [],
       loading: false,
       error: null,
       inputValue: '',
@@ -134,7 +135,8 @@ class App extends PureComponent {
       .catch(handleError);
   }
 
-  getCountries = () => {
+  getCountriesInfo = () => {
+    this.setState({ loading: true });
     var url = `https://restcountries.eu/rest/v2/all?fields=name`
 
     const handleResponse = (response) => {
@@ -144,7 +146,7 @@ class App extends PureComponent {
     }
 
     const handleData = (data) => {
-      this.setState({ getPokedex: data.pokemon_entries, loading: false });
+      this.setState({ getCountries : data, loading: false });
     }
 
     const handleError = (error) => {
@@ -174,7 +176,7 @@ class App extends PureComponent {
       return (
         <Router>
           <ScrollToTop />
-          <NavigationBar getPokedex={this.getPokedex} />
+          <NavigationBar nationality={this.getCountriesInfo} getPokedex={this.getPokedex} />
           <AbsoluteWrapper>
             <Layout>
               {loading ? (<Loading height={'68vh'} />) :
@@ -206,7 +208,7 @@ class App extends PureComponent {
                           <Route exact path="/profile/:username" render={(props) =>
                             <Profile {...props} profileContent={this.props.profileContent} isLoggedIn={this.props.isLoggedIn} />}
                           />
-                          <Route exact path="/sign-up" render={(props) => <SignUp nationality={this.getCountries} />} />
+                          <Route exact path="/sign-up" render={(props) => <SignUp countriesData={this.state.getCountries} />} />
                           <Route exact path="/sign-in" render={(props) => <SignIn />} />
                           <Route render={(props) => <NoMatch />} />
                         </Switch>

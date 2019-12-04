@@ -15,8 +15,9 @@ import SignedOutLinks from './signedOutLinks';
 const NavBar = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
-    const { auth, username } = props;
-    const links = auth.uid ? (<SignedInLinks username={username} />) : (<SignedOutLinks />);
+    const { auth, username, nationality } = props;
+    console.log(nationality)
+    const links = auth.uid ? (<SignedInLinks username={username} />) : (<SignedOutLinks nationality={nationality} />);
 
     return (
         <div>

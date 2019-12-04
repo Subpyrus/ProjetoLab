@@ -113,18 +113,35 @@ class SignUp extends Component {
 
     render() {
         const { errors, gender } = this.state;
-        const { auth, authError } = this.props
+        const { auth, authError, countriesData } = this.props
 
-        console.log(this.state)
-
+        const optionsNationality = []
         const optionsGender = [
             { value: 'Female', label: 'Female' },
             { value: 'Male', label: 'Male' }
         ];
-        const optionsNationality = [
-            { value: 'Female', label: 'Female' },
-            { value: 'Male', label: 'Male' }
-        ];
+
+        for (let item in countriesData) {
+            optionsNationality.push({ value: item.name, label: item.name })
+        }
+
+        const customStyles = {
+            option: (provided, state) => ({
+                ...provided,
+                color: state.isSelected ? 'red' : 'white',
+                backgroundColor: state.isSelected ? 'yellow' : 'blue',
+                padding: 10,
+            }),
+            singleValue: (provided, state) => {
+                const opacity = state.isDisabled ? 0.5 : 1;
+                const transition = 'opacity 300ms';
+
+                return { ...provided, opacity, transition };
+            }
+        }
+
+        console.log(optionsNationality)
+
         const femaleAvatars = ['acetrainerf', 'lady', 'lass', 'idol', 'battlegirl', 'cowgirl']
         const maleAvatars = ['acetrainerm', 'richboy', 'ruinmaniac', 'blackbelt', 'roughneck', 'bugcatcher']
 
@@ -159,6 +176,7 @@ class SignUp extends Component {
                             </FormGroup>
                             <FormGroup className='col-12 col-md-6'>
                                 <Select
+                                    styles={customStyles}
                                     value={this.selectedGender}
                                     onChange={this.handleGenderChange}
                                     options={optionsGender}
@@ -166,6 +184,7 @@ class SignUp extends Component {
                             </FormGroup>
                             <FormGroup className='col-12 col-md-6'>
                                 <Select
+                                    styles={customStyles}
                                     value={this.selectedNationality}
                                     onChange={this.handleNationalityChange}
                                     options={optionsNationality}
