@@ -134,11 +134,31 @@ class App extends PureComponent {
       .catch(handleError);
   }
 
+  getCountries = () => {
+    var url = `https://restcountries.eu/rest/v2/all?fields=name`
+
+    const handleResponse = (response) => {
+      return response.json().then(function (json) {
+        return response.ok ? json : Promise.reject(json);
+      });
+    }
+
+    const handleData = (data) => {
+      this.setState({ getPokedex: data.pokemon_entries, loading: false });
+    }
+
+    const handleError = (error) => {
+      this.setState({ error: error });
+    }
+
+    fetch(url).then(handleResponse)
+      .then(handleData)
+      .catch(handleError);
+  }
+
   render() {
     const { error, loading } = this.state;
     const { profile } = this.props;
-
-    console.log(this.state)
 
     if (!profile) {
       return (
@@ -163,7 +183,7 @@ class App extends PureComponent {
                     <AnimatedRoute>
                       {location => (
                         <Switch location={location}>
-                          <Route exact path="/" render={(props) => (<Home {...props} isLoggedIn={this.props.isLoggedIn} notifications={this.props.notifications} />)} />
+                          <Route exact path="/" render={(props) => (<Home {...props} />)} />
                           <Route exact path="/pokemon-list/:generation" render=
                             {(props) => (
                               <PokemonList {...props} functionClick={this.handleSearchClick} functionEnter={this.handleSearchEnter} functionChange={this.handleSearchChange} getPokemon={this.getInfoPokemonPage} pokedexInfo={this.state.getPokedex} getPokedex={this.getPokedex} getPokemonVideo={this.getPokemonVideo} />
@@ -178,15 +198,15 @@ class App extends PureComponent {
                             )} />
                           <Route exact path="/pokemon-trivia" render={(props) => (<Trivia {...props} />)} />
                           <Route exact path="/pokemon-trainers" render={(props) =>
-                            <PokemonTrainers auth={this.props.auth} users={this.props.users} />}
+                            <PokemonTrainers auth={this.props.auth} username={this.props.profileContent.username} users={this.props.users} />}
                           />
                           <Route exact path="/pokemon-trainers/profile/:username" render={(props) =>
-                            <Profile {...props} profileContent={this.props.profileContent} />}
+                            <Profile {...props} isLoggedIn={this.props.isLoggedIn} profileContent={this.props.profileContent} />}
                           />
                           <Route exact path="/profile/:username" render={(props) =>
-                            <Profile {...props} profileContent={this.props.profileContent} />}
+                            <Profile {...props} profileContent={this.props.profileContent} isLoggedIn={this.props.isLoggedIn} />}
                           />
-                          <Route exact path="/sign-up" render={(props) => <SignUp />} />
+                          <Route exact path="/sign-up" render={(props) => <SignUp nationality={this.getCountries} />} />
                           <Route exact path="/sign-in" render={(props) => <SignIn />} />
                           <Route render={(props) => <NoMatch />} />
                         </Switch>
@@ -209,15 +229,13 @@ const mapStateToProps = (state) => {
     authError: state.authError,
     profile: state.firebase.profile.isLoaded,
     profileContent: state.firebase.profile,
-    users: state.firestore.ordered.users,
-    notifications: state.firestore.ordered.notifications
+    users: state.firestore.ordered.users
   }
 }
 
 export default compose(
-  connect(mapStateToProps),
   firestoreConnect([
-    { collection: 'notifications', limit: 5, orderedBy: ['time', 'desc'] },
     { collection: 'users' }
-  ])
+  ]),
+  connect(mapStateToProps)
 )(App)

@@ -34,3 +34,4 @@ exports.userJoined = functions.auth.user().onCreate(user => {
         return createNotification(notification)
     })
 })
+
