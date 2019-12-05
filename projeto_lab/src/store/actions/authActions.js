@@ -36,11 +36,16 @@ export const signUp = (newUser) => {
                 email: newUser.email,
                 username: newUser.username,
                 gender: newUser.gender,
+                nationality: newUser.nationality,
                 avatar: newUser.avatar,
                 friends: [],
                 favoriteTeam: [],
                 favoritePokemons: [],
-                quizzRecord: []
+                triviaRecord: {
+                    correctAnswers: 0,
+                    wrongAnswers: 0
+                },
+                addFavoriteAction: null
             })
         }).then(() => {
             dispatch({ type: 'SIGNUP_SUCCESS' })

@@ -6,10 +6,12 @@ import { addFriend, removeFriend } from '../../store/actions/friendsActions';
 import { connect } from 'react-redux';
 
 const othersProfile = (props) => {
-    const { username, avatar, gender, favoritePokemons, favoriteTeam, quizzRecord, email, friends } = props.othersProfileContent
+    const { username, avatar, gender, favoritePokemons, favoriteTeam, triviaRecord, email, friends } = props.othersProfileContent
     const { teamResults } = props.teamResults
     const { favoritesResults } = props.favoritesResults
     const { loggedUserFriends } = props;
+    const triviaResults = props.triviaResults;
+    console.log(triviaResults)
 
     if (friends) {
         var findFriends = loggedUserFriends.find(friend => friend.name === username)
@@ -55,16 +57,13 @@ const othersProfile = (props) => {
             </Col>
             <Col xs='12' md='6' lg='4'>
                 <h3>Inner Pokémon IQ</h3>
-                {quizzRecord &&
-                    quizzRecord.length === 0 ? (
+                {triviaRecord &&
+                    !triviaResults ? (
                         <p>{username} hasn't still played any Pokémon Trivia.</p>
                     ) : (
                         <>
-                            {quizzRecord.map((item, key) =>
-                                <Col key={key}>
-
-                                </Col>
-                            )}
+                          <img />
+                          <p>description</p>  
                         </>
                     )
                 }

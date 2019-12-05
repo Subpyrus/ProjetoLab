@@ -9,6 +9,7 @@ export const addFavoritePokemon = (favorite) => {
         firestore.collection('users').where("uid", "==", uid).get()
             .then(() => {
                 return firestore.collection("users").doc(uid).update({
+                    addFavoriteAction: true,
                     favoritePokemons: profileFavoritePokemons.concat({
                         name: favorite[0],
                         stats: favorite[1]
@@ -34,6 +35,7 @@ export const removeFavoritePokemon = (favorite) => {
                 });
                 console.log(profileFavoritePokemons);
                 return firestore.collection("users").doc(uid).update({
+                    addFavoriteAction: false,
                     favoritePokemons: profileFavoritePokemons
                 });
             }).then(() => {
@@ -52,6 +54,7 @@ export const addPokemonToTeam = (pokemon) => {
         firestore.collection('users').where("uid", "==", uid).get()
             .then(() => {
                 return firestore.collection("users").doc(uid).update({
+                    addFavoriteAction: true,
                     favoriteTeam: profileTeamPokemons.concat({
                         name: pokemon[0],
                         stats: pokemon[1]
@@ -65,7 +68,7 @@ export const addPokemonToTeam = (pokemon) => {
     }
 }
 
-export const removePokemonToTeam = (pokemon) => {
+export const removePokemonFromTeam = (pokemon) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
         const firestore = getFirestore();
         const uid = getState().firebase.auth.uid;
@@ -76,6 +79,7 @@ export const removePokemonToTeam = (pokemon) => {
                     return item.name === pokemon;
                 });
                 return firestore.collection("users").doc(uid).update({
+                    addFavoriteAction: false,
                     favoriteTeam: profileTeamPokemons
                 });
             }).then(() => {

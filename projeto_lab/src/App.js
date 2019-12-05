@@ -137,7 +137,7 @@ class App extends PureComponent {
 
   getCountriesInfo = () => {
     this.setState({ loading: true });
-    var url = `https://restcountries.eu/rest/v2/all?fields=name`
+    var url = `https://restcountries.eu/rest/v2/region/europe?fields=name`
 
     const handleResponse = (response) => {
       return response.json().then(function (json) {

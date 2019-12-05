@@ -108,17 +108,55 @@ class Profile extends Component {
         }
     }
 
+    getTriviaPokemon = (userCorrectAnswers, userWrongAnswers) => {
+        let allAnswers = userCorrectAnswers + userWrongAnswers;
+        console.log(userCorrectAnswers);
+        console.log(userWrongAnswers)
+        let averageCorrectAnswers = userCorrectAnswers / allAnswers;
+        averageCorrectAnswers *= 100;
+
+        console.log(averageCorrectAnswers)
+
+        if (isNaN(averageCorrectAnswers)) {
+            return undefined
+        } else if (averageCorrectAnswers >= 90) {
+            return 'Alakazam'
+        } else if (averageCorrectAnswers >= 75) {
+            return 'Metagross'
+        } else if (averageCorrectAnswers >= 50) {
+            return 'Beheeyem'
+        } else if (averageCorrectAnswers >= 25) {
+            return 'Quagsire'
+        } else if (averageCorrectAnswers >= 10) {
+            return 'Slowpoke'
+        } else {
+            return 'Magikarp'
+        }
+    }
+
     render() {
-        const { isLoggedIn, location, profileContent } = this.props
+        const { isLoggedIn, location, profileContent } = this.props;
 
         if (!isLoggedIn) {
             return <Redirect to='/sign-in' />
         } else if (!location.state) {
-            let { favoritePokemons, favoriteTeam } = this.props.profileContent
-            return <OwnProfile ownProfileContent={profileContent} favoritesResults={this.getStatsMessages(favoritePokemons, 'favorites')} teamResults={this.getStatsMessages(favoriteTeam, 'team')} />
+            let { favoritePokemons, favoriteTeam, triviaRecord } = this.props.profileContent
+            return (
+                <OwnProfile
+                    ownProfileContent={profileContent}
+                    triviaResults={this.getTriviaPokemon(triviaRecord.correctAnswers, triviaRecord.wrongAnswers)}
+                    favoritesResults={this.getStatsMessages(favoritePokemons, 'favorites')}
+                    teamResults={this.getStatsMessages(favoriteTeam, 'team')}
+                />)
         } else {
-            let { favoritePokemons, favoriteTeam } = this.props.location.state.user
-            return <OthersProfile othersProfileContent={location.state.user} loggedUserFriends={this.props.profileContent.friends} favoritesResults={this.getStatsMessages(favoritePokemons, 'favorites')} teamResults={this.getStatsMessages(favoriteTeam, 'team')} />
+            let { favoritePokemons, favoriteTeam, triviaRecord } = this.props.location.state.user
+            return (
+                <OthersProfile
+                    othersProfileContent={location.state.user}
+                    triviaResults={this.getTriviaPokemon(triviaRecord.correctAnswers, triviaRecord.wrongAnswers)} loggedUserFriends={this.props.profileContent.friends}
+                    favoritesResults={this.getStatsMessages(favoritePokemons, 'favorites')}
+                    teamResults={this.getStatsMessages(favoriteTeam, 'team')}
+                />)
         }
     }
 }

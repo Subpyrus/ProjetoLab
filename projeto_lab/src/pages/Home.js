@@ -2,12 +2,19 @@ import React from 'react';
 import { Row, Col } from 'reactstrap';
 import moment from 'moment';
 import Loading from '../components/layout/Loading';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 
 const Home = (props) => {
-    const { auth, notifications } = props
+
+    var array = require('lodash/array')
+    let { auth, notifications, profileContent } = props
+    var recentFriends = array.takeRight(profileContent.friends, 5);
+
+    notifications = array.takeRight(notifications, 5)
+    console.log(array.takeRight(notifications, 5))
 
     if (!auth.uid) {
         return (
@@ -33,28 +40,48 @@ const Home = (props) => {
                         <Col xs='12' md='7' className='p-0'>
                             <h3 className='col-12 col-md-8'>All Users Activity</h3>
                             <Col xs='12' md='8'>
-                                {notifications.map((item, key) =>
-                                    <div key={key}>
-                                        <p>{item.content}</p>
-                                        <p>{item.user}</p>
-                                        <p>{moment(item.time.toDate()).fromNow()}</p>
-                                    </div>
-                                )}
+                                {notifications.map((item, key) => {
+                                    if (item.user !== profileContent.username) {
+                                        return (
+                                            <div key={key}>
+                                                <p>{item.content}</p>
+                                                <p>{item.user}</p>
+                                                <p>{moment(item.time.toDate()).fromNow()}</p>
+                                            </div>
+                                        )
+                                    }
+                                })}
                             </Col>
                         </Col>
                         <Col xs='12' md='5' className='p-0'>
                             <h3 className='col-12'>Your Recent Activity</h3>
                             <Col xs='12'>
-
+                                {notifications.map((item, key) => {
+                                    if (item.user === profileContent.username) {
+                                        return (
+                                            <div key={key}>
+                                                <p>{item.content}</p>
+                                                <p>{item.user}</p>
+                                                <p>{moment(item.time.toDate()).fromNow()}</p>
+                                            </div>
+                                        )
+                                    }
+                                })}
                             </Col>
-                            <h3 className='col-12'>Friends</h3>
+                            <h3 className='col-12'>Recent Friends</h3>
                             <Col xs='12'>
-
+                                {!recentFriends ? (
+                                    <p>You don't have any friends in your list, check out the <Link to='/pokemon-trainers'>PokéTrainers</Link> to add fellow Pokémon Trainers.</p>) :
+                                    (recentFriends.map((item, key) =>
+                                        <Link key={key} to={`pokemon-trainers/profile/${item.name}`}>
+                                            <p>{item.name}</p>
+                                            <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} />
+                                        </Link>
+                                    ))}
                             </Col>
                         </Col>
-                    </Row>
-                ) : (
-                        <Loading height='68vh' />)}
+                    </Row>) : (<Loading height='68vh' />)
+                }
             </Col >
         )
     }
@@ -63,13 +90,14 @@ const Home = (props) => {
 const mapStateToProps = (state) => {
     return {
         auth: state.firebase.auth,
-        notifications: state.firestore.ordered.notifications
+        notifications: state.firestore.ordered.notifications,
+        profileContent: state.firebase.profile
     }
 }
 
 export default compose(
     firestoreConnect([
-        { collection: 'notifications', limit: 5, orderBy: ['time', 'desc'] }
+        { collection: 'notifications', orderBy: ['time', 'desc'] }
     ]),
     connect(mapStateToProps)
 )(Home)

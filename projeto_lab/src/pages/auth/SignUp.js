@@ -14,8 +14,8 @@ class SignUp extends Component {
             email: '',
             username: '',
             password: '',
-            selectedGender: 'select your gender',
-            selectedNationality: 'select your nationality',
+            selectGender: '',
+            selectNationality: '',
             avatar: '',
             reEnterPassword: '',
             errors: {
@@ -23,16 +23,18 @@ class SignUp extends Component {
                 email: '',
                 password: '',
                 reEnterPassword: '',
-                gender: '',
-                avatar: 'You must choose an avatar before you continue!'
+                selectGender: 'You must choose a gender!',
+                selectNationality: 'You must choose a nationality!',
+                avatar: 'You must choose a gender avatar!'
             }
         }
     }
 
     validateForm = (errors) => {
+        console.log(errors)
         let valid = true;
         Object.values(errors).forEach(
-            (val) => val.length > 0 && (valid = false)
+            (val) => console.log(val.length > 0 && (valid = false))
         );
         return valid;
     }
@@ -45,6 +47,7 @@ class SignUp extends Component {
                 username: this.state.username,
                 password: this.state.password,
                 gender: this.state.selectedGender,
+                nationality: this.state.selectNationality,
                 avatar: this.state.avatar
             }
             this.props.signUp(informationForUser)
@@ -104,16 +107,22 @@ class SignUp extends Component {
     }
 
     handleGenderChange = (event) => {
-        this.setState({ selectGender: event.value });
+        let errors = this.state.errors;
+        errors.selectGender = '';
+        this.setState({ selectGender: event.value.toLowerCase() });
     }
 
     handleNationalityChange = (event) => {
-        this.setState({ selectNationality: event.value });
+        let errors = this.state.errors;
+        errors.selectNationality = '';
+        this.setState({ selectNationality: event.value.toLowerCase() });
     }
 
     render() {
-        const { errors, gender } = this.state;
+        const { errors, selectGender } = this.state;
         const { auth, authError, countriesData } = this.props
+
+        console.log(this.state)
 
         const optionsNationality = []
         const optionsGender = [
@@ -121,26 +130,41 @@ class SignUp extends Component {
             { value: 'Male', label: 'Male' }
         ];
 
-        for (let item in countriesData) {
+        for (let item of countriesData) {
             optionsNationality.push({ value: item.name, label: item.name })
         }
 
         const customStyles = {
             option: (provided, state) => ({
                 ...provided,
-                color: state.isSelected ? 'red' : 'white',
-                backgroundColor: state.isSelected ? 'yellow' : 'blue',
-                padding: 10,
+                color: state.isSelected ? '#f24643' : '#ffe066',
+                backgroundColor: state.isSelected ? 'yellow' : '#1688b9',
             }),
             singleValue: (provided, state) => {
                 const opacity = state.isDisabled ? 0.5 : 1;
                 const transition = 'opacity 300ms';
 
-                return { ...provided, opacity, transition };
-            }
+                return { ...provided, opacity, transition, color: 'red' };
+            },
+            menu: (provided, state) => ({
+                ...provided,
+                backgroundColor: state.isSelected ? '#f24643' : '#1688b9',
+            }),
+            control: (provided, state) => ({
+                ...provided,
+                border: '1px solid #ffe066',
+                borderRadius: '.25rem',
+                backgroundColor: state.isSelected ? '#f24643' : '#1688b9',
+            }),
+            dropdownIndicator: (provided, state) => ({
+                ...provided,
+                color: '#ffe066'
+            }),
+            placeholder: (provided, state) => ({
+                ...provided,
+                color: '#ebebd3'
+            }),
         }
-
-        console.log(optionsNationality)
 
         const femaleAvatars = ['acetrainerf', 'lady', 'lass', 'idol', 'battlegirl', 'cowgirl']
         const maleAvatars = ['acetrainerm', 'richboy', 'ruinmaniac', 'blackbelt', 'roughneck', 'bugcatcher']
@@ -155,67 +179,68 @@ class SignUp extends Component {
                     <Form onSubmit={this.handleSubmit}>
                         <Row>
                             <FormGroup className='col-12 col-md-6'>
-                                <Input onChange={this.handleChange} type="email" name="email" id="email" placeholder="email address" />
+                                <Input required onChange={this.handleChange} type="email" name="email" id="email" placeholder="email address" />
                                 {errors.email.length > 0 &&
                                     <span className='error'>{errors.email}</span>}
                             </FormGroup>
                             <FormGroup className='col-12 col-md-6'>
-                                <Input onChange={this.handleChange} type="text" name="username" id="username" placeholder="username" />
+                                <Input required onChange={this.handleChange} type="text" name="username" id="username" placeholder="username" />
                                 {errors.username.length > 0 &&
                                     <span className='error'>{errors.username}</span>}
                             </FormGroup>
                             <FormGroup className='col-12 col-md-6'>
-                                <Input onChange={this.handleChange} type="password" name="password" id="password" placeholder="password" />
+                                <Input required onChange={this.handleChange} type="password" name="password" id="password" placeholder="password" />
                                 {errors.password.length > 0 &&
                                     <span className='error'>{errors.password}</span>}
                             </FormGroup>
                             <FormGroup className='col-12 col-md-6'>
-                                <Input onChange={this.handleChange} type="password" name="reEnterPassword" id="reEnterPassword" placeholder="re-enter password" />
+                                <Input required onChange={this.handleChange} type="password" name="reEnterPassword" id="reEnterPassword" placeholder="re-enter password" />
                                 {errors.reEnterPassword.length > 0 &&
                                     <span className='error'>{errors.reEnterPassword}</span>}
                             </FormGroup>
                             <FormGroup className='col-12 col-md-6'>
-                                <Select
+                                <Select required
                                     styles={customStyles}
                                     value={this.selectedGender}
                                     onChange={this.handleGenderChange}
                                     options={optionsGender}
+                                    placeholder='select your gender'
+                                    isSearchable={false}
                                 />
                             </FormGroup>
                             <FormGroup className='col-12 col-md-6'>
-                                <Select
+                                <Select required
                                     styles={customStyles}
                                     value={this.selectedNationality}
                                     onChange={this.handleNationalityChange}
                                     options={optionsNationality}
+                                    placeholder='select your nationality'
+                                    isSearchable={false}
                                 />
                             </FormGroup>
                         </Row>
                         <FormGroup className='py-3'>
                             <h4>Avatar</h4>
-                            {gender === 'female' ? (
+                            {selectGender === 'female' ? (
                                 <Row>
                                     {femaleAvatars.map((item, key) =>
                                         <Col className='p-1' sm='4' md='2' key={key} onClick={() => { this.handleAvatarChange(item) }}>
                                             <img alt={item} className={this.state.avatar === item ? 'active-avatar pb-2' : 'avatar pb-2'} src={`https://www.serebii.net/diamondpearl/avatar/${item}.png`} />
-
-                                        </Col>
-
-                                    )}
+                                        </Col>)}
                                     <span className='error'>{errors.avatar}</span>
                                 </Row>
+                            ) : selectGender === 'male' ? (
+                                <Row>
+                                    {maleAvatars.map((item, key) =>
+                                        <Col className='p-1' sm='4' md='2' key={key} onClick={() => { this.handleAvatarChange(item) }}>
+                                            <img alt={item} className={this.state.avatar === item ? 'active-avatar pb-2' : 'avatar pb-2'} src={`https://www.serebii.net/diamondpearl/avatar/${item}.png`} />
+                                        </Col>)}
+                                    <span className='error text-center'>{errors.avatar}</span>
+                                </Row>
                             ) : (
-                                    <Row>
-                                        {maleAvatars.map((item, key) =>
-                                            <Col className='p-1' sm='4' md='2' key={key} onClick={() => { this.handleAvatarChange(item) }}>
-                                                <img alt={item} className={this.state.avatar === item ? 'active-avatar pb-2' : 'avatar pb-2'} src={`https://www.serebii.net/diamondpearl/avatar/${item}.png`} />
-
-                                            </Col>
-
-                                        )}
-                                        <span className='error text-center'>{errors.avatar}</span>
-                                    </Row>
-                                )}
+                                        <Row>
+                                            <p className='col-12 text-center'>You must choose your gender first to visualize the available avatars.</p>
+                                        </Row>)}
                         </FormGroup>
                         <Col xs='8' md='6' className='mx-auto'>
                             <Button color='warning' block>Submit</Button>

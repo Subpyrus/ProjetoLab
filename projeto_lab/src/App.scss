@@ -36,7 +36,8 @@ body {
   }
 
   .active-avatar{
-    border: solid 1px $blue;
+    background-color: $blue;
+    border: solid 1px $yellow;
     border-radius: .25rem;
   }
 

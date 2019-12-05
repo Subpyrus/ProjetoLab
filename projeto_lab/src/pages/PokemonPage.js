@@ -8,7 +8,7 @@ import PokemonPageMoves from '../components/pokemonPage/pokemonPageMoves';
 import PokemonPageGenericInfo from '../components/pokemonPage/pokemonPageGenericInfo';
 import PokemonPageEvChain from '../components/pokemonPage/pokemonPageEvChain';
 import PokemonPageNextPrevious from '../components/pokemonPage/pokemonPageNextPrevious';
-import { addFavoritePokemon, removeFavoritePokemon, addPokemonToTeam, removePokemonToTeam } from '../store/actions/favoriteActions';
+import { addFavoritePokemon, removeFavoritePokemon, addPokemonToTeam, removePokemonFromTeam } from '../store/actions/favoriteActions';
 /*import LazyLoad from 'react-lazyload';
 import Slider from "react-slick";
 import YouTube from 'react-youtube';*/
@@ -17,9 +17,7 @@ class PokePage extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            generation: 'platinum',
-            modal: false,
-            activeTab: '1',
+            activeTab: '1'
         }
     }
 
@@ -96,7 +94,7 @@ class PokePage extends PureComponent {
                                         {foundPokemonTeam !== undefined ?
                                             (
                                                 <Button onClick={() => {
-                                                    props.removePokemonToTeam(pokemonName);
+                                                    props.removePokemonFromTeam(pokemonName);
                                                 }} color="danger">Remove Pokemon From Favorite Team</Button>
                                             ) : profilePokemonTeam.length === 6 ?
                                                 (
@@ -265,7 +263,7 @@ const mapDispatchToProps = (dispatch) => {
         addFavoritePokemon: (pokemon) => dispatch(addFavoritePokemon(pokemon)),
         removeFavoritePokemon: (pokemon) => dispatch(removeFavoritePokemon(pokemon)),
         addPokemonToTeam: (pokemon) => dispatch(addPokemonToTeam(pokemon)),
-        removePokemonToTeam: (pokemon) => dispatch(removePokemonToTeam(pokemon))
+        removePokemonFromTeam: (pokemon) => dispatch(removePokemonFromTeam(pokemon))
     }
 }
 

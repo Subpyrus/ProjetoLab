@@ -4,9 +4,12 @@ import { Link } from 'react-router-dom';
 import LazyLoad from 'react-lazyload';
 
 const ownProfile = (props) => {
-    var { username, avatar, gender, favoritePokemons, favoriteTeam, quizzRecord, email } = props.ownProfileContent
-    var { teamResults } = props.teamResults
-    var { favoritesResults } = props.favoritesResults
+    const { username, avatar, gender, favoritePokemons, favoriteTeam, triviaRecord, email } = props.ownProfileContent
+    console.log(triviaRecord)
+    const { teamResults } = props.teamResults
+    const { favoritesResults } = props.favoritesResults
+    const triviaResults = props.triviaResults;
+    console.log(triviaResults)
 
     return (
         <Row>
@@ -46,16 +49,13 @@ const ownProfile = (props) => {
             </Col>
             <Col xs='12' md='6' lg='4'>
                 <h3>Inner Pokémon IQ</h3>
-                {quizzRecord &&
-                    quizzRecord.length === 0 ? (
-                        <p>Quizz</p>
+                {triviaRecord &&
+                    !triviaResults ? (
+                        <p>You still haven't play any PokéTrivia...</p>
                     ) : (
                         <>
-                            {quizzRecord.map((item, key) =>
-                                <Col key={key}>
-
-                                </Col>
-                            )}
+                            <img />
+                            <p>description</p>
                         </>
                     )
                 }

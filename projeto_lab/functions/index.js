@@ -2,25 +2,63 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 
-exports.helloWorld = functions.https.onRequest((request, response) => {
-    response.send("Hello from Firebase!");
-});
-
 const createNotification = (notification) => {
     return admin.firestore().collection('notifications').add(notification).then(doc => console.log('notification added', doc))
 }
 
-// como fazer notifications momentâneas? e como resolver remover poké de favoritos se é update
-exports.favoritePokemonAdded = functions.firestore
+exports.userDataChanged = functions.firestore
     .document('users/{userId}')
-    .onUpdate(doc => {
-        const user = doc.data();
-        const notification = {
-            content: 'Added new Pokémon to Favorites',
-            user: `${user.username}`,
-            time: admin.firestore.FieldValue.serverTimestamp()
+    .onUpdate((doc) => {
+        var before = doc.before.data();
+        var after = doc.after.data();
+
+        if (before.favoritePokemons !== after.favoritePokemons) {
+            if (after.addFavoriteAction === true) {
+                const notification = {
+                    content: `${after.username} added ${after.favoritePokemons[after.favoritePokemons.length - 1].name} to their Favorites Pokémon List`,
+                    user: `${after.username}`,
+                    time: admin.firestore.FieldValue.serverTimestamp()
+                }
+                return createNotification(notification)
+            } else {
+                const notification = {
+                    content: `${after.username} removed ${before.favoritePokemons[before.favoritePokemons.length - 1].name} from their Favorites Pokémon List`,
+                    user: `${after.username}`,
+                    time: admin.firestore.FieldValue.serverTimestamp()
+                }
+                return createNotification(notification)
+            }
+        } else if (before.favoriteTeam !== after.favoriteTeam) {
+            if (after.addFavoriteAction === true) {
+                const notification = {
+                    content: `${after.username} added ${after.favoritePokemons[after.favoritePokemons.length - 1].name} to their Favorite Pokémon Team`,
+                    user: `${after.username}`,
+                    time: admin.firestore.FieldValue.serverTimestamp()
+                }
+                return createNotification(notification)
+            } else {
+                const notification = {
+                    content: `${after.username} removed ${before.favoritePokemons[before.favoritePokemons.length - 1].name} from their Favorite Pokémon Team`,
+                    user: `${after.username}`,
+                    time: admin.firestore.FieldValue.serverTimestamp()
+                }
+                return createNotification(notification)
+            }
+        } else if (before.friends !== after.friends) {
+            const notification = {
+                content: `${after.username} added ${after.friends[user.friends.length - 1].username} to their friend list`,
+                user: `${after.username}`,
+                time: admin.firestore.FieldValue.serverTimestamp()
+            }
+            return createNotification(notification)
+        } else if (before.triviaRecord !== after.triviaRecord) {
+            const notification = {
+                content: `${after.username} concluded a PokéTrivia and currently has a record of ${after.triviaRecord.correctAnswers} correct answers and ${after.triviaRecord.wrongAnswers} of incorrect answers.`,
+                user: `${after.username}`,
+                time: admin.firestore.FieldValue.serverTimestamp()
+            }
+            return createNotification(notification)
         }
-        return createNotification(notification)
     })
 
 exports.userJoined = functions.auth.user().onCreate(user => {
