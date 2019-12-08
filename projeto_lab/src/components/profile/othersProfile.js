@@ -6,12 +6,12 @@ import { addFriend, removeFriend } from '../../store/actions/friendsActions';
 import { connect } from 'react-redux';
 
 const othersProfile = (props) => {
-    const { username, avatar, gender, favoritePokemons, favoriteTeam, triviaRecord, email, friends } = props.othersProfileContent
+    const { username, avatar, gender, favoritePokemons, favoriteTeam, triviaRecord, friends } = props.othersProfileContent
     const { teamResults } = props.teamResults
     const { favoritesResults } = props.favoritesResults
-    const { loggedUserFriends } = props;
-    const triviaResults = props.triviaResults;
-    console.log(triviaResults)
+    const { loggedUserFriends, pokemonIQ } = props;
+    let pokemon = require('pokemon');
+    let pokemonName = pokemon.getName(pokemonIQ.id)
 
     if (friends) {
         var findFriends = loggedUserFriends.find(friend => friend.name === username)
@@ -58,12 +58,15 @@ const othersProfile = (props) => {
             <Col xs='12' md='6' lg='4'>
                 <h3>Inner Pokémon IQ</h3>
                 {triviaRecord &&
-                    !triviaResults ? (
+                    !pokemonIQ ? (
                         <p>{username} hasn't still played any Pokémon Trivia.</p>
                     ) : (
                         <>
-                          <img />
-                          <p>description</p>  
+                            <p>You're intelligent as a {pokemonName}!</p>
+                            <Col xs='6' lg='3' className='py-3'>
+                                <img alt={pokemonName} src={`http://www.pokestadium.com/sprites/xy/${pokemonName.toLowerCase()}.gif`} />
+                            </Col>
+                            <p>{pokemonIQ.flavor_text_entries[2].flavor_text}</p>
                         </>
                     )
                 }
@@ -99,6 +102,19 @@ const othersProfile = (props) => {
                         )}
                     </Row>)}
             </Col>
+            <Col xs='12'>
+                <Row className='justify-content-center text-center'>
+                    <h3 className='col-12'>Friends</h3>
+                    {(friends.map((item, key) =>
+                        <Col xs='12' md='4' lg='2'>
+                            <Link className='basic-link' key={key} to={`pokemon-trainers/profile/${item.name}`}>
+                                <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} />
+                                <p>{item.name}</p>
+                            </Link>
+                        </Col>
+                    ))}
+                </Row>
+            </Col>
         </Row>
     )
 }
@@ -111,9 +127,9 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = (state) => {
-    console.log(state);
     return {
-        friendAction: state.friends.actionFriendError
+        friendAction: state.friends.actionFriendError,
+        pokemonIQ: state.apiCalls.apiData.getPokemonIQ
     }
 }
 

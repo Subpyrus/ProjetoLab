@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Row, Col, Button, Form, FormGroup, Input, CustomInput } from 'reactstrap';
+import { Row, Col, Button, Form, FormGroup, Input } from 'reactstrap';
+import { Redirect } from 'react-router-dom'
 import Select from 'react-select';
-import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signUp } from '../../store/actions/authActions';
+import { getSignUpData } from '../../store/actions/apiActions';
 
 const validEmailRegex = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
@@ -27,6 +28,12 @@ class SignUp extends Component {
                 selectNationality: 'You must choose a nationality!',
                 avatar: 'You must choose a gender avatar!'
             }
+        }
+    }
+
+    componentDidMount() {
+        if (!this.props.signUpData) {
+            this.props.getSignUpData();
         }
     }
 
@@ -119,19 +126,29 @@ class SignUp extends Component {
     }
 
     render() {
-        const { errors, selectGender } = this.state;
-        const { auth, authError, countriesData } = this.props
+        console.log(this.props)
 
-        console.log(this.state)
+        const { errors, selectGender } = this.state;
+        const { auth, authError, signUpData } = this.props
 
         const optionsNationality = []
         const optionsGender = [
             { value: 'Female', label: 'Female' },
             { value: 'Male', label: 'Male' }
         ];
+        const optionsGame = [];
+        const optionsRegion = [];
 
-        for (let item of countriesData) {
+        for (let item of signUpData[0]) {
             optionsNationality.push({ value: item.name, label: item.name })
+        }
+
+        for (let item of signUpData[1].results) {
+            optionsGame.push({ value: item.name, label: item.name })
+        }
+
+        for (let item of signUpData[2].results) {
+            optionsRegion.push({ value: item.name, label: item.name })
         }
 
         const customStyles = {
@@ -218,6 +235,26 @@ class SignUp extends Component {
                                     isSearchable={false}
                                 />
                             </FormGroup>
+                            <FormGroup className='col-12 col-md-6'>
+                                <Select required
+                                    styles={customStyles}
+                                    value={this.selectedGender}
+                                    onChange={this.handleGenderChange}
+                                    options={optionsGame}
+                                    placeholder='select your gender'
+                                    isSearchable={false}
+                                />
+                            </FormGroup>
+                            <FormGroup className='col-12 col-md-6'>
+                                <Select required
+                                    styles={customStyles}
+                                    value={this.selectedNationality}
+                                    onChange={this.handleNationalityChange}
+                                    options={optionsRegion}
+                                    placeholder='select your nationality'
+                                    isSearchable={false}
+                                />
+                            </FormGroup>
                         </Row>
                         <FormGroup className='py-3'>
                             <h4>Avatar</h4>
@@ -255,12 +292,14 @@ class SignUp extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        signUp: (newUser) => dispatch(signUp(newUser))
+        signUp: (newUser) => dispatch(signUp(newUser)),
+        getSignUpData: () => dispatch(getSignUpData())
     }
 }
 
 const mapStateToProps = (state) => {
     return {
+        signUpData: state.apiCalls.apiData.signUpData,
         auth: state.firebase.auth,
         authError: state.auth.authError
     }

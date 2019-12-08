@@ -3,8 +3,11 @@ import { NavItem } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signOut } from '../../../store/actions/authActions';
+import { getPokemonForProfileIQ } from '../../../store/actions/apiActions'
 
 const signedInLinks = (props) => {
+    const { correctAnswers, wrongAnswers } = props.profileContent.triviaRecord;
+
     return (
         <>
             <NavItem>
@@ -20,10 +23,8 @@ const signedInLinks = (props) => {
                 </NavLink>
             </NavItem>
             <NavItem>
-                <NavLink
-                    activeClassName="navbar__link-active" className="navbar__link" to={{
-                        pathname: `/profile/${props.username}`
-                    }}>
+                <NavLink onClick={() => getPokemonForProfileIQ(correctAnswers, wrongAnswers)}
+                    activeClassName="navbar__link-active" className="navbar__link" to={`/profile/${props.username}`} >
                     {props.username}
                 </NavLink>
             </NavItem>
@@ -38,14 +39,17 @@ const signedInLinks = (props) => {
     )
 }
 
-const mapDispatchToProps = (dipatch) => {
+const mapStateToProps = (state) => {
     return {
-        signOut: () => dipatch(signOut())
+        profileContent: state.firebase.profile,
     }
 }
 
-export default connect(null, mapDispatchToProps)(signedInLinks)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signOut: () => dispatch(signOut()),
+        getPokemonForProfileIQ: (pokemon) => dispatch(getPokemonForProfileIQ(pokemon))
+    }
+}
 
-
-
-
+export default connect(mapStateToProps, mapDispatchToProps)(signedInLinks)

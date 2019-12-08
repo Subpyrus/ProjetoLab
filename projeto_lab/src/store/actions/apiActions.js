@@ -1,45 +1,140 @@
-var array = require('lodash/array')
+export const getInfoPokemonPage = (pokemon) => {
+  return (dispatch, getState) => {
+    dispatch({ type: 'API_REQUEST_START' });
+    const urls = [
+      `https://pokeapi.co/api/v2/pokemon/${pokemon}`,
+      `https://pokeapi.co/api/v2/pokemon-species/${pokemon}`/*,
+    `https://www.googleapis.com/youtube/v3/search?part=snippet%2C%20id&type=video&maxResults=3&order=relevance&q=${pokemon}&key=AIzaSyAoOgGNUDdI0oGGAQLoJOgomd5NwjoFelE`*/
+    ]
 
-export const getCountries = () => {
-    var url = `https://restcountries.eu/rest/v2/all?fields=name`
-
-    const handleResponse = (response) => {
-      return response.json().then(function (json) {
-        return response.ok ? json : Promise.reject(json);
-      });
-    }
-
-    const handleData = (data) => {
-      this.setState({ getPokedex: data.pokemon_entries, loading: false });
-    }
-
-    const handleError = (error) => {
-      this.setState({ error: error });
-    }
-
-    fetch(url).then(handleResponse)
-      .then(handleData)
-      .catch(handleError);
+    Promise.all(urls.map(url =>
+      fetch(url).then((response) => {
+        return response.json().then(function (json) {
+          return response.ok ? json : Promise.reject(json);
+        });
+      })))
+      .then(async (data) => {
+        dispatch({ type: 'POKEMONINFO_DATA_SUCCESS', payload: data })
+        fetch(data[1].evolution_chain.url)
+          .then(async (response) => {
+            return response.json().then(function (json) {
+              return response.ok ? json : Promise.reject(json);
+            }).then(async (data) => dispatch({ type: 'POKEMONINFO_EVOLUTION_DATA_SUCCESS', payload: data }))
+          }).catch((error) => dispatch({ type: 'POKEMONINFO_EVOLUTION_DATA_ERROR', error: error }))
+      }).catch((error) => dispatch({ type: 'POKEMONINFO_DATA_ERROR', error: error }))
   }
-
-export const removeFriend = (user) => {
-    return (dispatch, getState, { getFirebase, getFirestore }) => {
-        const firestore = getFirestore();
-        const uid = getState().firebase.auth.uid;
-        const friendsArray = getState().firebase.profile.friends;
-        console.log(friendsArray)
-        firestore.collection('users').where("uid", "==", uid).get()
-            .then(() => {
-                array.remove(friendsArray, (item) => {
-                    return item.username === user.username;
-                });
-                return firestore.collection("users").doc(uid).update({
-                    friends: friendsArray
-                });
-            }).then(() => {
-                dispatch({ type: 'REMOVE_FRIEND_SUCCESS' })
-            }).catch(() => {
-                dispatch({ type: 'REMOVE_FRIEND_ERROR' })
-            })
-    }
 }
+
+export const getSignUpData = () => {
+  return (dispatch) => {
+    dispatch({ type: 'API_REQUEST_START' });
+    const urls = [
+      `https://restcountries.eu/rest/v2/all?fields=name`,
+      `https://pokeapi.co/api/v2/version-group/`,
+      `https://pokeapi.co/api/v2/region/`]
+
+    Promise.all(urls.map(url =>
+      fetch(url).then(async (response) => {
+        return response.json().then(function (json) {
+          return response.ok ? json : Promise.reject(json);
+        });
+      })))
+      .then(async (data) => {
+        dispatch({ type: 'SIGNUP_DATA_SUCCESS', payload: data })
+      }).catch((error) => dispatch({ type: 'SIGNUP_DATA_ERROR', error: error }))
+  }
+}
+
+/* POKÉLIST ACTIONS */
+
+export const getPokedex = (region) => {
+  return (dispatch) => {
+    dispatch({ type: 'API_REQUEST_START' });
+    var url = `https://pokeapi.co/api/v2/pokedex/${region}/`
+
+    fetch(url)
+      .then(async (response) => {
+        return response.json().then(function (json) {
+          return response.ok ? json : Promise.reject(json);
+        });
+      })
+      .then(async (data) => dispatch({ type: 'POKEDEX_DATA_SUCCESS', payload: data.pokemon_entries }))
+      .catch((error) => dispatch({ type: 'POKEDEX_DATA_ERROR', error: error }))
+  }
+}
+
+export const getDataPokeListPage = () => {
+  return (dispatch) => {
+    dispatch({ type: 'API_REQUEST_START' });
+    const urls = [
+      `https://pokeapi.co/api/v2/pokedex/`,
+      `https://pokeapi.co/api/v2/type/`
+    ]
+
+    Promise.all(urls.map(url =>
+      fetch(url).then(async (response) => {
+        return response.json().then(function (json) {
+          return response.ok ? json : Promise.reject(json);
+        });
+      })))
+      .then(async (data) => {
+        dispatch({ type: 'POKELIST_PAGE_DATA_SUCCESS', payload: data })
+      }).catch((error) => dispatch({ type: 'POKELIST_PAGE_DATA_ERROR', error: error }))
+  }
+}
+
+export const getSpecificMove = (move) => {
+  return (dispatch) => {
+    dispatch({ type: 'API_REQUEST_START' });
+    var url = `https://pokeapi.co/api/v2/move/${move}/`
+
+    fetch(url)
+      .then(async (response) => {
+        return response.json().then(function (json) {
+          return response.ok ? json : Promise.reject(json);
+        });
+      })
+      .then(async (data) => dispatch({ type: 'GETMOVE_DATA_SUCCESS', payload: data }))
+      .catch((error) => dispatch({ type: 'GETMOVE_DATA_ERROR', error: error }))
+  }
+}
+
+
+/* PROFILE ACTIONS */
+
+export const getPokemonForProfileIQ = (userCorrectAnswers, userWrongAnswers) => {
+  return (dispatch) => {
+    dispatch({ type: 'API_REQUEST_START' });
+    var pokemon;
+    let allAnswers = userCorrectAnswers + userWrongAnswers;
+    let averageCorrectAnswers = userCorrectAnswers / allAnswers;
+    averageCorrectAnswers *= 100;
+
+    if (isNaN(averageCorrectAnswers)) {
+      dispatch({ type: 'POKEPROFILEIQ_NOT_NEEDED' });
+    } else if (averageCorrectAnswers >= 90) {
+      pokemon = 'alakazam';
+    } else if (averageCorrectAnswers >= 75) {
+      pokemon = 'metagross';
+    } else if (averageCorrectAnswers >= 50) {
+      pokemon = 'beheeyem';
+    } else if (averageCorrectAnswers >= 25) {
+      pokemon = 'quagsire';
+    } else if (averageCorrectAnswers >= 10) {
+      pokemon = 'slowpoke';
+    } else {
+      pokemon = 'magikarp';
+    }
+
+    var url = `https://pokeapi.co/api/v2/pokemon-species/${pokemon}/`
+    fetch(url)
+      .then((response) => {
+        return response.json().then(function (json) {
+          return response.ok ? json : Promise.reject(json);
+        });
+      })
+      .then((data) => dispatch({ type: 'POKEPROFILEIQ_DATA_SUCCESS', payload: data }))
+      .catch((error) => dispatch({ type: 'POKEPROFILEIQ_DATA_ERROR', error }))
+  }
+}
+

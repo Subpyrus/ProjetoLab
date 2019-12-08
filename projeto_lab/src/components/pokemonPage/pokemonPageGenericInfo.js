@@ -3,8 +3,8 @@ import { Row, Col } from 'reactstrap';
 
 const pokemonPageGenericInfo = (props) => {
     var string = require('lodash/string')
-    let { types, weight, height, abilities } = props.info[0][0];
-    const { egg_groups } = props.info[0][1];
+    let { types, weight, height, abilities } = props.info[0];
+    const { egg_groups } = props.info[1];
 
     var newWeight = `${weight}`.slice(0, -1);
     var newHeight = `${height}`.slice(0, -1);

@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { Row } from 'reactstrap';
+import { Row, Col, Button } from 'reactstrap';
+import Loading from '../components/layout/Loading';
 import { trivia } from './Quizz';
 import { connect } from 'react-redux';
 import { addTriviaResult } from '../store/actions/triviaActions';
 
 class PokemonTrivia extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -18,7 +18,9 @@ class PokemonTrivia extends Component {
             question: "",
             answers: [],
             randomized: false,
-            questionNumber: 0
+            questionNumber: 0,
+            btnColorCorrect: false,
+            btnColorWrong: false
         }
     }
 
@@ -38,7 +40,7 @@ class PokemonTrivia extends Component {
                             repeated++;
                         }
                     }
-                } while (repeated != 0)
+                } while (repeated !== 0)
                 arrayInput.push(number);
             }
         }
@@ -53,15 +55,23 @@ class PokemonTrivia extends Component {
     }
 
     correctAnswer = () => {
+        this.setState({ btnColorCorrect: true })
         var changeQuestion = this.state.questionNumber + 1;
         var correct = this.state.correctAnswers + 1;
-        this.setState({ randomized: false, correctAnswers: correct, ObjectQuestion: this.state.questions[this.state.arrayRandom[changeQuestion]], questionNumber: changeQuestion })
+        if (changeQuestion === 10) {
+            this.props.addTriviaResult({ correctAnswers: this.state.correctAnswers, wrongAnswers: this.state.incorrectAnswers })
+        }
+        setTimeout(() => { this.setState({ randomized: false, correctAnswers: correct, ObjectQuestion: this.state.questions[this.state.arrayRandom[changeQuestion]], questionNumber: changeQuestion, btnColorCorrect: false }) }, 3000)
     }
 
     incorrectAnswer = () => {
+        this.setState({ btnColorWrong: true })
         var changeQuestion = this.state.questionNumber + 1;
+        if (changeQuestion === 10) {
+            this.props.addTriviaResult({ correctAnswers: this.state.correctAnswers, wrongAnswers: this.state.incorrectAnswers })
+        }
         var incorrect = this.state.incorrectAnswers + 1;
-        this.setState({ randomized: false, incorrectAnswers: incorrect, ObjectQuestion: this.state.questions[this.state.arrayRandom[changeQuestion]], questionNumber: changeQuestion })
+        setTimeout(() => { this.setState({ randomized: false, incorrectAnswers: incorrect, ObjectQuestion: this.state.questions[this.state.arrayRandom[changeQuestion]], questionNumber: changeQuestion, btnColorWrong: false }) }, 3000)
     }
 
     start = () => {
@@ -79,7 +89,7 @@ class PokemonTrivia extends Component {
                             repeated++;
                         }
                     }
-                } while (repeated != 0)
+                } while (repeated !== 0)
                 arrayInput.push(number);
             }
         }
@@ -87,49 +97,59 @@ class PokemonTrivia extends Component {
     }
 
     render() {
-        if (this.state.ready === false) {
-            return (<>
-                <h1>Welcome to the PokéTrivia</h1>
-                <p>Here you can test your Pokémon Knowledge</p>
-                <p>Press the Button when you are ready to test yourself...</p>
-                <button onClick={this.start}>Start</button>
-            </>)
-        } else {
-            if ((this.state.randomized === false) && (this.state.ObjectQuestion != undefined)) {
-                this.randomizeAnswers()
-                return (<></>)
-            } else {
-                if ((this.state.randomized === true) && (this.state.ObjectQuestion != undefined)) {
-                    return (<>
-                        <h1>Question {this.state.questionNumber + 1}</h1>
-                        <h2>{this.state.question}</h2>
-                        {this.state.answers.map((index, key) => {
-                            if (index.res === 'correct') {
-                                return (
-                                    <>
-                                        <button onClick={this.correctAnswer}>{index.answer}</button>
-                                        <br></br>
-                                    </>
-                                )
-                            } else {
-                                return (
-                                    <>
-                                        <button onClick={this.incorrectAnswer}>{index.answer}</button>
-                                        <br></br>
-                                    </>
-                                )
-                            }
+        const changeColorCorrect = this.state.btnColorCorrect ? 'success' : 'warning';
+        const changeColorWrong = this.state.btnColorWrong ? 'danger' : 'warning';
 
-                        })}
-                    </>)
+        if (this.state.ready === false) {
+            return (
+                <Row className='justify-content-between'>
+                    <h1 className='col-12'>PokéTrivia</h1>
+                    <Col xs='12' md='8' lg='6'>
+                        <p>Do you think you know your fair share of knowledge of the Pokémon universe? How about to play the Trivia that we provided for you in order to determine your what Pokémon you would be based on your intelligence. Are you an intellectual like Alakazam or Metagross or are you as oblivious as Slowpoke or Magikarp? To find the answer just starting playing and check out your profile when you're done to find out what pokémon are you! Good luck!</p>
+                        <Col xs='12' className='px-0 py-2 d-flex'>
+                            <Button color='warning' className='w-50 mx-auto' onClick={this.start}>Start Trivia</Button>
+                        </Col>
+                    </Col>
+                    <Col className='text-center' xs='12' md='4' lg='5'>
+                        <img className='img-fluid py-2 py-md-0' src='https://archives.bulbagarden.net/media/upload/thumb/c/cc/065Alakazam.png/480px-065Alakazam.png' alt='alakazamTrivia' />
+                    </Col>
+                </Row>
+            )
+        } else {
+            if ((this.state.randomized === false) && (this.state.ObjectQuestion !== undefined)) {
+                this.randomizeAnswers();
+                return (<Loading height='68vh' />);
+            } else {
+                if ((this.state.randomized === true) && (this.state.ObjectQuestion !== undefined)) {
+                    return (
+                        <Row className='justify-content-center text-center'>
+                            <h1 className='col-12'>Question {this.state.questionNumber + 1}</h1>
+                            <h2 className='col-11 col-md-10 pb-2 pb-md-3'>{this.state.question}</h2>
+                            <Col xs='11' md='10'>
+                                {this.state.answers.map((index, key) =>
+                                    index.res === 'correct' ?
+                                        (<Button className='my-3' key={key} block outline color={changeColorCorrect} onClick={() => { this.correctAnswer(); this.incorrectAnswer() }}>{index.answer}</Button>) :
+                                        (<Button className='my-3' key={key} block outline color={changeColorWrong} onClick={() => { this.correctAnswer(); this.incorrectAnswer() }}>{index.answer}</Button>)
+                                )}
+                            </Col>
+                        </Row>
+                    )
                 } else {
-                    return (<>
-                        <h1>PokéTrivia Results</h1>
-                        <p>Correct Answers: {this.state.correctAnswers}</p>
-                        <p>Incorrect Answers: {this.state.incorrectAnswers}</p>
-                        <button onClick={() => this.props.addTriviaResult({correctAnswers:this.state.correctAnswers,wrongAnswers:this.state.incorrectAnswers})}>Save Results</button>
-                        <button onClick={() => window.location.reload()}>Play Again</button>
-                    </>)
+                    return (
+                        <Row>
+                            <h1 className='col-12 text-center'>PokéTrivia Results</h1>
+                            <Col className='d-flex justify-content-center py-2 py-md-0' xs='12' md='6'>
+                                <Button className='w-50' disabled color='success'>Correct Answers:<b>{this.state.correctAnswers}</b></Button>
+                            </Col>
+                            <Col className='d-flex justify-content-center py-2 py-md-0' xs='12' md='6'>
+                                <Button className='w-50' disabled color='danger'>Incorrect Answers:
+                                <b>{this.state.incorrectAnswers}</b></Button>
+                            </Col>
+                            <Col className='d-flex justify-content-center py-3' xs='12'>
+                                <Button color="warning" className='w-75' onClick={() => window.location.reload()}>Play Again</Button>
+                            </Col>
+                        </Row>
+                    )
                 }
             }
         }

@@ -1,6 +1,6 @@
 import './App.scss';
 import React, { PureComponent } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
 import { Transition, animated } from 'react-spring/renderprops';
 import Layout from "./components/layout/Layout";
 import AbsoluteWrapper from './components/layout/AbsoluteWrapper';
@@ -21,6 +21,7 @@ import ScrollToTop from './components/layout/ScrollToTop';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
+
 
 const AnimatedRoute = ({ children }) => (
   <Route
@@ -47,7 +48,6 @@ class App extends PureComponent {
       getPokemon: [],
       getPokemonVideo: [],
       getPokedex: [],
-      getCountries: [],
       loading: false,
       error: null,
       inputValue: '',
@@ -78,89 +78,9 @@ class App extends PureComponent {
     /*this.getPokemonVideo(this.state.inputValue)*/
   }
 
-  getInfoPokemonPage = (event) => {
-    this.setState({ loading: true });
-    var pokemon;
-    if (event.currentTarget === undefined) {
-      pokemon = event;
-    } else {
-      pokemon = event.currentTarget.text.toLowerCase();
-    }
-    const urls = [
-      `https://pokeapi.co/api/v2/pokemon/${pokemon}`,
-      `https://pokeapi.co/api/v2/pokemon-species/${pokemon}`/*,
-      `https://www.googleapis.com/youtube/v3/search?part=snippet%2C%20id&type=video&maxResults=3&order=relevance&q=${pokemon}&key=AIzaSyAoOgGNUDdI0oGGAQLoJOgomd5NwjoFelE`*/
-    ]
-
-    const handleResponse = (response) => {
-      return response.json().then(function (json) {
-        return response.ok ? json : Promise.reject(json);
-      });
-    }
-
-    const handleData = (data) => {
-      console.log(data)
-      this.setState({ getPokemon: [data], loading: false });
-    }
-
-    const handleError = (error) => {
-      console.log(error)
-      this.setState({ error: error });
-    }
-
-    Promise.all(urls.map(url =>
-      fetch(url).then(handleResponse))).then(handleData).catch(handleError)
-  }
-
-  getPokedex = (region) => {
-    this.setState({ loading: true });
-    var url = `https://pokeapi.co/api/v2/pokedex/${region}/`
-
-    const handleResponse = (response) => {
-      return response.json().then(function (json) {
-        return response.ok ? json : Promise.reject(json);
-      });
-    }
-
-    const handleData = (data) => {
-      this.setState({ getPokedex: data.pokemon_entries, loading: false });
-    }
-
-    const handleError = (error) => {
-      this.setState({ error: error });
-    }
-
-    fetch(url).then(handleResponse)
-      .then(handleData)
-      .catch(handleError);
-  }
-
-  getCountriesInfo = () => {
-    this.setState({ loading: true });
-    var url = `https://restcountries.eu/rest/v2/region/europe?fields=name`
-
-    const handleResponse = (response) => {
-      return response.json().then(function (json) {
-        return response.ok ? json : Promise.reject(json);
-      });
-    }
-
-    const handleData = (data) => {
-      this.setState({ getCountries : data, loading: false });
-    }
-
-    const handleError = (error) => {
-      this.setState({ error: error });
-    }
-
-    fetch(url).then(handleResponse)
-      .then(handleData)
-      .catch(handleError);
-  }
-
   render() {
-    const { error, loading } = this.state;
-    const { profile } = this.props;
+    const { getPokedex } = this.state;
+    const { error, isLoading, profile, profileContent, auth } = this.props;
 
     if (!profile) {
       return (
@@ -176,45 +96,36 @@ class App extends PureComponent {
       return (
         <Router>
           <ScrollToTop />
-          <NavigationBar nationality={this.getCountriesInfo} getPokedex={this.getPokedex} />
+          <NavigationBar getPokedex={this.getPokedex} />
           <AbsoluteWrapper>
             <Layout>
-              {loading ? (<Loading height={'68vh'} />) :
+              {isLoading ? (<Loading height={'68vh'} />) :
                 error ? (<Error error={this.state.error} />) :
                   (
                     <AnimatedRoute>
                       {location => (
                         <Switch location={location}>
-                          <Route exact path="/" render={(props) => (<Home {...props} />)} />
+                          <Route exact path="/" component={Home} />
                           <Route exact path="/pokemon-list/:generation" render=
                             {(props) => (
-                              <PokemonList {...props} functionClick={this.handleSearchClick} functionEnter={this.handleSearchEnter} functionChange={this.handleSearchChange} getPokemon={this.getInfoPokemonPage} pokedexInfo={this.state.getPokedex} getPokedex={this.getPokedex} getPokemonVideo={this.getPokemonVideo} />
+                              <PokemonList {...props} functionClick={this.handleSearchClick} functionEnter={this.handleSearchEnter} functionChange={this.handleSearchChange} getPokemonVideo={this.getPokemonVideo} />
                             )} />
-                          <Route exact path="/pokemon-search/pokemon-page/:pokemon" render=
-                            {(props) => (
-                              <PokemonPage {...props} pokemonInfo={this.state.getPokemon} getPokemon={this.getInfoPokemonPage} />
-                            )} />
-                          <Route exact path="/pokemon-list/:generation/pokemon-page/:pokemon" render=
-                            {(props) => (
-                              <PokemonPage {...props} pokemonInfo={this.state.getPokemon} getPokemon={this.getInfoPokemonPage} />
-                            )} />
-                          <Route exact path="/pokemon-trivia" render={(props) => (<Trivia {...props} />)} />
-                          <Route exact path="/pokemon-trainers" render={(props) =>
-                            <PokemonTrainers auth={this.props.auth} username={this.props.profileContent.username} users={this.props.users} />}
+                          <Route exact path="/pokemon-list/:generation/pokemon-page/:pokemon" component={PokemonPage} />
+                          <Route exact path="/pokemon-trivia" component={Trivia} />
+                          <Route exact path="/pokemon-trainers" component={PokemonTrainers}
                           />
                           <Route exact path="/pokemon-trainers/profile/:username" render={(props) =>
-                            <Profile {...props} isLoggedIn={this.props.isLoggedIn} profileContent={this.props.profileContent} />}
+                            <Profile {...props} isLoggedIn={auth.uid} profileContent={profileContent} />}
                           />
                           <Route exact path="/profile/:username" render={(props) =>
-                            <Profile {...props} profileContent={this.props.profileContent} isLoggedIn={this.props.isLoggedIn} />}
+                            <Profile {...props} isLoggedIn={auth.uid} profileContent={profileContent} />}
                           />
-                          <Route exact path="/sign-up" render={(props) => <SignUp countriesData={this.state.getCountries} />} />
-                          <Route exact path="/sign-in" render={(props) => <SignIn />} />
-                          <Route render={(props) => <NoMatch />} />
+                          <Route exact path="/sign-up" component={SignUp} />
+                          <Route exact path="/sign-in" component={SignIn} />
+                          <Route component={NoMatch} />
                         </Switch>
                       )}
-                    </AnimatedRoute>
-                  )}
+                    </AnimatedRoute>)}
             </Layout>
             <Footer />
           </AbsoluteWrapper>
@@ -225,7 +136,10 @@ class App extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state)
   return {
+    error: state.apiCalls.error,
+    isLoading: state.apiCalls.isLoading,
     isLoggedIn: state.auth.isLoggedIn,
     auth: state.firebase.auth,
     authError: state.authError,

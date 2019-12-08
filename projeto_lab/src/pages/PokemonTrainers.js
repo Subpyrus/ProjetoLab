@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Col, ListGroup, ListGroupItem } from 'reactstrap';
-import { Redirect, Link } from 'react-router-dom';
-import Loading from '../components/layout/Loading';
+import { withRouter, Redirect, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { getPokemonForProfileIQ } from '../store/actions/apiActions'
 
 class PokemonTrainers extends Component {
     constructor(props) {
@@ -12,23 +13,23 @@ class PokemonTrainers extends Component {
     }
 
     render() {
-        const { auth, users, username } = this.props
+        const { auth, users, profileContent } = this.props
         var array = require('lodash/array')
         array.remove(users, (item) => {
-            return item.username === username;
+            return item.username === profileContent.username;
         });
 
         if (!auth.uid) {
             return <Redirect to='/sign-in' />
         } else {
-            return !users ? (<Loading />) : (
+            return (
                 <>
                     <h1>PokéTrainers</h1>
                     <Col xs='12' className='p-0'>
                         <ListGroup>
                             {users.map((item, key) =>
                                 <ListGroupItem key={key}>
-                                    <Link to={{
+                                    <Link onClick={() => getPokemonForProfileIQ(item.triviaRecord.correctAnswer, item.triviaRecord.wrongAnswers)} to={{
                                         pathname: `/pokemon-trainers/profile/${item.username}`,
                                         state: {
                                             user: item
@@ -46,5 +47,18 @@ class PokemonTrainers extends Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        auth: state.firebase.auth,
+        profileContent: state.firebase.profile,
+        users: state.firestore.ordered.users
+    }
+}
 
-export default PokemonTrainers;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getPokemonForProfileIQ: (pokemon) => dispatch(getPokemonForProfileIQ(pokemon))
+    }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PokemonTrainers));

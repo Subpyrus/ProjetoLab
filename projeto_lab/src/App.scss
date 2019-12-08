@@ -35,18 +35,18 @@ body {
     }
   }
 
-  .active-avatar{
+  .active-avatar {
     background-color: $blue;
     border: solid 1px $yellow;
-    border-radius: .25rem;
+    border-radius: 0.25rem;
   }
 
-  .avatar{
+  .avatar {
     border: solid 1px $yellow;
-    border-radius: .25rem;
+    border-radius: 0.25rem;
   }
 
-  span.error{
+  span.error {
     color: #ec4643;
     display: block;
     font-size: 14px;
@@ -73,14 +73,35 @@ body {
     padding-bottom: 1rem;
   }
 
-  h5{
+  h5 {
     color: $red;
     font-family: $title-font;
   }
 
-  h6{
+  h6 {
     color: $blue;
     font-family: $title-font;
+  }
+
+  hr{
+    color: $yellow;
+    background-color: $yellow;
+    opacity: 0.5;
+  }
+}
+
+a.poke-list-link:hover {
+  background-color: $yellow;
+  color: $blue;
+}
+
+a.poke-list-link {
+  transition: all 0.5s;
+
+  &:hover,
+  &:active {
+    background-color: $yellow;
+    color: $blue;
   }
 }
 

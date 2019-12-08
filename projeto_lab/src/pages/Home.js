@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col } from 'reactstrap';
+import { Row, Col, Media, Card } from 'reactstrap';
 import moment from 'moment';
 import Loading from '../components/layout/Loading';
 import { Link } from 'react-router-dom';
@@ -33,41 +33,59 @@ const Home = (props) => {
         )
     } else {
         return (
-            <Col xs='12'>
+            <>
                 <h1>Home</h1>
                 {notifications ? (
                     <Row>
-                        <Col xs='12' md='7' className='p-0'>
-                            <h3 className='col-12 col-md-8'>All Users Activity</h3>
-                            <Col xs='12' md='8'>
+                        <Col xs='12' md='6' className='px-0 pb-5'>
+                            <h3 className='col-12'>All Users Activity</h3>
+                            <Col xs='12'>
                                 {notifications.map((item, key) => {
                                     if (item.user !== profileContent.username) {
                                         return (
-                                            <div key={key}>
-                                                <p>{item.content}</p>
-                                                <p>{item.user}</p>
-                                                <p>{moment(item.time.toDate()).fromNow()}</p>
-                                            </div>
+                                            <Card key={key} className='my-2' style={{ backgroundColor: 'transparent' }} body outline color="warning">
+                                                <Media className='p-2'>
+                                                    <Media left href="#">
+                                                        <img src="https://www.serebii.net/diamondpearl/avatar/lady.png" alt="Generic placeholder image" />
+                                                    </Media>
+                                                    <Media body className='pl-3'>
+                                                        <Media heading>
+                                                            {item.user} - <small>{moment(item.time.toDate()).fromNow()}</small>
+                                                        </Media>
+                                                        {item.content}
+                                                    </Media>
+                                                </Media>
+                                            </Card>
                                         )
                                     }
                                 })}
                             </Col>
                         </Col>
-                        <Col xs='12' md='5' className='p-0'>
+                        <Col xs='12' md='6' className='px-0 pb-5'>
                             <h3 className='col-12'>Your Recent Activity</h3>
                             <Col xs='12'>
                                 {notifications.map((item, key) => {
                                     if (item.user === profileContent.username) {
                                         return (
-                                            <div key={key}>
-                                                <p>{item.content}</p>
-                                                <p>{item.user}</p>
-                                                <p>{moment(item.time.toDate()).fromNow()}</p>
-                                            </div>
+                                            <Card key={key} className='my-2' style={{ backgroundColor: 'transparent' }} body outline color="warning">
+                                                <Media className='p-2'>
+                                                    <Media left href="#">
+                                                        <img src="https://www.serebii.net/diamondpearl/avatar/lady.png" alt="Generic placeholder image" />
+                                                    </Media>
+                                                    <Media body className='pl-3'>
+                                                        <Media heading>
+                                                            {item.user} - <small>{moment(item.time.toDate()).fromNow()}</small>
+                                                        </Media>
+                                                        {item.content}
+                                                    </Media>
+                                                </Media>
+                                            </Card>
                                         )
                                     }
                                 })}
                             </Col>
+                        </Col>
+                        <Col xs='12'>
                             <h3 className='col-12'>Recent Friends</h3>
                             <Col xs='12'>
                                 {!recentFriends ? (
@@ -82,7 +100,7 @@ const Home = (props) => {
                         </Col>
                     </Row>) : (<Loading height='68vh' />)
                 }
-            </Col >
+            </>
         )
     }
 }

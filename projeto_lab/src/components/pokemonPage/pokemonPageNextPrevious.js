@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
+import { connect } from 'react-redux';
+import { getInfoPokemonPage } from '../../store/actions/apiActions';
 
 const pokemonPageNextPrevious = (props) => {
-    let { pokemonId, getPokemonInfo } = props;
+    let { pokemonId, getInfoPokemonPage } = props;
     let pokemon = require('pokemon');
     let pokemonIds = [];
     var pokemonNextName,
@@ -29,7 +31,7 @@ const pokemonPageNextPrevious = (props) => {
                     {props.pokemonId <= 808 && props.pokemonId !== 1 &&
                         <Row className='d-flex align-items-center justify-content-center justify-content-md-start'>
                             <Link className='basicLink' id={pokemonPreviousName.toLowerCase()} to={`/pokemon-list/national/pokemon-page/${pokemonPreviousName}`} onClick={(event) => {
-                                getPokemonInfo(event.currentTarget.id);
+                                getInfoPokemonPage(event.currentTarget.id);
                             }}>
                                 <Col xs='12'>
                                     <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
@@ -50,7 +52,7 @@ const pokemonPageNextPrevious = (props) => {
                     {props.pokemonId >= 1 && props.pokemonId !== 808 &&
                         <Row className='d-flex align-items-center justify-content-center justify-content-md-end'>
                             <Link className='basicLink' id={pokemonNextName.toLowerCase()} to={`/pokemon-list/national/pokemon-page/${pokemonNextName.toLowerCase()}`} onClick={(event) => {
-                                getPokemonInfo(event.currentTarget.id);
+                                getInfoPokemonPage(event.currentTarget.id);
                             }}>
                                 <Col xs='12'>
                                     <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
@@ -72,4 +74,10 @@ const pokemonPageNextPrevious = (props) => {
     )
 }
 
-export default pokemonPageNextPrevious;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getInfoPokemonPage: (pokemon) => dispatch(getInfoPokemonPage(pokemon))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(pokemonPageNextPrevious);

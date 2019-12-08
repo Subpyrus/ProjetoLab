@@ -15,15 +15,17 @@ exports.userDataChanged = functions.firestore
         if (before.favoritePokemons !== after.favoritePokemons) {
             if (after.addFavoriteAction === true) {
                 const notification = {
-                    content: `${after.username} added ${after.favoritePokemons[after.favoritePokemons.length - 1].name} to their Favorites Pokémon List`,
+                    content: `Added ${after.favoritePokemons[after.favoritePokemons.length - 1].name} to their Favorites Pokémon List`,
                     user: `${after.username}`,
+                    avatar: `${after.avatar}`,
                     time: admin.firestore.FieldValue.serverTimestamp()
                 }
                 return createNotification(notification)
             } else {
                 const notification = {
-                    content: `${after.username} removed ${before.favoritePokemons[before.favoritePokemons.length - 1].name} from their Favorites Pokémon List`,
+                    content: `Removed ${before.favoritePokemons[before.favoritePokemons.length - 1].name} from their Favorites Pokémon List`,
                     user: `${after.username}`,
+                    avatar: `${after.avatar}`,
                     time: admin.firestore.FieldValue.serverTimestamp()
                 }
                 return createNotification(notification)
@@ -31,30 +33,34 @@ exports.userDataChanged = functions.firestore
         } else if (before.favoriteTeam !== after.favoriteTeam) {
             if (after.addFavoriteAction === true) {
                 const notification = {
-                    content: `${after.username} added ${after.favoritePokemons[after.favoritePokemons.length - 1].name} to their Favorite Pokémon Team`,
+                    content: `Added ${after.favoritePokemons[after.favoritePokemons.length - 1].name} to their Favorite Pokémon Team`,
                     user: `${after.username}`,
+                    avatar: `${after.avatar}`,
                     time: admin.firestore.FieldValue.serverTimestamp()
                 }
                 return createNotification(notification)
             } else {
                 const notification = {
-                    content: `${after.username} removed ${before.favoritePokemons[before.favoritePokemons.length - 1].name} from their Favorite Pokémon Team`,
+                    content: `Removed ${before.favoritePokemons[before.favoritePokemons.length - 1].name} from their Favorite Pokémon Team`,
                     user: `${after.username}`,
+                    avatar: `${after.avatar}`,
                     time: admin.firestore.FieldValue.serverTimestamp()
                 }
                 return createNotification(notification)
             }
         } else if (before.friends !== after.friends) {
             const notification = {
-                content: `${after.username} added ${after.friends[user.friends.length - 1].username} to their friend list`,
+                content: `Added ${after.friends[user.friends.length - 1].username} to their friend list`,
                 user: `${after.username}`,
+                avatar: `${after.avatar}`,
                 time: admin.firestore.FieldValue.serverTimestamp()
             }
             return createNotification(notification)
         } else if (before.triviaRecord !== after.triviaRecord) {
             const notification = {
-                content: `${after.username} concluded a PokéTrivia and currently has a record of ${after.triviaRecord.correctAnswers} correct answers and ${after.triviaRecord.wrongAnswers} of incorrect answers.`,
+                content: `Concluded a PokéTrivia and currently has a record of ${after.triviaRecord.correctAnswers} correct answers and ${after.triviaRecord.wrongAnswers} of incorrect answers.`,
                 user: `${after.username}`,
+                avatar: `${after.avatar}`,
                 time: admin.firestore.FieldValue.serverTimestamp()
             }
             return createNotification(notification)
@@ -67,6 +73,7 @@ exports.userJoined = functions.auth.user().onCreate(user => {
         const notification = {
             content: 'Welcome to Pokéfavorite',
             user: `${newUser.username}`,
+            avatar: `${newUser.avatar}`,
             time: admin.firestore.FieldValue.serverTimestamp()
         }
         return createNotification(notification)
