@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Col, Dropdown, DropdownToggle, DropdownMenu, DropdownItem  } from 'reactstrap';
+import { Row, Col, FormGroup, Input } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import InfiniteScroll from "react-infinite-scroll-component";
-import SearchPokemon from '../components/pokemonList/SearchPokemon';
 import LazyLoad from 'react-lazyload';
+import Select from 'react-select';
 import { connect } from 'react-redux';
 import { getInfoPokemonPage } from '../store/actions/apiActions';
 
@@ -11,164 +11,206 @@ class PokemonList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            allPokedexEntries: this.props.pokedexInfo,
+            allPokedexEntries: this.props.pokedexEntries,
+            searchPokemon: '',
             currentIndex: 1,
             resultsPerPage: 24,
             items: [],
-            dropdownOpen: false,
-            dropdownOpen2: false,
-            dropDownValue: 'national',
             typeSearch: 'Region',
-            getPokedexNames: [],
-            dropDownList: this.props.regions
+            selectValue: 'National',
+            selectList: this.props.regions
         }
     }
 
     componentDidMount() {
-        this._isMounted = true;
-        console.log(this.props)
-        const {pokedexEntries} = this.props
-        const { currentIndex, resultsPerPage } = this.state;
-        const indexOfLastResults = currentIndex * resultsPerPage;
-        const indexOfFirstResults = indexOfLastResults - resultsPerPage;
-        const currentResults = pokedexEntries.slice(indexOfFirstResults, indexOfLastResults);
+        const { allPokedexEntries } = this.state
         this.setState({
-            items: currentResults
+            items: this.calculatePage(allPokedexEntries, 1)
         });
     }
-    
+
+    calculatePage = (caculateResults, index) => {
+        const { resultsPerPage } = this.state;
+        const indexOfLastResults = index * resultsPerPage;
+        const indexOfFirstResults = indexOfLastResults - resultsPerPage;
+        const currentResults = caculateResults.slice(indexOfFirstResults, indexOfLastResults);
+        return currentResults
+    }
+
     getPokedex = (param, param2) => {
-        var url, pokemonData, defineDropDownList;
+        var url, pokemonData, defineSelectList;
         param2 === 'Region' ? (url = `https://pokeapi.co/api/v2/pokedex/${param}/`) : (url = `https://pokeapi.co/api/v2/type/${param}/`);
 
-        const handleResponse = (response) => {
-            return response.json().then(function (json) {
-                return response.ok ? json : Promise.reject(json);
-            });
-        }
-
         const handleData = (data) => {
-            this._isMounted = true;
             param2 === 'Region' ? (pokemonData = data.pokemon_entries) : (pokemonData = data.pokemon);
-            param2 === 'Region' ? (defineDropDownList = this.props.regions) : (defineDropDownList = this.props.types);
-            const { resultsPerPage } = this.state;
-            const indexOfLastResults = 1 * resultsPerPage;
-            const indexOfFirstResults = indexOfLastResults - resultsPerPage;
-            const currentResults = pokemonData.slice(indexOfFirstResults, indexOfLastResults);
-            this.setState({ items: currentResults, currentIndex: 1, allPokedexEntries: pokemonData, dropDownValue: param, dropDownList: defineDropDownList })
+            param2 === 'Region' ? (defineSelectList = this.props.regions) : (defineSelectList = this.props.types);
+            this.setState({ items: this.calculatePage(pokemonData, 1), currentIndex: 1, allPokedexEntries: pokemonData, selectValue: param, selectList: defineSelectList })
         }
 
         const handleError = (error) => {
-            this.setState({ error: error });
+            this.setState({ error: error.message });
         }
 
-        fetch(url).then(handleResponse).then(handleData).catch(handleError);
+        fetch(url).then(async (response) => {
+            return response.json().then(function (json) {
+                return response.ok ? json : Promise.reject(json);
+            })
+        }).then(handleData).catch(handleError);
     }
 
     fetchMoreData = () => {
-        var { allPokedexEntries, currentIndex, resultsPerPage } = this.state;
+        var { currentIndex, allPokedexEntries } = this.state;
         currentIndex = currentIndex += 1;
-        const indexOfLastResults = currentIndex * resultsPerPage;
-        const indexOfFirstResults = indexOfLastResults - resultsPerPage;
-        const currentResults = allPokedexEntries.slice(indexOfFirstResults, indexOfLastResults);
         this.setState({
-            items: this.state.items.concat(currentResults),
+            items: this.state.items.concat(this.calculatePage(allPokedexEntries, currentIndex)),
             currentIndex: currentIndex
         });
     };
 
-    // Dropdown Menu Search
-    toggle = (event) => {
-        this.setState({
-            dropdownOpen: !this.state.dropdownOpen
-        });
-    }
-    toggle2 = (event) => {
-        this.setState({
-            dropdownOpen2: !this.state.dropdownOpen2
-        });
-    }
-
-    changeValue = (e) => {
-        this.getPokedex(e.currentTarget.textContent, this.state.typeSearch)
-    }
-    changeTypeSearch = (e) => {
-        if (e.currentTarget.textContent === 'Region') {
-            this.getPokedex('national', 'Region')
-            this.setState({ typeSearch: 'Region', dropDownList: this.props.regions, dropDownValue: 'national' })
-        } else if (e.currentTarget.textContent === 'Type') {
-            this.getPokedex('normal', 'Type')
-            this.setState({ typeSearch: 'Type', dropDownList: this.props.types, dropDownValue: 'normal' })
-        }
-    }
-
-    //Search
     handleSearchChange = (event) => {
-        if (event.target.value !== "") {
-            this.getInfoPokemonPage(event.target.value);
-        } else {
-            this.getPokedex(this.state.dropDownValue, this.state.typeSearch);
-        }
-    }
-
-    getInfoPokemonPage = (event) => {
-        var pokemon;
-        var pokemonSearched = [];
-        if (event === undefined) {
-            pokemon = event;
-        } else {
-            pokemon = event.toLowerCase();
-            this.state.allPokedexEntries.map((pokedexItem, key) => {
-                if (pokedexItem.pokemon_species.name.startsWith(pokemon)) {
+        const { value } = event.target;
+        if (value !== "") {
+            var pokemon;
+            var pokemonSearched = [];
+            pokemon = value.toLowerCase();
+            for (let pokedexItem of this.state.allPokedexEntries) {
+                if (pokedexItem.pokemon_species.name.startsWith(pokemon) || pokedexItem.pokemon_species.name.includes(pokemon)) {
                     pokemonSearched.push(pokedexItem)
                 }
-            })
-            const { resultsPerPage } = this.state;
-            const indexOfLastResults = 1 * resultsPerPage;
-            const indexOfFirstResults = indexOfLastResults - resultsPerPage;
-            const currentResults = pokemonSearched.slice(indexOfFirstResults, indexOfLastResults);
-            this.setState({ items: currentResults, currentIndex: 1, allPokedexEntries: pokemonSearched });
+            }
+            this.setState({ items: this.calculatePage(pokemonSearched, 1), currentIndex: 1, searchPokemon: pokemonSearched });
+        } else {
+            const { allPokedexEntries } = this.state
+            this.setState({ items: this.calculatePage(allPokedexEntries, 1), currentIndex: 1, searchPokemon: '' });
+        }
+    }
+
+
+    handleSelectChange = (value, action) => {
+        console.log(value);
+        console.log(action)
+        if (action.name === 'typeSearch') {
+            if (value.value === 'Region') {
+                this.getPokedex('national', 'Region')
+                this.setState({ [action.name]: value.value, selectList: this.props.regions, selectValue: 'national' })
+            } else {
+                this.getPokedex('normal', 'Type')
+                this.setState({ [action.name]: value.value, selectList: this.props.types, selectValue: 'normal' })
+            }
+        } else {
+            this.getPokedex(value.value, this.state.typeSearch)
+            this.setState({ [action.name]: value.value })
         }
     }
 
     //Render
     render() {
-        console.log(this.props)
-        var props = this.props
+        const pokemon = require('pokemon');
+        const { items, typeSearch, selectValue } = this.state;
+        const { getInfoPokemonPage, match } = this.props
+        var string = require('lodash/string');
+        let optionsSelectSpecifics = []
+
+        for (let item of this.state.selectList) {
+            console.log(item)
+            optionsSelectSpecifics.push({ value: item.name, label: string.startCase(item.name) })
+        }
+
+        const customStyles = {
+            singleValue: (provided, state) => {
+                const opacity = state.isDisabled ? 0.5 : 1;
+                const transition = 'opacity 300ms';
+
+                return { ...provided, opacity, transition, color: '#ebebd3' };
+            },
+            option: (provided, state) => ({
+                ...provided,
+                color: state.isSelected ? '#f24643' : '#ffe066',
+                backgroundColor: state.isSelected ? '#ffe066' : '#f24643',
+                "&:hover": {
+                    backgroundColor: "#1688b9",
+                    fontWeight: 'bold',
+                    color: "#ebebd3"
+                }
+            }),
+            menu: (provided) => ({
+                ...provided,
+                borderRadius: 0,
+                marginTop: 0,
+            }),
+            menuList: (provided) => ({
+                ...provided,
+                backgroundColor: '#f24643',
+                color: '#ffe066',
+                padding: 0
+            }),
+            control: (provided, state) => ({
+                ...provided,
+                color: '#ffe066',
+                border: '1px solid #ffe066',
+                borderRadius: 3,
+                backgroundColor: state.isFocused ? '#f24643' : '#1688b9',
+                boxShadow: state.isFocused ? null : null,
+                "&:hover": {
+                    borderColor: "ffe066"
+                }
+            }),
+            dropdownIndicator: (provided, state) => ({
+                ...provided,
+                color: '#ffe066'
+            }),
+            placeholder: (provided, state) => ({
+                ...provided,
+                color: state.isFocused ? '#ffe066' : '#ebebd3',
+                fontWeight: state.isFocused ? 'bold' : 'normal',
+            }),
+        }
+
         return (
             <>
-                <div className="row">
-                    <h1 className='col-4'>PokéList</h1>
-                    <SearchPokemon className='col-3' inputChange={this.handleSearchChange} />
-                    <Dropdown className='col-1 offset-3' isOpen={this.state.dropdownOpen2} toggle={this.toggle2}>
-                        <DropdownToggle caret>{this.state.typeSearch}</DropdownToggle>
-                        <DropdownMenu>
-                            <DropdownItem onClick={this.changeTypeSearch}>Region</DropdownItem>
-                            <DropdownItem onClick={this.changeTypeSearch}>Type</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                    <Dropdown className='col-1' isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-                        <DropdownToggle caret>{this.state.dropDownValue}</DropdownToggle>
-                        <DropdownMenu>
-                            {this.state.dropDownList.map((pokedexItem, key) =>
-                                <DropdownItem key={key} onClick={this.changeValue}>{pokedexItem.name}</DropdownItem>
-                            )}
-                        </DropdownMenu>
-                    </Dropdown>
-                </div>
+                <Row className='align-items-md-center justify-content-between'>
+                    <h1 className='col-12 col-lg-4'>PokéList</h1>
+
+                    <Col className='col-12 col-md-6 col-lg-3 px-2 py-2 py-md-0'>
+                        <FormGroup className='m-0'>
+                            <Input type="text" placeholder='search pokémon name' onChange={this.handleSearchChange} />
+                        </FormGroup>
+                    </Col>
+
+                    <Select
+                        className='col-12 col-md-6 col-lg-2 px-2 py-2 py-md-0'
+                        name='typeSearch'
+                        value={{ value: typeSearch, label: string.startCase(typeSearch) }}
+                        styles={customStyles}
+                        onChange={this.handleSelectChange}
+                        options={[{ label: 'Region', value: 'Region' }, { label: 'Type', value: 'Type' }]}
+                        placeholder='Region'
+                        isSearchable={false}
+                    />
+
+                    <Select
+                        className='col-12 col-md-6 col-lg-2 px-2 py-2 py-md-0'
+                        name='selectValue'
+                        styles={customStyles}
+                        value={{ value: selectValue, label: string.startCase(selectValue) }}
+                        onChange={this.handleSelectChange}
+                        options={optionsSelectSpecifics}
+                        isSearchable={false}
+                    />
+                </Row>
                 <InfiniteScroll
                     className='row col-12'
-                    dataLength={this.state.items.length}
+                    dataLength={items.length}
                     next={this.fetchMoreData}
+                    hasMore={true}
                 >
-                    {this.state.items.map((pokedexItem, key) => {
-                        const pokemon = require('pokemon');
-                        if (this.state.typeSearch === "Region" && pokedexItem.pokemon_species !== undefined) {
-                            var url = pokedexItem.pokemon_species.url.trim();
-                            var pokemonName = pokemon.getName(url.split('/')[6]);
+                    {items.map((pokedexItem, key) => {
+                        if (typeSearch === "Region" && pokedexItem.pokemon_species !== undefined) {
+                            let url = pokedexItem.pokemon_species.url.trim();
+                            let pokemonName = pokemon.getName(url.split('/')[6]);
                             return (
                                 <Col key={key} className='py-md-2' xs='12' sm='6' md='4' lg='2'>
-                                    <Link className='poke-list-link' to={`/pokemon-list/${props.match.params.generation}/pokemon-page/${pokemonName.toLocaleLowerCase()}`} onClick={() => this.props.getInfoPokemonPage(pokemonName.toLocaleLowerCase())}>
+                                    <Link className='poke-list-link' to={`/pokemon-list/${match.params.search}/pokemon-page/${pokemonName.toLowerCase()}`} onClick={() => getInfoPokemonPage(pokemonName.toLowerCase())}>
                                         <div>
                                             <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
                                                 <LazyLoad height={200} once={true}>
@@ -181,14 +223,14 @@ class PokemonList extends Component {
                                 </Col>
                             )
                         } else {
-                            if (this.state.typeSearch === "Type" && pokedexItem.pokemon !== undefined) {
+                            if (typeSearch === "Type" && pokedexItem.pokemon !== undefined) {
                                 var url = pokedexItem.pokemon.url.trim();
                                 var pokeNumber = url.split('/')[6];
                                 if (pokeNumber < 10000) {
                                     var pokemonName = pokemon.getName(pokeNumber);
                                     return (
                                         <Col key={key} className='py-md-2' xs='12' sm='6' md='4' lg='2'>
-                                            <Link className='poke-list-link' to={`/pokemon-list/${props.match.params.generation}/pokemon-page/${pokemonName.toLowerCase()}`} onClick={() => this.props.getInfoPokemonPage(pokemonName.toLowerCase())}>
+                                            <Link className='poke-list-link' to={`/pokemon-list/${match.params.search}/pokemon-page/${pokemonName.toLowerCase()}`} onClick={() => getInfoPokemonPage(pokemonName.toLowerCase())}>
                                                 <div>
                                                     <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
                                                         <LazyLoad height={200} once={true}>
@@ -215,7 +257,6 @@ class PokemonList extends Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log(state);
     return {
         pokedexEntries: state.apiCalls.apiData.getPokedex,
         regions: state.apiCalls.apiData.getPokedexDropdowns.regions,

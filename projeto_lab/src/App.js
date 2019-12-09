@@ -61,22 +61,6 @@ class App extends PureComponent {
     this._isMounted = false;
   }
 
-  handleSearchChange = (event) => {
-    this.setState({ inputValue: event.target.value });
-  }
-
-  handleSearchEnter = (event) => {
-    if (event.key === 'Enter') {
-      this.getInfoPokemonPage(this.state.inputValue)
-      /*this.getPokemonVideo(this.state.inputValue)*/
-    }
-  }
-
-  handleSearchClick = () => {
-    this.getInfoPokemonPage(this.state.inputValue)
-    /*this.getPokemonVideo(this.state.inputValue)*/
-  }
-
   render() {
     const { error, isLoading, profile, profileContent, auth } = this.props;
 
@@ -104,11 +88,8 @@ class App extends PureComponent {
                       {location => (
                         <Switch location={location}>
                           <Route exact path="/" component={Home} />
-                          <Route exact path="/pokemon-list/:generation" render=
-                            {(props) => (
-                              <PokemonList {...props} functionClick={this.handleSearchClick} functionEnter={this.handleSearchEnter} functionChange={this.handleSearchChange} getPokemonVideo={this.getPokemonVideo} />
-                            )} />
-                          <Route exact path="/pokemon-list/:generation/pokemon-page/:pokemon" component={PokemonPage} />
+                          <Route exact path="/pokemon-list/:search" component={PokemonList} />
+                          <Route exact path="/pokemon-list/:search/pokemon-page/:pokemon" component={PokemonPage} />
                           <Route exact path="/pokemon-trivia" component={Trivia} />
                           <Route exact path="/pokemon-trainers" component={PokemonTrainers}
                           />
