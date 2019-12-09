@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Button, Form, FormGroup, Input } from 'reactstrap';
+import { Row, Col, Button, Form, FormGroup, Input, CustomInput } from 'reactstrap';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signIn } from '../../store/actions/authActions';
@@ -9,7 +9,8 @@ class SignIn extends Component {
         super(props)
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            rememberMe: true
         }
     }
 
@@ -27,7 +28,7 @@ class SignIn extends Component {
     render() {
         const { authError, auth } = this.props
 
-        if(auth.uid){
+        if (auth.uid) {
             return <Redirect to='/' />
         }
 
@@ -43,12 +44,22 @@ class SignIn extends Component {
                             <Input onChange={this.handleChange} type="password" name="password" id="password" placeholder="type your password" />
                         </FormGroup>
                         <FormGroup>
-                            <Button block>Submit</Button>
+                            <CustomInput type="checkbox" id="rememberMe" label="Remember me" />
                         </FormGroup>
-                        <p>Need an account? <Link to='/sign-up' className='basicLink'>Sign Up</Link></p>
                         <div>
                             {authError ? <p>{authError}</p> : null}
                         </div>
+                        <FormGroup className='d-flex justify-content-center'>
+                            <Button color='warning' className='w-50' block>Submit</Button>
+                        </FormGroup>
+                        <Row className='py-3'>
+                            <Col xs='12' md='6'>
+                                <p>Forgot your password? <Link to='/recover-password' className='basicLink'>Click here</Link></p>
+                            </Col>
+                            <Col xs='12' md='6'>
+                                <p color='#1688b9' disabled>Need an account? <Link to='/sign-up' className='basicLink'>Sign Up</Link></p>
+                            </Col>
+                        </Row>
                     </Form>
                 </Col>
             </Row>

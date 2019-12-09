@@ -1,11 +1,10 @@
 import './App.scss';
 import React, { PureComponent } from 'react';
-import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Transition, animated } from 'react-spring/renderprops';
 import Layout from "./components/layout/Layout";
 import AbsoluteWrapper from './components/layout/AbsoluteWrapper';
 import NavigationBar from "./components/layout/navbar/Navbar";
-import Footer from "./components/layout/Footer";
 import Home from './pages/Home'
 import PokemonList from "./pages/PokemonList";
 import PokemonPage from "./pages/PokemonPage";
@@ -79,7 +78,6 @@ class App extends PureComponent {
   }
 
   render() {
-    const { getPokedex } = this.state;
     const { error, isLoading, profile, profileContent, auth } = this.props;
 
     if (!profile) {
@@ -127,7 +125,6 @@ class App extends PureComponent {
                       )}
                     </AnimatedRoute>)}
             </Layout>
-            <Footer />
           </AbsoluteWrapper>
         </Router>
       );

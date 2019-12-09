@@ -83,23 +83,6 @@ export const getDataPokeListPage = () => {
   }
 }
 
-export const getSpecificMove = (move) => {
-  return (dispatch) => {
-    dispatch({ type: 'API_REQUEST_START' });
-    var url = `https://pokeapi.co/api/v2/move/${move}/`
-
-    fetch(url)
-      .then(async (response) => {
-        return response.json().then(function (json) {
-          return response.ok ? json : Promise.reject(json);
-        });
-      })
-      .then(async (data) => dispatch({ type: 'GETMOVE_DATA_SUCCESS', payload: data }))
-      .catch((error) => dispatch({ type: 'GETMOVE_DATA_ERROR', error: error }))
-  }
-}
-
-
 /* PROFILE ACTIONS */
 
 export const getPokemonForProfileIQ = (userCorrectAnswers, userWrongAnswers) => {

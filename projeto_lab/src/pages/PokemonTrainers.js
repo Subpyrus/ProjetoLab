@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, ListGroup, ListGroupItem } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 import { withRouter, Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getPokemonForProfileIQ } from '../store/actions/apiActions'
@@ -26,20 +26,28 @@ class PokemonTrainers extends Component {
                 <>
                     <h1>PokéTrainers</h1>
                     <Col xs='12' className='p-0'>
-                        <ListGroup>
-                            {users.map((item, key) =>
-                                <ListGroupItem key={key}>
-                                    <Link onClick={() => getPokemonForProfileIQ(item.triviaRecord.correctAnswer, item.triviaRecord.wrongAnswers)} to={{
-                                        pathname: `/pokemon-trainers/profile/${item.username}`,
-                                        state: {
-                                            user: item
-                                        }
-                                    }}>
-                                        {item.username}
-                                    </Link>
-                                </ListGroupItem>
-                            )}
-                        </ListGroup>
+                        {users.map((item, key) =>
+                            <Col xs='12' key={key}>
+                                <Link onClick={() => getPokemonForProfileIQ(item.triviaRecord.correctAnswer, item.triviaRecord.wrongAnswers)} to={{
+                                    pathname: `/pokemon-trainers/profile/${item.username}`,
+                                    state: {
+                                        user: item
+                                    }
+                                }}>
+                                    <Row className='text-center d-flex align-items-md-center'>
+                                        <Col xs='12' md='3' className='d-flex justify-content-center'>
+                                            <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} /></Col>
+                                        <Col xs='12' md='4' className='py-2 py-md-0'>
+                                            {item.username}
+                                        </Col>
+                                        <Col xs='6' md='2' className='py-2 py-md-0'>{item.gender}</Col>
+                                        <Col xs='6' md='2' className='py-2 py-md-0'>{item.nationality}</Col>
+
+                                    </Row>
+                                </Link>
+                                <hr className='my-3' />
+                            </Col>
+                        )}
                     </Col>
                 </>
             )

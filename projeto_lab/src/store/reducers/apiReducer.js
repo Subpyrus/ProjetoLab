@@ -62,18 +62,6 @@ const authReducer = (state = initState, action) => {
                 isLoading: false,
                 error: action.error
             }
-        case 'MOVE_DATA_ERROR':
-            return {
-                ...state,
-                isLoading: false,
-                error: action.error
-            }
-        case 'MOVE_EVOLUTION_DATA_ERROR':
-            return {
-                ...state,
-                isLoading: false,
-                error: action.error
-            }
         case 'POKEDEX_DATA_SUCCESS':
             return {
                 ...state,

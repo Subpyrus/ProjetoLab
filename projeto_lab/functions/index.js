@@ -12,7 +12,13 @@ exports.userDataChanged = functions.firestore
         var before = doc.before.data();
         var after = doc.after.data();
 
+        console.log(before.favoritePokemons)
+        console.log(after.favoritePokemons)
+        console.log(before.favoritePokemons !== after.favoritePokemons)
+        console.log(before.favoriteTeam !== after.favoriteTeam)
+
         if (before.favoritePokemons !== after.favoritePokemons) {
+            console.log('olá')
             if (after.addFavoriteAction === true) {
                 const notification = {
                     content: `Added ${after.favoritePokemons[after.favoritePokemons.length - 1].name} to their Favorites Pokémon List`,

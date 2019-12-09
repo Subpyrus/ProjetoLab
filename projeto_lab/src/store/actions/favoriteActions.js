@@ -1,7 +1,7 @@
 var array = require('lodash/array')
 
 export const addFavoritePokemon = (favorite) => {
-    return (dispatch, getState, { getFirebase, getFirestore }) => {
+    return (dispatch, getState, { getFirestore }) => {
         console.log(favorite)
         const firestore = getFirestore();
         const uid = getState().firebase.auth.uid;
@@ -24,7 +24,7 @@ export const addFavoritePokemon = (favorite) => {
 }
 
 export const removeFavoritePokemon = (favorite) => {
-    return (dispatch, getState, { getFirebase, getFirestore }) => {
+    return (dispatch, getState, { getFirestore }) => {
         const firestore = getFirestore();
         const uid = getState().firebase.auth.uid;
         const profileFavoritePokemons = getState().firebase.profile.favoritePokemons;
@@ -47,7 +47,7 @@ export const removeFavoritePokemon = (favorite) => {
 }
 
 export const addPokemonToTeam = (pokemon) => {
-    return (dispatch, getState, { getFirebase, getFirestore }) => {
+    return (dispatch, getState, { getFirestore }) => {
         const firestore = getFirestore();
         const uid = getState().firebase.auth.uid;
         const profileTeamPokemons = getState().firebase.profile.favoriteTeam;
@@ -69,7 +69,7 @@ export const addPokemonToTeam = (pokemon) => {
 }
 
 export const removePokemonFromTeam = (pokemon) => {
-    return (dispatch, getState, { getFirebase, getFirestore }) => {
+    return (dispatch, getState, { getFirestore }) => {
         const firestore = getFirestore();
         const uid = getState().firebase.auth.uid;
         const profileTeamPokemons = getState().firebase.profile.favoriteTeam;
@@ -86,6 +86,25 @@ export const removePokemonFromTeam = (pokemon) => {
                 dispatch({ type: 'REMOVE_POKEMON_TEAM_SUCCESS' })
             }).catch(() => {
                 dispatch({ type: 'REMOVE_POKEMON_TEAM_ERROR' })
+            })
+    }
+}
+
+export const editProfile = (nationalityForm, gameForm, regionForm) => {
+    return (dispatch, getState, { getFirestore }) => {
+        const firestore = getFirestore();
+        const uid = getState().firebase.auth.uid;
+        firestore.collection('users').where("uid", "==", uid).get()
+            .then(() => {
+                return firestore.collection("users").doc(uid).update({
+                    nationality: nationalityForm,
+                    favoriteGame: gameForm,
+                    favoriteRegion: regionForm
+                });
+            }).then(() => {
+                dispatch({ type: 'CHANGE_PROFILE_SUCCESS' })
+            }).catch(() => {
+                dispatch({ type: 'CHANGE_PROFILE_ERROR' })
             })
     }
 }

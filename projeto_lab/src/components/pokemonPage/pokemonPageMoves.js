@@ -1,14 +1,32 @@
 import React, { Component } from 'react';
 import { Row, Col, Table, Modal, ModalBody, ModalHeader, ModalFooter, Button } from 'reactstrap';
-import { connect } from 'react-redux';
-import { getSpecificMove } from '../../store/actions/apiActions'
+import Loading from '../layout/Loading';
+import Error from '../layout/Error';
 
 class pokemonPageMoves extends Component {
     constructor(props) {
         super(props)
         this.state = {
             modal: false,
+            move: '',
+            isLoading: false,
+            error: ''
         }
+    }
+
+    getSpecificMove = (move) => {
+        this.setState({ isLoading: true })
+        var url = `https://pokeapi.co/api/v2/move/${move}/`
+
+        fetch(url)
+            .then(async (response) => {
+                return response.json().then(function (json) {
+                    return response.ok ? json : Promise.reject(json);
+                });
+            })
+            .then(async (data) => this.setState({ isLoading: false, move: data }))
+            .catch((error) => this.setState({ isLoading: false, error: error }))
+
     }
 
     conditionMove = (firstName, firstString, firstCondition) => {
@@ -39,11 +57,12 @@ class pokemonPageMoves extends Component {
 
     render() {
         var string = require('lodash/string')
-        const { pokemonMoves, method, move } = this.props;
+        const { loading, error, move } = this.state
+        const { pokemonMoves, method } = this.props;
         var orderedMovesArray = [];
         for (var itemMove of pokemonMoves) {
             for (let itemMoveSpecifics of itemMove.version_group_details) {
-                itemMoveSpecifics.version_group.name === `sun-moon` && itemMoveSpecifics.move_learn_method.name === `${method}` && orderedMovesArray.push({name: itemMove.move.name, level_learned_at: itemMoveSpecifics.level_learned_at})
+                itemMoveSpecifics.version_group.name === `sun-moon` && itemMoveSpecifics.move_learn_method.name === `${method}` && orderedMovesArray.push({ name: itemMove.move.name, level_learned_at: itemMoveSpecifics.level_learned_at })
             }
             method === 'level-up' && orderedMovesArray.sort((a, b) => a.level_learned_at - b.level_learned_at)
         }
@@ -61,7 +80,7 @@ class pokemonPageMoves extends Component {
                     </thead>
                     <tbody>
                         {orderedMovesArray.map((moveItem, key) =>
-                            <tr key={key} onClick={() => { this.toggle(); this.getMove(moveItem.move.name); }}>
+                            <tr key={key} onClick={() => { this.toggle(); this.getSpecificMove(moveItem.name); }}>
                                 {method === 'level-up' ? (
                                     <>
                                         <td className={moveItem.name}>{moveItem.level_learned_at}</td>
@@ -76,12 +95,12 @@ class pokemonPageMoves extends Component {
                         )}
                     </tbody>
                 </Table>
-                {move &&
+                {loading ? (<Loading height='100vh' />) : error ? (<Error error={error} />) : (move &&
                     <Modal size='lg' isOpen={this.state.modal} toggle={this.toggle}>
                         <ModalHeader toggle={this.toggle}></ModalHeader>
                         <ModalBody>
                             <Row className='justify-content-center text-center'>
-                                <h4 className='col-12'>{move.names[2].name}</h4>
+                                <h3 className='col-12'>{move.names[2].name}</h3>
                                 <p className='col-12 py-2'>{move.flavor_text_entries[2].flavor_text}
                                 </p>
                                 <Col className='py-2' xs='12' sm='6'>
@@ -125,25 +144,13 @@ class pokemonPageMoves extends Component {
                             </Row>
                         </ModalBody>
                         <ModalFooter>
-                            <Button color="primary mx-auto w-50" onClick={this.toggle}>Close</Button>
+                            <Button color='warning' className="mx-auto w-50" onClick={this.toggle}>Close</Button>
                         </ModalFooter>
-                    </Modal>
+                    </Modal>)
                 }
             </>
         )
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        move: state.apiCalls.apiData.getMove
-    }
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getSpecificMove: (move) => dispatch(getSpecificMove(move))
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(pokemonPageMoves)
+export default pokemonPageMoves

@@ -15,6 +15,34 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  .navBrandLink{
+    border-bottom: 3.5mm groove $blue;
+    transition: all 1s;
+
+    .navBrandSecondTitle{
+      color: $red;
+      transition: all 1s;
+    }
+
+    .navBrandTitle{
+      transition: all 1s;
+    }
+
+    &:hover{
+      text-decoration: none;
+      border-bottom: 3.5mm groove $yellow;
+
+      .navBrandTitle{
+        color: $red;
+      }
+
+      .navBrandSecondTitle{
+        color: $blue;
+      }
+
+    }
+  }
+
   a.basicLink {
     border-bottom: $red solid 2px !important;
     color: $white;
@@ -83,7 +111,7 @@ body {
     font-family: $title-font;
   }
 
-  hr{
+  hr {
     color: $yellow;
     background-color: $yellow;
     opacity: 0.5;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Collapse, Navbar, Nav, NavItem, NavbarBrand } from 'reactstrap';
-import { NavLink } from 'react-router-dom';
+import { Collapse, Navbar, Nav, NavItem } from 'reactstrap';
+import { NavLink, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getPokedex, getDataPokeListPage } from '../../../store/actions/apiActions';
 import SignedInLinks from './signedInLinks';
@@ -21,15 +21,16 @@ class NavBar extends Component {
     }
 
     render() {
-        const { auth, username, nationality, getPokedex, getDataPokeListPage } = this.props;
-        const links = auth.uid ? (<SignedInLinks username={username} />) : (<SignedOutLinks nationality={nationality} />);
+        const { auth, username, getPokedex, getDataPokeListPage } = this.props;
+        const links = auth.uid ? (<SignedInLinks username={username} />) : (<SignedOutLinks />);
 
         return (
             <div>
                 <Navbar light expand="md" className='mb-5'>
-                    <NavbarBrand href="/">
-                        PokéFavo
-                    </NavbarBrand>
+                    <Link className='navBrandLink' to='/'>
+                        <h1 className='navBrandTitle d-inline'>Poké</h1>
+                        <h1 className='navBrandSecondTitle d-inline'>Favo</h1>
+                    </Link>
                     <button className="navbar-toggler" onClick={this.toggle} type="button">
                         <i className="fas fa-bars"></i>
                     </button>

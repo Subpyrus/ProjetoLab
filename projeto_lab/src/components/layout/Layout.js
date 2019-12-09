@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'reactstrap';
 
 const Layout = (props) => {
     return (
-    <Container>
+    <Container className='pb-4 pb-lg-5'>
         <Row className="justify-content-center" style={{minHeight:'70vh'}}>
             <Col xs="12">
                 {props.children}

@@ -44,6 +44,16 @@ const favoriteReducer = (state = initState, action) => {
                 ...state,
                 actionError: action.error.message
             }
+        case 'CHANGE_PROFILE_SUCCESS':
+            return {
+                ...state,
+                actionError: 'Profile edited'
+            }
+        case 'CHANGE_PROFILE_ERROR':
+            return {
+                ...state,
+                actionError: action.error.message
+            }
         default:
             return state
     }

@@ -38,6 +38,8 @@ export const signUp = (newUser) => {
                 gender: newUser.gender,
                 nationality: newUser.nationality,
                 avatar: newUser.avatar,
+                favoriteGame: newUser.favoriteGame,
+                favoriteRegion: newUser.favoriteRegion,
                 friends: [],
                 favoriteTeam: [],
                 favoritePokemons: [],

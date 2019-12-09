@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Media, Card } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 import moment from 'moment';
 import Loading from '../components/layout/Loading';
 import { Link } from 'react-router-dom';
@@ -18,18 +18,19 @@ const Home = (props) => {
 
     if (!auth.uid) {
         return (
-            <Col xs='12'>
-                <h1>Home</h1>
-                <Row>
-                    <p className='col-6'>PokémonFavo is a cool website</p>
-                    <div className='col-6'>PokémonFavo is a cool website</div>
-                    <p>Features</p>
-                    <div>Build your own list of favorite Pokémons up to 25 entries!</div>
-                    <div>Build your own ultimate Pokémon team!</div>
-                    <div>Play our Pokémon Quizz and find out if you're intelligent like a Slowpoke or a Alakazam!</div>
-                    <div>Check others PokémonFavo users profiles and add them as friends!</div>
-                </Row>
-            </Col>
+            <Row className='justify-content-between'>
+                <h1 className='col-12'>Home</h1>
+                <Col xs='12' md='8' lg='7'>
+                    <p>Hello there fellow pokémon enthusiastic, welcome to PokéFavo! A spot to share your favorite Pokémons and your predilect Pokémon Team and also see other users favorites. If you want to know more things about what we have in this website check out the information bellow, of course if you sign up you'll be able to enjoy all the features! Dont't forget to catch them all!</p>
+                    <p><span className='font-weight-bold'>PokéList</span> - Find all of your favorite pokémon, be it by a specific pokédex or with a certain type.</p>
+                    <p><span className='font-weight-bold'>PokéPage</span> - Content of a specific pokémon, their moves, evolution chain, abilities, types, videos etc.</p>
+                    <p><span className='font-weight-bold'>PokéTrivia</span> - A cool little trivia game to test your pokémon knowledge and determine what kind pokémon you would be based in your performance on the trivia.</p>
+                    <p><span className='font-weight-bold'>PokéTrainers </span>- all the pokémon trainers that signed up PokéFavo where you can access their individual profile to check their favorite pokémons, favorite pokémon team etc..</p>
+                </Col>
+                <Col className='text-center d-flex align-items-center' xs='12' md='4' lg='5'>
+                    <img className='img-fluid py-2 py-md-0' src='https://i.pinimg.com/originals/0a/08/af/0a08af39768d638d2e4815a3eb955dff.png' alt='PokemonFavoriteTogether' />
+                </Col>
+            </Row>
         )
     } else {
         return (
@@ -37,66 +38,49 @@ const Home = (props) => {
                 <h1>Home</h1>
                 {notifications ? (
                     <Row>
-                        <Col xs='12' md='6' className='px-0 pb-5'>
-                            <h3 className='col-12'>All Users Activity</h3>
+                        <Col xs='12' md='8' className='px-0 pb-5'>
+                            <h3 className='col-12'>Your Recent/Friends Activity</h3>
                             <Col xs='12'>
                                 {notifications.map((item, key) => {
                                     if (item.user !== profileContent.username) {
                                         return (
-                                            <Card key={key} className='my-2' style={{ backgroundColor: 'transparent' }} body outline color="warning">
-                                                <Media className='p-2'>
-                                                    <Media left href="#">
-                                                        <img src="https://www.serebii.net/diamondpearl/avatar/lady.png" alt="Generic placeholder image" />
-                                                    </Media>
-                                                    <Media body className='pl-3'>
-                                                        <Media heading>
-                                                            {item.user} - <small>{moment(item.time.toDate()).fromNow()}</small>
-                                                        </Media>
+                                            <Col xs='12' key={key}>
+                                                <Row className='p-2 text-center d-flex align-items-md-center'>
+                                                    <Col xs='12' sm='6' md='2' className='py-2 py-md-0'>
+                                                        <img src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} alt={item.avatar} />
+                                                    </Col>
+                                                    <Col xs='12' sm='6' md='4' className='py-2 py-md-0'>
+                                                        {item.user} - <small>{moment(item.time.toDate()).fromNow()}</small>
+                                                    </Col>
+                                                    <Col xs='12' md='6' className='py-2 py-md-0'>
                                                         {item.content}
-                                                    </Media>
-                                                </Media>
-                                            </Card>
+                                                    </Col>
+                                                </Row>
+                                                <hr className='my-2' />
+                                            </Col>
                                         )
                                     }
                                 })}
                             </Col>
                         </Col>
-                        <Col xs='12' md='6' className='px-0 pb-5'>
-                            <h3 className='col-12'>Your Recent Activity</h3>
-                            <Col xs='12'>
-                                {notifications.map((item, key) => {
-                                    if (item.user === profileContent.username) {
-                                        return (
-                                            <Card key={key} className='my-2' style={{ backgroundColor: 'transparent' }} body outline color="warning">
-                                                <Media className='p-2'>
-                                                    <Media left href="#">
-                                                        <img src="https://www.serebii.net/diamondpearl/avatar/lady.png" alt="Generic placeholder image" />
-                                                    </Media>
-                                                    <Media body className='pl-3'>
-                                                        <Media heading>
-                                                            {item.user} - <small>{moment(item.time.toDate()).fromNow()}</small>
-                                                        </Media>
-                                                        {item.content}
-                                                    </Media>
-                                                </Media>
-                                            </Card>
-                                        )
-                                    }
-                                })}
-                            </Col>
-                        </Col>
-                        <Col xs='12'>
-                            <h3 className='col-12'>Recent Friends</h3>
-                            <Col xs='12'>
-                                {!recentFriends ? (
-                                    <p>You don't have any friends in your list, check out the <Link to='/pokemon-trainers'>PokéTrainers</Link> to add fellow Pokémon Trainers.</p>) :
-                                    (recentFriends.map((item, key) =>
-                                        <Link key={key} to={`pokemon-trainers/profile/${item.name}`}>
-                                            <p>{item.name}</p>
-                                            <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} />
-                                        </Link>
-                                    ))}
-                            </Col>
+                        <Col xs='12' md='4'>
+                            <Row>
+                                <Col xs='12'>
+                                    <h3 className='col-12'>Recent Friends</h3>
+                                    <Col xs='12'>
+                                        {!recentFriends ? (
+                                            <p>You don't have any friends in your list, check out the <Link to='/pokemon-trainers'>PokéTrainers</Link> to add fellow Pokémon Trainers.</p>) :
+                                            (recentFriends.map((item, key) =>
+                                                <Link key={key} to={`pokemon-trainers/profile/${item.name}`}>
+                                                    <p>{item.name}</p>
+                                                    <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} />
+                                                </Link>
+                                            ))}
+                                    </Col>
+                                </Col>
+                                <Col xs='12'>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>) : (<Loading height='68vh' />)
                 }
@@ -115,7 +99,7 @@ const mapStateToProps = (state) => {
 
 export default compose(
     firestoreConnect([
-        { collection: 'notifications', orderBy: ['time', 'desc'] }
+        { collection: 'notifications', orderBy: ['time', 'asc'] }
     ]),
     connect(mapStateToProps)
 )(Home)

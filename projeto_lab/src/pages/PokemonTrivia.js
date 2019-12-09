@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Row, Col, Button } from 'reactstrap';
 import Loading from '../components/layout/Loading';
-import { trivia } from './Quizz';
+import { trivia } from '../components/Quizz';
 import { connect } from 'react-redux';
 import { addTriviaResult } from '../store/actions/triviaActions';
 

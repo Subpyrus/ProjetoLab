@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Row, Col, Modal, ModalBody, ModalFooter, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import Select from 'react-select';
 import LazyLoad from 'react-lazyload';
 import { connect } from 'react-redux';
-import { removeFavoritePokemon, removePokemonFromTeam } from '../../store/actions/favoriteActions';
+import { removeFavoritePokemon, removePokemonFromTeam, editProfile } from '../../store/actions/favoriteActions';
 import { removeFriend } from '../../store/actions/friendsActions';
 import { getInfoPokemonPage } from '../../store/actions/apiActions';
 
@@ -13,11 +14,24 @@ class ownProfile extends Component {
         this.state = {
             isOpen: false,
             modal: false,
+            editProfileContent: false,
+            editProfileData: '',
+            loading: false,
+            error: '',
             modalContent: {
                 name: '',
                 action: ''
             },
-            width: window.innerWidth
+            width: window.innerWidth,
+            selectNationality: {
+                label: this.props.ownProfileContent.nationality, 
+                value: this.props.ownProfileContent.nationality},
+            selectGame: {
+                label: this.props.ownProfileContent.favoriteGame,
+                value: this.props.ownProfileContent.favoriteGame},
+            selectRegion: {
+                label: this.props.ownProfileContent.favoriteRegion,
+                value: this.props.ownProfileContent.favoriteRegion}
         };
     }
 
@@ -34,6 +48,39 @@ class ownProfile extends Component {
         this.setState({ width: window.innerWidth, height: window.innerHeight });
     }
 
+    editProfileState = () => {
+        this.setState({
+            editProfileContent: !this.state.editProfileContent
+        });
+    }
+
+    subtmitChanges = () => {
+        const { selectNationality, selectGender, game, region } = this.state
+        this.editProfile(selectNationality, selectGender, game, region);
+    }
+
+    getEditProfileData = () => {
+        this.setState({ isLoading: true })
+
+        const urls = [
+            `https://restcountries.eu/rest/v2/all?fields=name`,
+            `https://pokeapi.co/api/v2/version-group/`,
+            `https://pokeapi.co/api/v2/region/`]
+
+        Promise.all(urls.map(url =>
+            fetch(url).then(async (response) => {
+                return response.json().then(function (json) {
+                    return response.ok ? json : Promise.reject(json);
+                });
+            })))
+            .then(async (data) => this.setState({ isLoading: false, editProfileData: data, editProfileContent: !this.state.editProfileContent }))
+            .catch((error) => this.setState({ isLoading: false, editProfileData: error, editProfileContent: !this.state.editProfileContent }))
+    }
+
+    handleSelectChange = (value, action) => {
+        this.setState({ [action.name]: {label: value.value, value: value.value} });
+    }
+
     toggleFirstTime = (name, action) => {
         this.setState({
             modal: !this.state.modal,
@@ -43,61 +90,182 @@ class ownProfile extends Component {
 
     toggle = () => {
         this.setState({
-            modal: !this.state.modal,
+            modal: !this.state.modal
         });
     }
 
     render() {
-        const { removeFavoritePokemon, removePokemonFromTeam, removeFriend, getInfoPokemonPage, pokemonIQ } = this.props;
-        const { username, avatar, gender, nationality, favoritePokemons, favoriteTeam, triviaRecord, friends } = this.props.ownProfileContent
+        const { removeFavoritePokemon, removePokemonFromTeam, removeFriend, getInfoPokemonPage, pokemonIQ, editProfile } = this.props;
+        const { username, avatar, gender, nationality, favoritePokemons, favoriteTeam, triviaRecord, friends, favoriteGame, favoriteRegion } = this.props.ownProfileContent
         const { teamResults } = this.props.teamResults
         const { favoritesResults } = this.props.favoritesResults
         const { name, action } = this.state.modalContent;
-        let pokemon = require('pokemon');
-        let pokemonName = pokemon.getName(pokemonIQ.id)
+        const { editProfileContent, width, editProfileData, selectNationality, selectGame, selectRegion } = this.state;
+        var string = require('lodash/string');
+
+        const optionsNationality = []
+        const optionsGame = [];
+        const optionsRegion = [];
+
+        const customStyles = {
+            singleValue: (provided, state) => {
+                const opacity = state.isDisabled ? 0.5 : 1;
+                const transition = 'opacity 300ms';
+
+                return { ...provided, opacity, transition, color: '#ebebd3' };
+            },
+            option: (provided, state) => ({
+                ...provided,
+                color: state.isSelected ? '#f24643' : '#ffe066',
+                backgroundColor: state.isSelected ? '#ffe066' : '#f24643',
+                "&:hover": {
+                    backgroundColor: "#1688b9",
+                    fontWeight: 'bold',
+                    color: "#ebebd3"
+                }
+            }),
+            menu: (provided) => ({
+                ...provided,
+                borderRadius: 0,
+                marginTop: 0,
+            }),
+            menuList: (provided, state) => ({
+                ...provided,
+                backgroundColor: '#f24643',
+                color: '#ffe066',
+                padding: 0
+            }),
+            control: (provided, state) => ({
+                ...provided,
+                color: '#ffe066',
+                border: '1px solid #ffe066',
+                borderRadius: 3,
+                backgroundColor: state.isFocused ? '#f24643' : '#1688b9',
+                boxShadow: state.isFocused ? null : null,
+                "&:hover": {
+                    borderColor: "ffe066"
+                }
+            }),
+            dropdownIndicator: (provided, state) => ({
+                ...provided,
+                color: '#ffe066'
+            }),
+            placeholder: (provided, state) => ({
+                ...provided,
+                color: state.isFocused ? '#ffe066' : '#ebebd3',
+                fontWeight: state.isFocused ? 'bold' : 'normal',
+            }),
+        }
+
+        if (pokemonIQ) {
+            var pokemon = require('pokemon');
+            var pokemonName = pokemon.getName(pokemonIQ.id)
+        }
+
+        if (editProfileContent) {
+            for (let item of editProfileData[0]) {
+                optionsNationality.push({ value: item.name, label: item.name })
+            }
+
+            for (let item of editProfileData[1].results) {
+                optionsGame.push({ value: string.startCase(item.name), label: string.startCase(item.name) })
+            }
+
+            for (let item of editProfileData[2].results) {
+                optionsRegion.push({ value: string.startCase(item.name), label: string.startCase(item.name) })
+            }
+        }
 
         return (
             <Row>
-                <Col xs='12' className='text-center'>
+                <Col xs='12' md='6' className='text-center'>
                     <h1>{username}</h1>
+                </Col>
+                <Col xs='12' md='6' className='text-center'>
+                    {editProfileContent ? (
+                        <Button onClick={() => { this.editProfileState(); editProfile(selectNationality.value, selectGame.value ,selectRegion.value) }}>Save Changes</Button>
+                    ) : (
+                            <Button color='warning' onClick={() => { this.getEditProfileData(); }}>Edit Profile</Button>
+                        )
+                    }
                 </Col>
                 <Col xs='12'>
                     <Row className='text-center align-items-center'>
+                        {width < 600 &&
+                            <Col className='d-flex justify-content-center' xs='12' md='2' lg='2'>
+                                <img alt={avatar} src={`https://www.serebii.net/diamondpearl/avatar/${avatar}.png`} />
+                            </Col>
+                        }
                         <Col xs='12' md='3'>
                             <h5 className='col-12'>Gender:</h5>
                             <p className='col-12'>{gender}</p>
                         </Col>
                         <Col xs='12' md='2'>
                             <h5 className='col-12'>From:</h5>
-                            <p className='col-12'>{nationality}</p>
+                            {editProfileContent ?
+                                (<Select required
+                                    name='selectNationality'
+                                    styles={customStyles}
+                                    value={selectNationality}
+                                    onChange={this.handleSelectChange}
+                                    options={optionsNationality}
+                                    isSearchable={false}
+                                />)
+                                :
+                                (<p className='col-12'>{nationality}</p>)
+                            }
                         </Col>
-                        <Col className='d-flex justify-content-center' xs='12' md='2' lg='2'>
-                            <img alt={avatar} src={`https://www.serebii.net/diamondpearl/avatar/${avatar}.png`} />
-                        </Col>
+                        {width > 600 &&
+                            <Col className='d-flex justify-content-center' xs='12' md='2' lg='2'>
+                                <img alt={avatar} src={`https://www.serebii.net/diamondpearl/avatar/${avatar}.png`} />
+                            </Col>
+                        }
                         <Col xs='12' md='2'>
                             <h5 className='col-12'>Favorite Game:</h5>
-                            <p className='col-12'>{nationality}</p>
+                            {editProfileContent ?
+                                (<Select required
+                                    name='selectGame'
+                                    styles={customStyles}
+                                    value={selectGame}
+                                    onChange={this.handleSelectChange}
+                                    options={optionsGame}
+                                    isSearchable={false}
+                                />)
+                                :
+                                (<p className='col-12'>{favoriteGame}</p>)
+                            }
                         </Col>
                         <Col xs='12' md='3'>
                             <h5 className='col-12'>Favorite Generation:</h5>
-                            <p className='col-12'>{gender}</p>
+                            {editProfileContent ?
+                                (<Select required
+                                    name='selectRegion'
+                                    styles={customStyles}
+                                    value={selectRegion}
+                                    onChange={this.handleSelectChange}
+                                    options={optionsRegion}
+                                    isSearchable={false}
+                                />)
+                                :
+                                (<p className='col-12'>{favoriteRegion}</p>)
+                            }
                         </Col>
                     </Row>
                 </Col>
                 <hr className='col-8 mx-auto my-4 my-lg-5' />
-                <Col xs='12' md='6' lg='12'>
+                <Col xs='12'>
                     <Row className='text-center justify-content-center'>
                         <Col xs='12' md='6' lg='4'>
                             <h3>Personality</h3>
                             {favoritePokemons &&
                                 favoritePokemons.length !== 0 ? (<p>{favoritesResults}</p>) : (
-                                    <p>You still don't have any pokémons on your Favorites to calculate this result! Search for your favorites in the <Link to='/pokemon-list'>PokéList!</Link></p>)}
+                                    <p>You still don't have any pokémons on your Favorites to calculate this result! Search for your favorites in the <Link className='basicLink' to='/pokemon-list'>PokéList!</Link></p>)}
                         </Col>
                         <Col xs='12' md='6' lg='4'>
                             <h3>Battle Personality</h3>
                             {favoriteTeam &&
                                 favoriteTeam.length !== 0 ? (<p>{teamResults}</p>) : (
-                                    <p>You still don't have any pokémons on your Favorite Team to calculate this result! Search for your team members in the <Link to='/pokemon-list'>PokéList!</Link></p>)}
+                                    <p>You still don't have any pokémons on your Favorite Team to calculate this result! Search for your team members in the <Link className='basicLink' to='/pokemon-list'>PokéList!</Link></p>)}
                         </Col>
                     </Row>
                 </Col>
@@ -107,7 +275,7 @@ class ownProfile extends Component {
                         <h3 className='col-12'>Inner Pokémon IQ</h3>
                         {triviaRecord &&
                             !pokemonIQ ? (
-                                <p className='col-12'>You still haven't played any PokéTrivia to calculte your Inner Pokémon IQ, start playing by <Link to='/pokemon-trivia'>clicking here!</Link></p>) : (
+                                <p className='col-12'>You still haven't played any PokéTrivia to calculte your Inner Pokémon IQ, start playing by <Link className='basicLink' to='/pokemon-trivia'>clicking here!</Link></p>) : (
                                 <>
                                     <p>You're intelligent as a {pokemonName}!</p>
                                     <Col xs='6' lg='3' className='py-3'>
@@ -120,13 +288,13 @@ class ownProfile extends Component {
                     </Row>
                 </Col>
                 <hr className='col-8 mx-auto' />
-                <Col className='pb-4 pb-lg-5' xs='12' md='6' lg='12'>
+                <Col className='pb-4 pb-lg-5' xs='12'>
                     <Row className='text-center justify-content-center'>
                         <Col className='py-3 py-lg-4' xs='12' md='6'>
                             <h3>Favorite Pokémons</h3>
                             {favoritePokemons &&
                                 favoritePokemons.length === 0 ? (
-                                    <p>You still haven't added any Favorite Pokémons to your list yet! Search for your favorites in the PokéList!</p>
+                                    <p>You still haven't added any Favorite Pokémons to your list yet! Search for your favorites in the <Link className='basicLink' to='/pokemon-list'>PokéList!</Link></p>
                                 ) : (
                                     <Row className='justify-content-center'>
                                         {favoritePokemons.map((item, key) =>
@@ -145,7 +313,7 @@ class ownProfile extends Component {
                             <h3>Favorite Pokémon Team</h3>
                             {favoriteTeam &&
                                 favoriteTeam.length === 0 ? (
-                                    <p>You still haven't added any Pokémon to your Favorite Team! Search for your team members in the PokéList!</p>
+                                    <p>You still haven't added any Pokémon to your Favorite Team! Search for your team members in the <Link className='basicLink' to='/pokemon-list'>PokéList!</Link></p>
                                 ) : (
                                     <Row className='justify-content-center'>
                                         {favoriteTeam.map((item, key) =>
@@ -169,10 +337,10 @@ class ownProfile extends Component {
                         <h3 className='col-12'>Friends</h3>
                         {friends &&
                             friends.length === 0 ? (
-                                <p>You still haven't added any Pokémon Trainers to your friends list! Check cool trainers on the <Link to='/pokemon-trainers'>PokéTrainers</Link> tab!</p>
+                                <p>You still haven't added any Pokémon Trainers to your friends list! Check cool trainers on the <Link className='basicLink' to='/pokemon-trainers'>PokéTrainers</Link> tab!</p>
                             ) : (
                                 friends.map((item, key) =>
-                                    <Col xs='12' md='4' lg='2'>
+                                    <Col key={key} xs='12' md='4' lg='2'>
                                         <i style={{ position: 'relative', top: '-40px' }} id={item.name} onClick={() => removeFriend(item.name)} className="far fa-times-circle"></i>
                                         <Link className='basic-link' key={key} to={`pokemon-trainers/profile/${item.name}`}>
                                             <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} />
@@ -202,7 +370,7 @@ class ownProfile extends Component {
                         <Button color="danger w-25 mx-3" onClick={this.toggle}>No</Button>
                     </ModalFooter>
                 </Modal>
-            </Row>
+            </Row >
         )
     }
 }
@@ -212,13 +380,15 @@ const mapDispatchToProps = (dispatch) => {
         getInfoPokemonPage: (pokemon) => dispatch(getInfoPokemonPage(pokemon)),
         removeFavoritePokemon: (pokemon) => dispatch(removeFavoritePokemon(pokemon)),
         removePokemonFromTeam: (pokemon) => dispatch(removePokemonFromTeam(pokemon)),
-        removeFriend: (user) => dispatch(removeFriend(user))
+        removeFriend: (user) => dispatch(removeFriend(user)),
+        editProfile: (nationalityForm, genderForm, gameForm, regionForm) => dispatch(editProfile(nationalityForm, genderForm, gameForm, regionForm))
     }
 }
 
 const mapStateToProps = (state) => {
     return {
-        pokemonIQ: state.apiCalls.apiData.getPokemonIQ
+        pokemonIQ: state.apiCalls.apiData.getPokemonIQ,
+        profileContent: state.firebase.profile
     }
 }
 

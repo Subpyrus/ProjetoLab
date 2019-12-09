@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { Col } from 'reactstrap';
+import { Col, Dropdown, DropdownToggle, DropdownMenu, DropdownItem  } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import InfiniteScroll from "react-infinite-scroll-component";
 import SearchPokemon from '../components/pokemonList/SearchPokemon';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import LazyLoad from 'react-lazyload';
 import { connect } from 'react-redux';
 import { getInfoPokemonPage } from '../store/actions/apiActions';
-import Loading from '../components/layout/Loading';
 
 class PokemonList extends Component {
     constructor(props) {
@@ -25,6 +23,7 @@ class PokemonList extends Component {
             dropDownList: this.props.regions
         }
     }
+
     componentDidMount() {
         this._isMounted = true;
         console.log(this.props)
@@ -77,7 +76,6 @@ class PokemonList extends Component {
             currentIndex: currentIndex
         });
     };
-
 
     // Dropdown Menu Search
     toggle = (event) => {
