@@ -87,8 +87,6 @@ class PokemonList extends Component {
 
 
     handleSelectChange = (value, action) => {
-        console.log(value);
-        console.log(action)
         if (action.name === 'typeSearch') {
             if (value.value === 'Region') {
                 this.getPokedex('national', 'Region')
