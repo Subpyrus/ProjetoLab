@@ -50,7 +50,7 @@ exports.userDataChanged = functions.firestore
             }
         } else if (before.friends.length !== after.friends.length) {
             const notification = {
-                content: `Added ${after.friends[user.friends.length - 1].username} to their friend list`,
+                content: `Added ${after.friends[after.friends.length - 1].username} to their friend list`,
                 user: `${after.username}`,
                 avatar: `${after.avatar}`,
                 time: admin.firestore.FieldValue.serverTimestamp()
