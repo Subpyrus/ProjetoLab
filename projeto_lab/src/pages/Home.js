@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
+import { getPokemonForProfileIQ } from '../store/actions/apiActions'
 
 const Home = (props) => {
 
@@ -14,7 +15,6 @@ const Home = (props) => {
     var recentFriends = array.takeRight(profileContent.friends, 5);
 
     notifications = array.takeRight(notifications, 5)
-    console.log(array.takeRight(notifications, 5))
 
     if (!auth.uid) {
         return (
@@ -71,10 +71,17 @@ const Home = (props) => {
                                         {!recentFriends ? (
                                             <p>You don't have any friends in your list, check out the <Link to='/pokemon-trainers'>PokéTrainers</Link> to add fellow Pokémon Trainers.</p>) :
                                             (recentFriends.map((item, key) =>
-                                                <Link key={key} to={`pokemon-trainers/profile/${item.name}`}>
-                                                    <p>{item.name}</p>
-                                                    <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} />
-                                                </Link>
+                                                <Col>
+                                                    <Link to={{
+                                                        pathname: `/pokemon-trainers/profile/${item.username}`,
+                                                        state: {
+                                                            user: item
+                                                        }
+                                                    }}>
+                                                        <p>{item.name}</p>
+                                                        <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} />
+                                                    </Link>
+                                                </Col>
                                             ))}
                                     </Col>
                                 </Col>

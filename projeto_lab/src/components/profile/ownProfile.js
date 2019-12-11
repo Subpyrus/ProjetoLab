@@ -97,12 +97,10 @@ class ownProfile extends Component {
     render() {
         const { removeFavoritePokemon, removePokemonFromTeam, removeFriend, getInfoPokemonPage, pokemonIQ, editProfile } = this.props;
         const { username, avatar, gender, nationality, favoritePokemons, favoriteTeam, triviaRecord, friends, favoriteGame, favoriteRegion } = this.props.ownProfileContent
-        const { teamResults } = this.props.teamResults
         const { favoritesResults } = this.props.favoritesResults
         const { name, action } = this.state.modalContent;
         const { editProfileContent, width, editProfileData, selectNationality, selectGame, selectRegion } = this.state;
         var string = require('lodash/string');
-
         const optionsNationality = []
         const optionsGame = [];
         const optionsRegion = [];
@@ -264,7 +262,7 @@ class ownProfile extends Component {
                         <Col xs='12' md='6' lg='4'>
                             <h3>Battle Personality</h3>
                             {favoriteTeam &&
-                                favoriteTeam.length !== 0 ? (<p>{teamResults}</p>) : (
+                                favoriteTeam.length !== 0 ? (<div><h4>Title: {this.props.teamResults[0]}</h4><p>Trait: {this.props.teamResults[1]}</p></div>) : (
                                     <p>You still don't have any pokémons on your Favorite Team to calculate this result! Search for your team members in the PokéList!</p>)}
                         </Col>
                     </Row>
