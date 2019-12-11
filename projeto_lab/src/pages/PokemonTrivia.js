@@ -111,7 +111,7 @@ class PokemonTrivia extends Component {
                         </Col>
                     </Col>
                     <Col className='text-center' xs='12' md='4' lg='5'>
-                        <img className='img-fluid py-2 py-md-0' src='' alt='alakazamTrivia' />
+                        <img className='img-fluid py-2 py-md-0' src={require('../imagens/alakazam.png')} alt='alakazamTrivia' />
                     </Col>
                 </Row>
             )
