@@ -29,7 +29,6 @@ class PokePage extends PureComponent {
     render() {
         const { auth, removePokemonFromTeam, addPokemonToTeam, removeFavoritePokemon, addFavoritePokemon, pokemonInfo, pokemonEvChainInfo } = this.props;
         const { moves, stats, id } = this.props.pokemonInfo[0];
-        console.log(moves)
         const { genera, names, flavor_text_entries } = this.props.pokemonInfo[1];
         var string = require('lodash/string')
         let pokemon = require('pokemon');

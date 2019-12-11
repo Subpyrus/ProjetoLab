@@ -47,7 +47,6 @@ class PokemonTrainers extends Component {
         if ((!this.state.auth.uid) && (this.state.ready === true)) {
             return <Redirect to='/sign-in' />
         } else {
-            console.log(this.state.users)
             return (
                 <>
                     <h1>PokéTrainers</h1>
