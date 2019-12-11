@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'reactstrap';
+import { Row, Col, FormGroup, Input } from 'reactstrap';
 import { withRouter, Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getPokemonForProfileIQ } from '../store/actions/apiActions'
@@ -8,25 +8,54 @@ class PokemonTrainers extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            page: ''
+            ready: false,
+            users: [],
+            auth: [],
+            profileContent: []
+        }
+    }
+
+    handleSearchChange = (event) => {
+        const { value } = event.target;
+        if (value !== "") {
+            var trainers;
+            var trainerSearched = [];
+            for (let pokedexItem of this.state.allPokedexEntries) {
+                if (pokedexItem.pokemon_species.name.startsWith(pokemon) || pokedexItem.pokemon_species.name.includes(pokemon)) {
+                    pokemonSearched.push(pokedexItem)
+                }
+            }
+            this.setState({ items: this.calculatePage(pokemonSearched, 1), currentIndex: 1, searchPokemon: pokemonSearched });
+        } else {
+            const { allPokedexEntries } = this.state
+            this.setState({ items: this.calculatePage(allPokedexEntries, 1), currentIndex: 1, searchPokemon: '' });
         }
     }
 
     render() {
-        const { auth, users, profileContent } = this.props
-        var array = require('lodash/array')
-        array.remove(users, (item) => {
-            return item.username === profileContent.username;
-        });
 
-        if (!auth.uid) {
+        if(this.state.ready === false) {
+            const { auth, users, profileContent } = this.props
+            var array = require('lodash/array')
+            array.remove(users, (item) => {
+                return item.username === profileContent.username;
+            });
+            this.setState({users: users, ready: true, profileContent: profileContent, auth: auth})
+        }   
+        
+        if ((!this.state.auth.uid) && (this.state.ready === true)) {
             return <Redirect to='/sign-in' />
         } else {
             return (
                 <>
                     <h1>PokéTrainers</h1>
+                    <Col className='col-12 col-md-6 col-lg-3 px-2 py-2 py-md-0'>
+                        <FormGroup className='m-0'>
+                            <Input type="text" placeholder='search pokémon trainer' onChange={this.handleSearchChange} />
+                        </FormGroup>
+                    </Col>
                     <Col xs='12' className='p-0'>
-                        {users.map((item, key) =>
+                        {this.state.users.map((item, key) =>
                             <Col xs='12' key={key}>
                                 <Link onClick={() => getPokemonForProfileIQ(item.triviaRecord.correctAnswer, item.triviaRecord.wrongAnswers)} to={{
                                     pathname: `/pokemon-trainers/profile/${item.username}`,

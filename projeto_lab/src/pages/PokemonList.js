@@ -110,7 +110,6 @@ class PokemonList extends Component {
         let optionsSelectSpecifics = []
 
         for (let item of this.state.selectList) {
-            console.log(item)
             optionsSelectSpecifics.push({ value: item.name, label: string.startCase(item.name) })
         }
 
