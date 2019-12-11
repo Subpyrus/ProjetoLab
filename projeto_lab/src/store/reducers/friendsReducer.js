@@ -22,7 +22,7 @@ const friendsReducer = (state = initState, action) => {
         case 'REMOVE_FRIEND_ERROR':
             return {
                 ...state,
-                actionFriendError: action.error.message
+                actionFriendError: action.error
             }
         default:
             return state

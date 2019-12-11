@@ -12,7 +12,7 @@ exports.userDataChanged = functions.firestore
         var before = doc.before.data();
         var after = doc.after.data();
 
-        if ((before.favoritePokemons === after.favoritePokemons) === false && (before.favoriteTeam !== after.favoriteTeam) === true) {
+        if (before.favoritePokemons.length !== after.favoritePokemons.length) {
             if (after.addFavoriteAction === true) {
                 const notification = {
                     content: `Added ${after.favoritePokemons[after.favoritePokemons.length - 1].name} to their Favorites Pokémon List`,
@@ -30,7 +30,7 @@ exports.userDataChanged = functions.firestore
                 }
                 return createNotification(notification)
             }
-        } else if ((before.favoriteTeam === after.favoriteTeam) === false && (before.favoritePokemons !== after.favoritePokemons) === true) {
+        } else if (before.favoriteTeam.length !== after.favoriteTeam.length) {
             if (after.addFavoriteAction === true) {
                 const notification = {
                     content: `Added ${after.favoriteTeam[after.favoriteTeam.length - 1].name} to their Favorite Pokémon Team`,
@@ -48,7 +48,7 @@ exports.userDataChanged = functions.firestore
                 }
                 return createNotification(notification)
             }
-        } else if (before.friends !== after.friends) {
+        } else if (before.friends.length !== after.friends.length) {
             const notification = {
                 content: `Added ${after.friends[user.friends.length - 1].username} to their friend list`,
                 user: `${after.username}`,

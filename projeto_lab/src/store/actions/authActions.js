@@ -1,16 +1,16 @@
 export const signIn = (credentials) => {
     return (dispatch, getState, { getFirebase }) => {
         const firebase = getFirebase();
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => 
-        firebase.auth().signInWithEmailAndPassword(
-            credentials.email,
-            credentials.password
-        )).then((response) => {
-            console.log(response)
-            dispatch({ type: 'LOGIN_SUCCESS' })
-        }).catch((error) => {
-            dispatch({ type: 'LOGIN_ERROR', error })
-        })
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() =>
+            firebase.auth().signInWithEmailAndPassword(
+                credentials.email,
+                credentials.password
+            )).then((response) => {
+                console.log(response)
+                dispatch({ type: 'LOGIN_SUCCESS' })
+            }).catch((error) => {
+                dispatch({ type: 'LOGIN_ERROR', error })
+            })
     }
 }
 
@@ -55,4 +55,25 @@ export const signUp = (newUser) => {
             dispatch({ type: 'SIGNUP-ERROR' })
         })
     }
-} 
+}
+
+export const recoverPassword = (email) => {
+    return (dispatch, getState, { getFirebase }) => {
+        const firebase = getFirebase();
+        firebase
+            .auth()
+            .sendPasswordResetEmail(email)
+            .then(() =>
+                dispatch({
+                    type: 'RESET_PASSWORD_SUCCESS',
+                    payload: "Reset password email sent. Go check your inbox."
+                })
+            )
+            .catch(error => {
+                dispatch({
+                    type: 'RESET_PASSWORD_ERROR',
+                    payload: error.message
+                });
+            });
+    }
+}
