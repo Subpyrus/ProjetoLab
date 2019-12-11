@@ -76,7 +76,7 @@ const othersProfile = (props) => {
                     <h3 className='col-12'>Inner Pokémon IQ</h3>
                     {triviaRecord &&
                         !pokemonIQ ? (
-                            <p className='col-12'>You still haven't played any PokéTrivia to calculte your Inner Pokémon IQ, start playing by <Link to='/pokemon-trivia'>clicking here!</Link></p>) : (
+                            <p className='col-12'>You still haven't played any PokéTrivia to calculte your Inner Pokémon IQ, start playing by <Link className="basicLink" to='/pokemon-trivia'>clicking here!</Link></p>) : (
                             <>
                                 <p>You're intelligent as a {pokemonName}!</p>
                                 <Col xs='6' lg='3' className='py-3'>

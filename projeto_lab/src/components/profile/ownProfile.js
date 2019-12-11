@@ -259,13 +259,13 @@ class ownProfile extends Component {
                             <h3>Personality</h3>
                             {favoritePokemons &&
                                 favoritePokemons.length !== 0 ? (<p>{favoritesResults}</p>) : (
-                                    <p>You still don't have any pokémons on your Favorites to calculate this result! Search for your favorites in the <Link className='basicLink' to='/pokemon-list'>PokéList!</Link></p>)}
+                                    <p>You still don't have any pokémons on your Favorites to calculate this result! Search for your favorites in the PokéList!</p>)}
                         </Col>
                         <Col xs='12' md='6' lg='4'>
                             <h3>Battle Personality</h3>
                             {favoriteTeam &&
                                 favoriteTeam.length !== 0 ? (<p>{teamResults}</p>) : (
-                                    <p>You still don't have any pokémons on your Favorite Team to calculate this result! Search for your team members in the <Link className='basicLink' to='/pokemon-list'>PokéList!</Link></p>)}
+                                    <p>You still don't have any pokémons on your Favorite Team to calculate this result! Search for your team members in the PokéList!</p>)}
                         </Col>
                     </Row>
                 </Col>
@@ -294,7 +294,7 @@ class ownProfile extends Component {
                             <h3>Favorite Pokémons</h3>
                             {favoritePokemons &&
                                 favoritePokemons.length === 0 ? (
-                                    <p>You still haven't added any Favorite Pokémons to your list yet! Search for your favorites in the <Link className='basicLink' to='/pokemon-list'>PokéList!</Link></p>
+                                    <p>You still haven't added any Favorite Pokémons to your list yet! Search for your favorites in the PokéList!</p>
                                 ) : (
                                     <Row className='justify-content-center'>
                                         {favoritePokemons.map((item, key) =>
@@ -313,7 +313,7 @@ class ownProfile extends Component {
                             <h3>Favorite Pokémon Team</h3>
                             {favoriteTeam &&
                                 favoriteTeam.length === 0 ? (
-                                    <p>You still haven't added any Pokémon to your Favorite Team! Search for your team members in the <Link className='basicLink' to='/pokemon-list'>PokéList!</Link></p>
+                                    <p>You still haven't added any Pokémon to your Favorite Team! Search for your team members in the PokéList!</p>
                                 ) : (
                                     <Row className='justify-content-center'>
                                         {favoriteTeam.map((item, key) =>
@@ -337,7 +337,7 @@ class ownProfile extends Component {
                         <h3 className='col-12'>Friends</h3>
                         {friends &&
                             friends.length === 0 ? (
-                                <p>You still haven't added any Pokémon Trainers to your friends list! Check cool trainers on the <Link className='basicLink' to='/pokemon-trainers'>PokéTrainers</Link> tab!</p>
+                                <p>You still haven't added any Pokémon Trainers to your friends list! Check cool trainers on the PokéTrainers tab!</p>
                             ) : (
                                 friends.map((item, key) =>
                                     <Col key={key} xs='12' md='4' lg='2'>
