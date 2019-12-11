@@ -12,44 +12,38 @@ exports.userDataChanged = functions.firestore
         var before = doc.before.data();
         var after = doc.after.data();
 
-        console.log(before.favoritePokemons)
-        console.log(after.favoritePokemons)
-        console.log(before.favoritePokemons !== after.favoritePokemons)
-        console.log(before.favoriteTeam !== after.favoriteTeam)
-
-        if (before.favoritePokemons !== after.favoritePokemons) {
-            console.log('olá')
+        if ((before.favoritePokemons === after.favoritePokemons) === false && (before.favoriteTeam !== after.favoriteTeam) === true) {
             if (after.addFavoriteAction === true) {
                 const notification = {
                     content: `Added ${after.favoritePokemons[after.favoritePokemons.length - 1].name} to their Favorites Pokémon List`,
-                    user: `${after.username}`,
-                    avatar: `${after.avatar}`,
+                    user: after.username,
+                    avatar: after.avatar,
                     time: admin.firestore.FieldValue.serverTimestamp()
                 }
                 return createNotification(notification)
             } else {
                 const notification = {
                     content: `Removed ${before.favoritePokemons[before.favoritePokemons.length - 1].name} from their Favorites Pokémon List`,
-                    user: `${after.username}`,
-                    avatar: `${after.avatar}`,
+                    user: after.username,
+                    avatar: after.avatar,
                     time: admin.firestore.FieldValue.serverTimestamp()
                 }
                 return createNotification(notification)
             }
-        } else if (before.favoriteTeam !== after.favoriteTeam) {
+        } else if ((before.favoriteTeam === after.favoriteTeam) === false && (before.favoritePokemons !== after.favoritePokemons) === true) {
             if (after.addFavoriteAction === true) {
                 const notification = {
-                    content: `Added ${after.favoritePokemons[after.favoritePokemons.length - 1].name} to their Favorite Pokémon Team`,
-                    user: `${after.username}`,
-                    avatar: `${after.avatar}`,
+                    content: `Added ${after.favoriteTeam[after.favoriteTeam.length - 1].name} to their Favorite Pokémon Team`,
+                    user: after.username,
+                    avatar: after.avatar,
                     time: admin.firestore.FieldValue.serverTimestamp()
                 }
                 return createNotification(notification)
             } else {
                 const notification = {
-                    content: `Removed ${before.favoritePokemons[before.favoritePokemons.length - 1].name} from their Favorite Pokémon Team`,
-                    user: `${after.username}`,
-                    avatar: `${after.avatar}`,
+                    content: `Removed ${before.favoriteTeam[before.favoriteTeam.length - 1].name} from their Favorite Pokémon Team`,
+                    user: after.username,
+                    avatar: after.avatar,
                     time: admin.firestore.FieldValue.serverTimestamp()
                 }
                 return createNotification(notification)
