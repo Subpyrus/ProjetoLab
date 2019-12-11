@@ -1,7 +1,7 @@
 var array = require('lodash/array')
 
 export const addFriend = (user) => {
-    return (dispatch, getState, { getFirebase, getFirestore }) => {
+    return (dispatch, getState, { getFirestore }) => {
         const firestore = getFirestore();
         const uid = getState().firebase.auth.uid;
         const friendsArray = getState().firebase.profile.friends;
@@ -16,18 +16,17 @@ export const addFriend = (user) => {
                 });
             }).then(() => {
                 dispatch({ type: 'ADD_FRIEND_SUCCESS' })
-            }).catch(() => {
-                dispatch({ type: 'ADD_FRIEND_ERROR' })
+            }).catch((error) => {
+                dispatch({ type: 'ADD_FRIEND_ERROR', error: error })
             })
     }
 }
 
 export const removeFriend = (user) => {
-    return (dispatch, getState, { getFirebase, getFirestore }) => {
+    return (dispatch, getState, { getFirestore }) => {
         const firestore = getFirestore();
         const uid = getState().firebase.auth.uid;
         const friendsArray = getState().firebase.profile.friends;
-        console.log(friendsArray)
         firestore.collection('users').where("uid", "==", uid).get()
             .then(() => {
                 array.remove(friendsArray, (item) => {
@@ -38,8 +37,8 @@ export const removeFriend = (user) => {
                 });
             }).then(() => {
                 dispatch({ type: 'REMOVE_FRIEND_SUCCESS' })
-            }).catch(() => {
-                dispatch({ type: 'REMOVE_FRIEND_ERROR' })
+            }).catch((error) => {
+                dispatch({ type: 'REMOVE_FRIEND_ERROR', error: error })
             })
     }
 }
