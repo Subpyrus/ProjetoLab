@@ -9,6 +9,7 @@ class PokemonTrainers extends Component {
         super(props)
         this.state = {
             ready: false,
+            allUsers: [],
             users: [],
             auth: [],
             profileContent: []
@@ -18,17 +19,17 @@ class PokemonTrainers extends Component {
     handleSearchChange = (event) => {
         const { value } = event.target;
         if (value !== "") {
-            var trainers;
+            var trainer = value;
             var trainerSearched = [];
-            for (let pokedexItem of this.state.allPokedexEntries) {
-                if (pokedexItem.pokemon_species.name.startsWith(pokemon) || pokedexItem.pokemon_species.name.includes(pokemon)) {
-                    pokemonSearched.push(pokedexItem)
+            for (let user of this.state.allUsers) {
+                if (user.username.startsWith(trainer) || user.username.includes(trainer)) {
+                    trainerSearched.push(user)
                 }
             }
-            this.setState({ items: this.calculatePage(pokemonSearched, 1), currentIndex: 1, searchPokemon: pokemonSearched });
+            this.setState({ users: trainerSearched});
         } else {
-            const { allPokedexEntries } = this.state
-            this.setState({ items: this.calculatePage(allPokedexEntries, 1), currentIndex: 1, searchPokemon: '' });
+            const { allUsers } = this.state
+            this.setState({ users: allUsers });
         }
     }
 
@@ -40,12 +41,13 @@ class PokemonTrainers extends Component {
             array.remove(users, (item) => {
                 return item.username === profileContent.username;
             });
-            this.setState({users: users, ready: true, profileContent: profileContent, auth: auth})
+            this.setState({allUsers: users, users: users, ready: true, profileContent: profileContent, auth: auth})
         }   
         
         if ((!this.state.auth.uid) && (this.state.ready === true)) {
             return <Redirect to='/sign-in' />
         } else {
+            console.log(this.state.users)
             return (
                 <>
                     <h1>PokéTrainers</h1>
