@@ -55,23 +55,23 @@ class PokemonTrivia extends Component {
     }
 
     correctAnswer = () => {
-        this.setState({ btnColorCorrect: true })
+        this.setState({ btnColorCorrect: true, btnColorWrong: true})
         var changeQuestion = this.state.questionNumber + 1;
         var correct = this.state.correctAnswers + 1;
         if (changeQuestion === 10) {
             this.props.addTriviaResult({ correctAnswers: this.state.correctAnswers, wrongAnswers: this.state.incorrectAnswers })
         }
-        setTimeout(() => { this.setState({ randomized: false, correctAnswers: correct, ObjectQuestion: this.state.questions[this.state.arrayRandom[changeQuestion]], questionNumber: changeQuestion, btnColorCorrect: false }) }, 3000)
+        setTimeout(() => { this.setState({ randomized: false, correctAnswers: correct, ObjectQuestion: this.state.questions[this.state.arrayRandom[changeQuestion]], questionNumber: changeQuestion, btnColorCorrect: false, btnColorWrong: false }) }, 3000)
     }
 
     incorrectAnswer = () => {
-        this.setState({ btnColorWrong: true })
+        this.setState({ btnColorWrong: true, btnColorCorrect: true })
         var changeQuestion = this.state.questionNumber + 1;
         if (changeQuestion === 10) {
             this.props.addTriviaResult({ correctAnswers: this.state.correctAnswers, wrongAnswers: this.state.incorrectAnswers })
         }
         var incorrect = this.state.incorrectAnswers + 1;
-        setTimeout(() => { this.setState({ randomized: false, incorrectAnswers: incorrect, ObjectQuestion: this.state.questions[this.state.arrayRandom[changeQuestion]], questionNumber: changeQuestion, btnColorWrong: false }) }, 3000)
+        setTimeout(() => { this.setState({ randomized: false, incorrectAnswers: incorrect, ObjectQuestion: this.state.questions[this.state.arrayRandom[changeQuestion]], questionNumber: changeQuestion, btnColorWrong: false, btnColorCorrect: false }) }, 3000)
     }
 
     start = () => {
@@ -128,8 +128,8 @@ class PokemonTrivia extends Component {
                             <Col xs='11' md='10'>
                                 {this.state.answers.map((index, key) =>
                                     index.res === 'correct' ?
-                                        (<Button className='my-3' key={key} block outline color={changeColorCorrect} onClick={() => { this.correctAnswer(); this.incorrectAnswer() }}>{index.answer}</Button>) :
-                                        (<Button className='my-3' key={key} block outline color={changeColorWrong} onClick={() => { this.correctAnswer(); this.incorrectAnswer() }}>{index.answer}</Button>)
+                                        (<Button className='my-3' key={key} block outline color={changeColorCorrect} onClick={() => { this.correctAnswer() }}>{index.answer}</Button>) :
+                                        (<Button className='my-3' key={key} block outline color={changeColorWrong} onClick={() => { this.incorrectAnswer() }}>{index.answer}</Button>)
                                 )}
                             </Col>
                         </Row>
