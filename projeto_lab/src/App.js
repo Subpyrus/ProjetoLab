@@ -1,5 +1,5 @@
 import './App.scss';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Transition, animated } from 'react-spring/renderprops';
 import Layout from "./components/layout/Layout";
@@ -13,6 +13,7 @@ import Trivia from "./pages/PokemonTrivia";
 import Profile from './pages/Profile';
 import SignUp from './pages/auth/SignUp';
 import SignIn from './pages/auth/SignIn';
+import RecoverPassword from './pages/auth/RecoverPassword';
 import Loading from './components/layout/Loading';
 import Error from './components/layout/Error';
 import NoMatch from './components/layout/NoMatch';
@@ -38,20 +39,7 @@ const AnimatedRoute = ({ children }) => (
   />
 )
 
-class App extends PureComponent {
-  _isMounted = false;
-  constructor(props) {
-    super(props);
-    this.state = {
-      getPokemonSearch: [],
-      getPokemon: [],
-      getPokemonVideo: [],
-      getPokedex: [],
-      loading: false,
-      error: null,
-      inputValue: '',
-    }
-  }
+class App extends Component {
 
   componentDidMount() {
     this._isMounted = true;
@@ -81,8 +69,8 @@ class App extends PureComponent {
           <NavigationBar getPokedex={this.getPokedex} />
           <AbsoluteWrapper>
             <Layout>
-              {isLoading ? (<Loading height={'68vh'} />) :
-                error ? (<Error error={this.state.error} />) :
+              {isLoading ? (<Loading height={'65vh'} />) :
+                error ? (<Error error={error} />) :
                   (
                     <AnimatedRoute>
                       {location => (
@@ -101,6 +89,7 @@ class App extends PureComponent {
                           />
                           <Route exact path="/sign-up" component={SignUp} />
                           <Route exact path="/sign-in" component={SignIn} />
+                          <Route exact path="/sign-in/recover-password" component={RecoverPassword} />
                           <Route component={NoMatch} />
                         </Switch>
                       )}

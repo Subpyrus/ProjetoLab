@@ -6,15 +6,11 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
-import { getPokemonForProfileIQ } from '../store/actions/apiActions'
 
 const Home = (props) => {
-
     var array = require('lodash/array')
     let { auth, notifications, profileContent } = props
-    var recentFriends = array.takeRight(profileContent.friends, 5);
-
-    notifications = array.takeRight(notifications, 5)
+    var recentFriends = array.takeRight(profileContent.friends, 6);
 
     if (!auth.uid) {
         return (
@@ -39,18 +35,18 @@ const Home = (props) => {
                 {notifications ? (
                     <Row>
                         <Col xs='12' md='8' className='px-0 pb-5'>
-                            <h3 className='col-12'>Your Recent/Friends Activity</h3>
+                            <h3 className='col-12'>All Users Activity</h3>
                             <Col xs='12'>
                                 {notifications.map((item, key) => {
                                     if (item.user !== profileContent.username) {
                                         return (
                                             <Col xs='12' key={key}>
-                                                <Row className='p-2 text-center d-flex align-items-md-center'>
+                                                <Row className='p-2 text-center d-flex align-items-center'>
                                                     <Col xs='12' sm='6' md='2' className='py-2 py-md-0'>
                                                         <img src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} alt={item.avatar} />
                                                     </Col>
                                                     <Col xs='12' sm='6' md='4' className='py-2 py-md-0'>
-                                                        {item.user} - <small>{moment(item.time.toDate()).fromNow()}</small>
+                                                        <p className='m-0' style={{ color: '#f24643' }}><b>{item.user}</b> - <small>{moment(item.time.toDate()).fromNow()}</small></p>
                                                     </Col>
                                                     <Col xs='12' md='6' className='py-2 py-md-0'>
                                                         {item.content}
@@ -65,28 +61,24 @@ const Home = (props) => {
                         </Col>
                         <Col xs='12' md='4'>
                             <Row>
-                                <Col xs='12'>
-                                    <h3 className='col-12'>Recent Friends</h3>
+                                <h3 className='col-12'>Recent Friends</h3>
+                                {!recentFriends ? (
                                     <Col xs='12'>
-                                        {!recentFriends ? (
-                                            <p>You don't have any friends in your list, check out the <Link to='/pokemon-trainers'>PokéTrainers</Link> to add fellow Pokémon Trainers.</p>) :
-                                            (recentFriends.map((item, key) =>
-                                                <Col>
-                                                    <Link to={{
-                                                        pathname: `/pokemon-trainers/profile/${item.username}`,
-                                                        state: {
-                                                            user: item
-                                                        }
-                                                    }}>
-                                                        <p>{item.name}</p>
-                                                        <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} />
-                                                    </Link>
-                                                </Col>
-                                            ))}
-                                    </Col>
-                                </Col>
-                                <Col xs='12'>
-                                </Col>
+                                        <p>You don't have any friends in your list, check out the <Link to='/pokemon-trainers'>PokéTrainers</Link> to add fellow Pokémon Trainers.</p>
+                                    </Col>) :
+                                    (recentFriends.map((item, key) =>
+                                        <Col key={key} className='text-center' xs='12' sm='6'>
+                                            <Link className='containerLink' to={{
+                                                pathname: `/pokemon-trainers/profile/${item.username}`,
+                                                state: {
+                                                    user: item
+                                                }
+                                            }}>
+                                                <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} />
+                                                <p>{item.username}</p>
+                                            </Link>
+                                        </Col>
+                                    ))}
                             </Row>
                         </Col>
                     </Row>) : (<Loading height='68vh' />)
@@ -106,7 +98,7 @@ const mapStateToProps = (state) => {
 
 export default compose(
     firestoreConnect([
-        { collection: 'notifications', orderBy: ['time', 'asc'] }
+        { collection: 'notifications', orderBy: ['time', 'desc'], limit: 5 }
     ]),
     connect(mapStateToProps)
 )(Home)

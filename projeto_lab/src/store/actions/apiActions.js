@@ -1,5 +1,5 @@
 export const getInfoPokemonPage = (pokemon) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: 'API_REQUEST_START' });
     const urls = [
       `https://pokeapi.co/api/v2/pokemon/${pokemon}`,
@@ -13,13 +13,13 @@ export const getInfoPokemonPage = (pokemon) => {
           return response.ok ? json : Promise.reject(json);
         });
       })))
-      .then(async (data) => {
+      .then((data) => {
         dispatch({ type: 'POKEMONINFO_DATA_SUCCESS', payload: data })
         fetch(data[1].evolution_chain.url)
-          .then(async (response) => {
+          .then((response) => {
             return response.json().then(function (json) {
               return response.ok ? json : Promise.reject(json);
-            }).then(async (data) => dispatch({ type: 'POKEMONINFO_EVOLUTION_DATA_SUCCESS', payload: data }))
+            }).then((data) => dispatch({ type: 'POKEMONINFO_EVOLUTION_DATA_SUCCESS', payload: data }))
           }).catch((error) => dispatch({ type: 'POKEMONINFO_EVOLUTION_DATA_ERROR', error: error }))
       }).catch((error) => dispatch({ type: 'POKEMONINFO_DATA_ERROR', error: error }))
   }
@@ -53,12 +53,12 @@ export const getPokedex = (region) => {
     var url = `https://pokeapi.co/api/v2/pokedex/${region}/`
 
     fetch(url)
-      .then(async (response) => {
+      .then((response) => {
         return response.json().then(function (json) {
           return response.ok ? json : Promise.reject(json);
         });
       })
-      .then(async (data) => dispatch({ type: 'POKEDEX_DATA_SUCCESS', payload: data.pokemon_entries }))
+      .then((data) => dispatch({ type: 'POKEDEX_DATA_SUCCESS', payload: data.pokemon_entries }))
       .catch((error) => dispatch({ type: 'POKEDEX_DATA_ERROR', error: error }))
   }
 }
@@ -72,12 +72,12 @@ export const getDataPokeListPage = () => {
     ]
 
     Promise.all(urls.map(url =>
-      fetch(url).then(async (response) => {
+      fetch(url).then((response) => {
         return response.json().then(function (json) {
           return response.ok ? json : Promise.reject(json);
         });
       })))
-      .then(async (data) => {
+      .then((data) => {
         dispatch({ type: 'POKELIST_PAGE_DATA_SUCCESS', payload: data })
       }).catch((error) => dispatch({ type: 'POKELIST_PAGE_DATA_ERROR', error: error }))
   }
@@ -86,12 +86,14 @@ export const getDataPokeListPage = () => {
 /* PROFILE ACTIONS */
 
 export const getPokemonForProfileIQ = (userCorrectAnswers, userWrongAnswers) => {
-  return (dispatch) => {
+  console.log('olá')
+   return (dispatch) => {
     dispatch({ type: 'API_REQUEST_START' });
     var pokemon;
     let allAnswers = userCorrectAnswers + userWrongAnswers;
     let averageCorrectAnswers = userCorrectAnswers / allAnswers;
     averageCorrectAnswers *= 100;
+    averageCorrectAnswers = parseInt(averageCorrectAnswers);
 
     if (isNaN(averageCorrectAnswers)) {
       dispatch({ type: 'POKEPROFILEIQ_NOT_NEEDED' });
@@ -116,8 +118,8 @@ export const getPokemonForProfileIQ = (userCorrectAnswers, userWrongAnswers) => 
           return response.ok ? json : Promise.reject(json);
         });
       })
-      .then((data) => dispatch({ type: 'POKEPROFILEIQ_DATA_SUCCESS', payload: data }))
-      .catch((error) => dispatch({ type: 'POKEPROFILEIQ_DATA_ERROR', error }))
+      .then((data) => dispatch({ type: 'POKE_PROFILE_IQ_DATA_SUCCESS', payload: data }))
+      .catch((error) => dispatch({ type: 'POKE_PROFILE_IQ_DATA_ERROR', error: error }))
   }
 }
 

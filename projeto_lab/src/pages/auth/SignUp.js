@@ -43,7 +43,6 @@ class SignUp extends Component {
     }
 
     validateForm = (errors) => {
-        console.log(errors)
         let valid = true;
         Object.values(errors).forEach(
             (val) => console.log(val.length > 0 && (valid = false))
@@ -131,7 +130,6 @@ class SignUp extends Component {
     }
 
     render() {
-        console.log(this.state)
         var string = require('lodash/string')
         const { errors, selectGender, showErrors } = this.state;
         const { auth, authError, signUpData } = this.props

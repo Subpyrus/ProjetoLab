@@ -25,16 +25,16 @@ class NavBar extends Component {
         const links = auth.uid ? (<SignedInLinks username={username} />) : (<SignedOutLinks />);
 
         return (
-            <div>
+            <>
                 <Navbar light expand="md" className='mb-5'>
                     <Link className='navBrandLink' to='/'>
                         <h1 className='navBrandTitle d-inline'>Poké</h1>
                         <h1 className='navBrandSecondTitle d-inline'>Favo</h1>
                     </Link>
-                    <button className="navbar-toggler" onClick={this.toggle} type="button">
-                        <i className="fas fa-bars"></i>
+                    <button style={{ borderColor: 'none' }} className="navbar-toggler" onClick={this.toggle} type="button">
+                        <i className="fas fa-lg fa-bars"></i>
                     </button>
-                    <Collapse isOpen={this.state.isOpen} navbar>
+                    <Collapse isOpen={this.state.isOpen} className='mt-3 mt-md-0' navbar>
                         <Nav className="ml-auto" navbar>
                             <NavItem>
                                 <NavLink exact
@@ -60,7 +60,7 @@ class NavBar extends Component {
                         </Nav>
                     </Collapse>
                 </Navbar>
-            </div >
+            </>
         );
     }
 }

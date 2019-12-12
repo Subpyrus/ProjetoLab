@@ -6,8 +6,9 @@ import { signOut } from '../../../store/actions/authActions';
 import { getPokemonForProfileIQ } from '../../../store/actions/apiActions'
 
 const signedInLinks = (props) => {
-    console.log(props)
     const {correctAnswers, wrongAnswers} = props.profileContent.triviaRecord
+    console.log(correctAnswers);
+    console.log(wrongAnswers)
 
     return (
         <>
@@ -49,7 +50,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         signOut: () => dispatch(signOut()),
-        getPokemonForProfileIQ: (pokemon) => dispatch(getPokemonForProfileIQ(pokemon))
+        getPokemonForProfileIQ: (correctAnswers, wrongAnswers) => dispatch(getPokemonForProfileIQ(correctAnswers, wrongAnswers))
     }
 }
 

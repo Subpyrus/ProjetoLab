@@ -15,31 +15,30 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  .navBrandLink{
+  .navBrandLink {
     border-bottom: 3.5mm groove $blue;
     transition: all 1s;
 
-    .navBrandSecondTitle{
+    .navBrandSecondTitle {
       color: $red;
       transition: all 1s;
     }
 
-    .navBrandTitle{
+    .navBrandTitle {
       transition: all 1s;
     }
 
-    &:hover{
+    &:hover {
       text-decoration: none;
       border-bottom: 3.5mm groove $yellow;
 
-      .navBrandTitle{
+      .navBrandTitle {
         color: $red;
       }
 
-      .navBrandSecondTitle{
+      .navBrandSecondTitle {
         color: $blue;
       }
-
     }
   }
 
@@ -56,11 +55,45 @@ body {
     }
   }
 
+  a.containerLink {
+    display: block;
+    color: $red;
+    transition: all 0.5s;
+    text-decoration: none;
+
+    &:hover,
+    &:active {
+      text-decoration: none;
+      background-color: $blue;
+      & > p {
+        font-weight: bold;
+        color: $yellow;
+      }
+      & > div > h5 {
+        font-weight: bold;
+        color: $yellow;
+      }
+    }
+  }
+
   p {
     &::selection {
       background: $yellow;
       color: $red;
     }
+  }
+
+  .navbar-light .navbar-toggler {
+    color: none !important;
+    border-color: none !important;
+  }
+
+  .navbar-toggler {
+    border: none;
+  }
+
+  .fa-bars {
+    color: $yellow;
   }
 
   .active-avatar {

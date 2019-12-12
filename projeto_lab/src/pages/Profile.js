@@ -3,6 +3,11 @@ import { personalityFavorites, personalityTeams } from '../components/profile/pe
 import { Redirect } from 'react-router-dom';
 import OwnProfile from '../components/profile/ownProfile';
 import OthersProfile from '../components/profile/othersProfile';
+import { connect, useSelector } from 'react-redux';
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
+import { useFirebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 class Profile extends Component {
 
     getStats = (array) => {
@@ -109,7 +114,9 @@ class Profile extends Component {
     }
 
     render() {
-        const { isLoggedIn, location, profileContent } = this.props;
+        const { isLoggedIn, location, profileContent, pokemonIQ } = this.props;
+
+        console.log(this.props)
 
         if (!isLoggedIn) {
             return <Redirect to='/sign-in' />
@@ -134,4 +141,17 @@ class Profile extends Component {
     }
 }
 
-export default Profile;
+const mapStateToProps = (state) => {
+    console.log(state)
+    return {
+        user: state.firestore.ordered.users,
+        pokemonIQ: state.apiCalls.apiData.getPokemonIQ
+    }
+}
+
+export default compose(
+    firestoreConnect(props => [
+        { collection: 'users', where: [['username', '==', props.match.params.username]] }
+    ]),
+    connect(mapStateToProps)
+)(Profile)

@@ -6,7 +6,7 @@ import LazyLoad from 'react-lazyload';
 import { connect } from 'react-redux';
 import { removeFavoritePokemon, removePokemonFromTeam, editProfile } from '../../store/actions/favoriteActions';
 import { removeFriend } from '../../store/actions/friendsActions';
-import { getInfoPokemonPage } from '../../store/actions/apiActions';
+import { getInfoPokemonPage, getPokemonForProfileIQ } from '../../store/actions/apiActions';
 
 class ownProfile extends Component {
     constructor(props) {
@@ -24,14 +24,17 @@ class ownProfile extends Component {
             },
             width: window.innerWidth,
             selectNationality: {
-                label: this.props.ownProfileContent.nationality, 
-                value: this.props.ownProfileContent.nationality},
+                label: this.props.ownProfileContent.nationality,
+                value: this.props.ownProfileContent.nationality
+            },
             selectGame: {
                 label: this.props.ownProfileContent.favoriteGame,
-                value: this.props.ownProfileContent.favoriteGame},
+                value: this.props.ownProfileContent.favoriteGame
+            },
             selectRegion: {
                 label: this.props.ownProfileContent.favoriteRegion,
-                value: this.props.ownProfileContent.favoriteRegion}
+                value: this.props.ownProfileContent.favoriteRegion
+            }
         };
     }
 
@@ -78,7 +81,7 @@ class ownProfile extends Component {
     }
 
     handleSelectChange = (value, action) => {
-        this.setState({ [action.name]: {label: value.value, value: value.value} });
+        this.setState({ [action.name]: { label: value.value, value: value.value } });
     }
 
     toggleFirstTime = (name, action) => {
@@ -95,9 +98,8 @@ class ownProfile extends Component {
     }
 
     render() {
-        const { removeFavoritePokemon, removePokemonFromTeam, removeFriend, getInfoPokemonPage, pokemonIQ, editProfile } = this.props;
+        const { removeFavoritePokemon, removePokemonFromTeam, removeFriend, getInfoPokemonPage, pokemonIQ, editProfile, teamResults, favoritesResults } = this.props;
         const { username, avatar, gender, nationality, favoritePokemons, favoriteTeam, triviaRecord, friends, favoriteGame, favoriteRegion } = this.props.ownProfileContent
-        const { favoritesResults } = this.props.favoritesResults
         const { name, action } = this.state.modalContent;
         const { editProfileContent, width, editProfileData, selectNationality, selectGame, selectRegion } = this.state;
         var string = require('lodash/string');
@@ -179,9 +181,9 @@ class ownProfile extends Component {
                 <Col xs='12' md='6' className='text-center'>
                     <h1>{username}</h1>
                 </Col>
-                <Col xs='12' md='6' className='text-center'>
+                <Col xs='12' md='6' className='text-center mb-4 pb-md-0'>
                     {editProfileContent ? (
-                        <Button onClick={() => { this.editProfileState(); editProfile(selectNationality.value, selectGame.value ,selectRegion.value) }}>Save Changes</Button>
+                        <Button color='success' onClick={() => { this.editProfileState(); editProfile(selectNationality.value, selectGame.value, selectRegion.value) }}>Save Changes</Button>
                     ) : (
                             <Button color='warning' onClick={() => { this.getEditProfileData(); }}>Edit Profile</Button>
                         )
@@ -190,15 +192,15 @@ class ownProfile extends Component {
                 <Col xs='12'>
                     <Row className='text-center align-items-center'>
                         {width < 600 &&
-                            <Col className='d-flex justify-content-center' xs='12' md='2' lg='2'>
+                            <Col className='d-flex justify-content-center p-2 p-md-0' xs='12' md='2' lg='2'>
                                 <img alt={avatar} src={`https://www.serebii.net/diamondpearl/avatar/${avatar}.png`} />
                             </Col>
                         }
-                        <Col xs='12' md='3'>
+                        <Col xs='12' md='3' className='p-2 p-md-0'>
                             <h5 className='col-12'>Gender:</h5>
                             <p className='col-12'>{gender}</p>
                         </Col>
-                        <Col xs='12' md='2'>
+                        <Col xs='12' md='2' className='p-2 p-md-0'>
                             <h5 className='col-12'>From:</h5>
                             {editProfileContent ?
                                 (<Select required
@@ -214,11 +216,11 @@ class ownProfile extends Component {
                             }
                         </Col>
                         {width > 600 &&
-                            <Col className='d-flex justify-content-center' xs='12' md='2' lg='2'>
+                            <Col className='d-flex justify-content-center p-2 p-md-0' xs='12' md='2' lg='2'>
                                 <img alt={avatar} src={`https://www.serebii.net/diamondpearl/avatar/${avatar}.png`} />
                             </Col>
                         }
-                        <Col xs='12' md='2'>
+                        <Col xs='12' md='2' className='p-2 p-md-0'>
                             <h5 className='col-12'>Favorite Game:</h5>
                             {editProfileContent ?
                                 (<Select required
@@ -233,7 +235,7 @@ class ownProfile extends Component {
                                 (<p className='col-12'>{favoriteGame}</p>)
                             }
                         </Col>
-                        <Col xs='12' md='3'>
+                        <Col xs='12' md='3' className='p-2 p-md-0'>
                             <h5 className='col-12'>Favorite Generation:</h5>
                             {editProfileContent ?
                                 (<Select required
@@ -256,13 +258,13 @@ class ownProfile extends Component {
                         <Col xs='12' md='6' lg='4'>
                             <h3>Personality</h3>
                             {favoritePokemons &&
-                                favoritePokemons.length !== 0 ? (<p>{favoritesResults}</p>) : (
+                                favoritePokemons.length !== 0 ? (<div><h4>{favoritesResults[0]}</h4><p>Trait: {favoritesResults[1]}</p></div>) : (
                                     <p>You still don't have any pokémons on your Favorites to calculate this result! Search for your favorites in the PokéList!</p>)}
                         </Col>
                         <Col xs='12' md='6' lg='4'>
                             <h3>Battle Personality</h3>
                             {favoriteTeam &&
-                                favoriteTeam.length !== 0 ? (<div><h4>Title: {this.props.teamResults[0]}</h4><p>Trait: {this.props.teamResults[1]}</p></div>) : (
+                                favoriteTeam.length !== 0 ? (<div><h4>{teamResults[0]}</h4><p>Trait: {teamResults[1]}</p></div>) : (
                                     <p>You still don't have any pokémons on your Favorite Team to calculate this result! Search for your team members in the PokéList!</p>)}
                         </Col>
                     </Row>
@@ -342,7 +344,7 @@ class ownProfile extends Component {
                                         <i style={{ position: 'relative', top: '-40px' }} id={item.name} onClick={() => removeFriend(item.name)} className="far fa-times-circle"></i>
                                         <Link className='basic-link' key={key} to={`pokemon-trainers/profile/${item.name}`}>
                                             <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} />
-                                            <p>{item.name}</p>
+                                            <p>{item.username}</p>
                                         </Link>
                                     </Col>
                                 ))}

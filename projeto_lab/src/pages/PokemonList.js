@@ -207,7 +207,7 @@ class PokemonList extends Component {
                             let pokemonName = pokemon.getName(url.split('/')[6]);
                             return (
                                 <Col key={key} className='py-md-2' xs='12' sm='6' md='4' lg='2'>
-                                    <Link className='poke-list-link' to={`/pokemon-list/${match.params.search}/pokemon-page/${pokemonName.toLowerCase()}`} onClick={() => getInfoPokemonPage(pokemonName.toLowerCase())}>
+                                    <Link className='h-100 containerLink' to={`/pokemon-list/${match.params.search}/pokemon-page/${pokemonName.toLowerCase()}`} onClick={() => getInfoPokemonPage(pokemonName.toLowerCase())}>
                                         <div>
                                             <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
                                                 <LazyLoad height={200} once={true}>

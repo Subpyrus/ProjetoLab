@@ -1,6 +1,7 @@
 const initState = {
     authError: null,
-    isLoggedIn: false
+    isLoggedIn: false,
+    recoverPasswordMessage: null
 }
 
 const authReducer = (state = initState, action) => {
@@ -21,7 +22,7 @@ const authReducer = (state = initState, action) => {
             return {
                 ...state,
                 isLoggedIn: false
-            } 
+            }
         case 'SIGNUP_SUCCESS':
             return {
                 ...state,
@@ -32,6 +33,16 @@ const authReducer = (state = initState, action) => {
                 ...state,
                 authError: action.error.message,
                 isLoggedIn: false
+            }
+        case 'RESET_PASSWORD_SUCCESS':
+            return {
+                ...state,
+                recoverPasswordMessage: action.payload
+            }
+        case 'RESET_PASSWORD_ERROR':
+            return {
+                ...state,
+                recoverPasswordMessage: action.payload
             }
         default:
             return state

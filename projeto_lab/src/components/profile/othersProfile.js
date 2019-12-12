@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 import LazyLoad from 'react-lazyload';
 import { addFriend, removeFriend } from '../../store/actions/friendsActions';
 import { connect } from 'react-redux';
-import { getInfoPokemonPage } from '../../store/actions/apiActions';
+import { getInfoPokemonPage, getPokemonForProfileIQ } from '../../store/actions/apiActions';
 
 const othersProfile = (props) => {
     const { username, avatar, gender, nationality, favoriteGame, favoriteRegion, favoritePokemons, favoriteTeam, triviaRecord, friends } = props.othersProfileContent
-    const { teamResults } = props.teamResults
-    const { favoritesResults } = props.favoritesResults
-    const { loggedUserFriends, pokemonIQ } = props;
+    const { loggedUserFriends, pokemonIQ, favoritesResults, teamResults } = props;
+
+    console.log(pokemonIQ)
 
     if (pokemonIQ) {
         var pokemon = require('pokemon');
@@ -23,10 +23,10 @@ const othersProfile = (props) => {
 
     return (
         <Row>
-            <Col xs='12' md='6' className='text-center text-md-left'>
+            <Col xs='12' md='6' className='text-center'>
                 <h1>{username}</h1>
             </Col>
-            <Col xs='6' className='text-center p-2 p-md-0 text-md-right'>
+            <Col xs='12' md='6' className=''className='text-center py-3 py-md-0'>
                 {findFriends === undefined ?
                     (<Button color='warning' onClick={() => props.addFriend(props.othersProfileContent)}>Add to Friends List</Button>) :
                     (<Button color='danger' onClick={() => props.removeFriend(props.othersProfileContent)}>Remove from Friends List</Button>)}
@@ -57,16 +57,16 @@ const othersProfile = (props) => {
             <hr className='col-8 mx-auto my-4 my-lg-5' />
             <Col xs='12' md='6' lg='12'>
                 <Row className='text-center justify-content-center'>
-                    <Col xs='12' md='6' lg='4'>
+                    <Col xs='12' md='6'>
                         <h3>Personality</h3>
                         {favoritePokemons &&
-                            favoritePokemons.length !== 0 ? (<p>{favoritesResults}</p>) : (
+                            favoritePokemons.length !== 0 ? (<div><h4>{favoritesResults[0]}</h4><p>Trait: {favoritesResults[1]}</p></div>) : (
                                 <p>{username} doesn't have any pokémons on their Favorite Pokemons List to calculate this result...</p>)}
                     </Col>
-                    <Col xs='12' md='6' lg='4'>
+                    <Col xs='12' md='6'>
                         <h3>Battle Personality</h3>
                         {favoriteTeam &&
-                            favoriteTeam.length !== 0 ? (<p>{teamResults}</p>) : (
+                            favoriteTeam.length !== 0 ? (<div><h4>{teamResults[0]}</h4><p>Trait: {teamResults[1]}</p></div>) : (
                                 <p>{username} doesn't have any pokémons on their Favorite Team to calculate this result...</p>)}
                     </Col>
                 </Row>
@@ -90,49 +90,49 @@ const othersProfile = (props) => {
                 </Row>
             </Col>
             <Col className='pb-4 pb-lg-5' xs='12'>
-                    <Row className='text-center justify-content-center'>
-                        <Col className='py-3 py-lg-4' xs='12' md='6'>
-                            <h3>Favorite Pokémons</h3>
-                            {favoritePokemons &&
-                                favoritePokemons.length === 0 ? (
-                                    <p>{username} doesn't have any Pokémon in their Favorite Pokemons List!</p>
-                                ) : (
-                                    <Row className='justify-content-center'>
-                                        {favoritePokemons.map((item, key) =>
-                                            <Col className='d-flex align-items-center justify-content-center' xs='6' md='4' key={key} style={{ height: '150px' }}>
-                                                <LazyLoad height={200} once={true}>
-                                                    <Link to={`/pokemon-list/national/pokemon-page/${item.name.toLowerCase()}`}
-                                                        onClick={(event) => getInfoPokemonPage(item.name.toLowerCase())}>
-                                                        <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
-                                                    </Link>
-                                                </LazyLoad>
-                                                <i style={{ position: 'relative', top: '-40px' }} onClick={() => this.toggleFirstTime(item.name, 'Favorites Pokémon List')} className="far fa-times-circle"></i>
-                                            </Col>)}
-                                    </Row>)}
-                        </Col>
-                        <Col className='py-3 py-lg-4' xs='12' md='6'>
-                            <h3>Favorite Pokémon Team</h3>
-                            {favoriteTeam &&
-                                favoriteTeam.length === 0 ? (
-                                    <p>{username} doesn't have any Pokémon in their Favorite Team!</p>
-                                ) : (
-                                    <Row className='justify-content-center'>
-                                        {favoriteTeam.map((item, key) =>
-                                            <Col className='d-flex align-items-center justify-content-center' xs='6' md='4' key={key} style={{ height: '150px' }}>
-                                                <LazyLoad height={200} once={true}>
-                                                    <Link to={`/pokemon-list/national/pokemon-page/${item.name.toLowerCase()}`}
-                                                        onClick={(event) => getInfoPokemonPage(item.name.toLowerCase())}>
-                                                        <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
-                                                    </Link>
-                                                </LazyLoad>
-                                                <i style={{ position: 'relative', top: '-40px' }} id={item.name} onClick={() => this.toggleFirstTime(item.name, 'Favorite Pokémon Team')} className="far fa-times-circle"></i>
-                                            </Col>
-                                        )}
-                                    </Row>
-                                )}
-                        </Col>
-                    </Row>
-                </Col>
+                <Row className='text-center justify-content-center'>
+                    <Col className='py-3 py-lg-4' xs='12' md='6'>
+                        <h3>Favorite Pokémons</h3>
+                        {favoritePokemons &&
+                            favoritePokemons.length === 0 ? (
+                                <p>{username} doesn't have any Pokémon in their Favorite Pokemons List!</p>
+                            ) : (
+                                <Row className='justify-content-center'>
+                                    {favoritePokemons.map((item, key) =>
+                                        <Col className='d-flex align-items-center justify-content-center' xs='6' md='4' key={key} style={{ height: '150px' }}>
+                                            <LazyLoad height={200} once={true}>
+                                                <Link to={`/pokemon-list/national/pokemon-page/${item.name.toLowerCase()}`}
+                                                    onClick={() => getInfoPokemonPage(item.name.toLowerCase())}>
+                                                    <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
+                                                </Link>
+                                            </LazyLoad>
+                                            <i style={{ position: 'relative', top: '-40px' }} onClick={() => this.toggleFirstTime(item.name, 'Favorites Pokémon List')} className="far fa-times-circle"></i>
+                                        </Col>)}
+                                </Row>)}
+                    </Col>
+                    <Col className='py-3 py-lg-4' xs='12' md='6'>
+                        <h3>Favorite Pokémon Team</h3>
+                        {favoriteTeam &&
+                            favoriteTeam.length === 0 ? (
+                                <p>{username} doesn't have any Pokémon in their Favorite Team!</p>
+                            ) : (
+                                <Row className='justify-content-center'>
+                                    {favoriteTeam.map((item, key) =>
+                                        <Col className='d-flex align-items-center justify-content-center' xs='6' md='4' key={key} style={{ height: '150px' }}>
+                                            <LazyLoad height={200} once={true}>
+                                                <Link to={`/pokemon-list/national/pokemon-page/${item.name.toLowerCase()}`}
+                                                    onClick={() => getInfoPokemonPage(item.name.toLowerCase())}>
+                                                    <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
+                                                </Link>
+                                            </LazyLoad>
+                                            <i style={{ position: 'relative', top: '-40px' }} id={item.name} onClick={() => this.toggleFirstTime(item.name, 'Favorite Pokémon Team')} className="far fa-times-circle"></i>
+                                        </Col>
+                                    )}
+                                </Row>
+                            )}
+                    </Col>
+                </Row>
+            </Col>
             <Col xs='12'>
                 <Row className='justify-content-center text-center'>
                     <h3 className='col-12'>Friends</h3>
@@ -142,9 +142,14 @@ const othersProfile = (props) => {
                         ) : (
                             friends.map((item, key) =>
                                 <Col key={key} xs='12' md='4' lg='2'>
-                                    <Link className='basic-link' key={key} to={`pokemon-trainers/profile/${item.name}`}>
+                                    <Link className='basic-link' to={{
+                                        pathname: `/pokemon-trainers/profile/${item.username}`,
+                                        state: {
+                                            user: item
+                                        }
+                                    }}>
                                         <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} />
-                                        <p>{item.name}</p>
+                                        <p>{item.username}</p>
                                     </Link>
                                 </Col>
                             ))}
@@ -158,7 +163,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getInfoPokemonPage: (pokemon) => dispatch(getInfoPokemonPage(pokemon)),
         addFriend: (user) => dispatch(addFriend(user)),
-        removeFriend: (user) => dispatch(removeFriend(user))
+        removeFriend: (user) => dispatch(removeFriend(user)),
+        getPokemonForProfileIQ: (pokemon) => dispatch(getPokemonForProfileIQ(pokemon))
     }
 }
 

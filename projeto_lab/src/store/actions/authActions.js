@@ -58,11 +58,10 @@ export const signUp = (newUser) => {
 }
 
 export const recoverPassword = (email) => {
+    console.log(email)
     return (dispatch, getState, { getFirebase }) => {
         const firebase = getFirebase();
-        firebase
-            .auth()
-            .sendPasswordResetEmail(email)
+        firebase.auth().sendPasswordResetEmail(email)
             .then(() =>
                 dispatch({
                     type: 'RESET_PASSWORD_SUCCESS',

@@ -15,9 +15,8 @@ const initState = {
     error: null
 }
 
-const authReducer = (state = initState, action) => {
-    console.log(action.payload);
-    console.log(action.type);
+const apiReducer = (state = initState, action) => {
+    console.log(action)
     switch (action.type) {
         case 'API_REQUEST_START':
             return {
@@ -88,14 +87,16 @@ const authReducer = (state = initState, action) => {
                 isLoading: false,
                 error: action.error
             }
-        case 'POKEPROFILEIQ_DATA_SUCCESS':
+        case 'POKE_PROFILE_IQ_DATA_SUCCESS':
+            console.log(state)
             return {
                 ...state,
                 isLoading: false,
                 error: action.error,
                 apiData: { ...state.apiData, getPokemonIQ: action.payload }
             }
-        case 'POKEPROFILEIQ_DATA_ERROR':
+        case 'POKE_PROFILE_IQ_DATA_ERROR':
+                console.log(state)
             return {
                 ...state,
                 isLoading: false,
@@ -119,4 +120,4 @@ const authReducer = (state = initState, action) => {
     }
 }
 
-export default authReducer;
+export default apiReducer;

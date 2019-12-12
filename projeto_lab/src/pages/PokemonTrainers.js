@@ -16,6 +16,17 @@ class PokemonTrainers extends Component {
         }
     }
 
+    componentDidMount() {
+        if (this.state.ready === false) {
+            const { auth, users, profileContent } = this.props
+            var array = require('lodash/array')
+            array.remove(users, (item) => {
+                return item.username === profileContent.username;
+            });
+            this.setState({ allUsers: users, users: users, ready: true, profileContent: profileContent, auth: auth })
+        }
+    }
+
     handleSearchChange = (event) => {
         const { value } = event.target;
         if (value !== "") {
@@ -26,7 +37,7 @@ class PokemonTrainers extends Component {
                     trainerSearched.push(user)
                 }
             }
-            this.setState({ users: trainerSearched});
+            this.setState({ users: trainerSearched });
         } else {
             const { allUsers } = this.state
             this.setState({ users: allUsers });
@@ -34,31 +45,23 @@ class PokemonTrainers extends Component {
     }
 
     render() {
+        let { auth, ready, users } = this.state
 
-        if(this.state.ready === false) {
-            const { auth, users, profileContent } = this.props
-            var array = require('lodash/array')
-            array.remove(users, (item) => {
-                return item.username === profileContent.username;
-            });
-            this.setState({allUsers: users, users: users, ready: true, profileContent: profileContent, auth: auth})
-        }   
-        
-        if ((!this.state.auth.uid) && (this.state.ready === true)) {
+        if ((!auth.uid) && (ready)) {
             return <Redirect to='/sign-in' />
         } else {
             return (
-                <>
-                    <h1>PokéTrainers</h1>
-                    <Col className='col-12 col-md-6 col-lg-3 px-2 py-2 py-md-0'>
+                <Row>
+                    <h1 className='col-12 col-md-6 col-lg-9 px-2 py-2 py-md-0'>PokéTrainers</h1>
+                    <Col className='col-11 col-md-6 col-lg-3 mx-auto px-2 py-2 py-md-0'>
                         <FormGroup className='m-0'>
                             <Input type="text" placeholder='search pokémon trainer' onChange={this.handleSearchChange} />
                         </FormGroup>
                     </Col>
-                    <Col xs='12' className='p-0'>
-                        {this.state.users.map((item, key) =>
+                    <Col xs='12' className='pt-2'>
+                        {users.map((item, key) =>
                             <Col xs='12' key={key}>
-                                <Link onClick={() => getPokemonForProfileIQ(item.triviaRecord.correctAnswer, item.triviaRecord.wrongAnswers)} to={{
+                                <Link onClick={() => getPokemonForProfileIQ(item.triviaRecord.correctAnswers, item.triviaRecord.wrongAnswers)} to={{
                                     pathname: `/pokemon-trainers/profile/${item.username}`,
                                     state: {
                                         user: item
@@ -79,7 +82,7 @@ class PokemonTrainers extends Component {
                             </Col>
                         )}
                     </Col>
-                </>
+                </Row>
             )
         }
     }
@@ -95,7 +98,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getPokemonForProfileIQ: (pokemon) => dispatch(getPokemonForProfileIQ(pokemon))
+        getPokemonForProfileIQ: (correctAnswers, wrongAnswers) => dispatch(getPokemonForProfileIQ(correctAnswers, wrongAnswers))
     }
 }
 
