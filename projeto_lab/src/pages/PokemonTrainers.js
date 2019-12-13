@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col, FormGroup, Input } from 'reactstrap';
-import { withRouter, Redirect, Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getPokemonForProfileIQ } from '../store/actions/apiActions'
 
@@ -19,6 +19,8 @@ class PokemonTrainers extends Component {
     componentDidMount() {
         if (this.state.ready === false) {
             const { auth, users, profileContent } = this.props
+            console.log(this.props)
+            console.log(users)
             var array = require('lodash/array')
             array.remove(users, (item) => {
                 return item.username === profileContent.username;
@@ -59,7 +61,7 @@ class PokemonTrainers extends Component {
                         </FormGroup>
                     </Col>
                     <Col xs='12' className='pt-2'>
-                        {users.map((item, key) =>
+                        {users && users.map((item, key) =>
                             <Col xs='12' key={key}>
                                 <Link onClick={() => getPokemonForProfileIQ(item.triviaRecord.correctAnswers, item.triviaRecord.wrongAnswers)} to={{
                                     pathname: `/pokemon-trainers/profile/${item.username}`,
@@ -91,15 +93,8 @@ class PokemonTrainers extends Component {
 const mapStateToProps = (state) => {
     return {
         auth: state.firebase.auth,
-        profileContent: state.firebase.profile,
-        users: state.firestore.ordered.users
+        profileContent: state.firebase.profile
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getPokemonForProfileIQ: (correctAnswers, wrongAnswers) => dispatch(getPokemonForProfileIQ(correctAnswers, wrongAnswers))
-    }
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PokemonTrainers));
+export default connect(mapStateToProps)(PokemonTrainers)

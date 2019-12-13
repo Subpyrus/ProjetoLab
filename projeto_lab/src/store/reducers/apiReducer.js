@@ -16,7 +16,6 @@ const initState = {
 }
 
 const apiReducer = (state = initState, action) => {
-    console.log(action)
     switch (action.type) {
         case 'API_REQUEST_START':
             return {
@@ -88,7 +87,6 @@ const apiReducer = (state = initState, action) => {
                 error: action.error
             }
         case 'POKE_PROFILE_IQ_DATA_SUCCESS':
-            console.log(state)
             return {
                 ...state,
                 isLoading: false,
@@ -96,7 +94,6 @@ const apiReducer = (state = initState, action) => {
                 apiData: { ...state.apiData, getPokemonIQ: action.payload }
             }
         case 'POKE_PROFILE_IQ_DATA_ERROR':
-                console.log(state)
             return {
                 ...state,
                 isLoading: false,

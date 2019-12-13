@@ -3,11 +3,11 @@ import { personalityFavorites, personalityTeams } from '../components/profile/pe
 import { Redirect } from 'react-router-dom';
 import OwnProfile from '../components/profile/ownProfile';
 import OthersProfile from '../components/profile/othersProfile';
-import { connect, useSelector } from 'react-redux';
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux';
 import { compose } from 'redux'
-import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
-import { useFirebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
+import { firestoreConnect } from 'react-redux-firebase'
+import Loading from '../components/layout/Loading';
+import { isLoaded } from 'react-redux-firebase'
 class Profile extends Component {
 
     getStats = (array) => {
@@ -114,44 +114,48 @@ class Profile extends Component {
     }
 
     render() {
-        const { isLoggedIn, location, profileContent, pokemonIQ } = this.props;
-
-        console.log(this.props)
+        const { isLoggedIn, location, profileContent, userTrivia } = this.props;
 
         if (!isLoggedIn) {
             return <Redirect to='/sign-in' />
+        } else if (!isLoaded(userTrivia)) {
+            return <Loading height='68vh' />
         } else if (!location.state) {
             let { favoritePokemons, favoriteTeam } = this.props.profileContent
             return (
                 <OwnProfile
                     ownProfileContent={profileContent}
+                    pokemonIQ={[userTrivia[0].triviaRecord.correctAnswers, userTrivia[0].triviaRecord.wrongAnswers]}
                     favoritesResults={this.getStatsMessages(favoritePokemons, 'favorites')}
                     teamResults={this.getStatsMessages(favoriteTeam, 'team')}
                 />)
         } else {
             let { favoritePokemons, favoriteTeam } = this.props.location.state.user
-            return (
-                <OthersProfile
-                    othersProfileContent={location.state.user}
-                    loggedUserFriends={this.props.profileContent.friends}
-                    favoritesResults={this.getStatsMessages(favoritePokemons, 'favorites')}
-                    teamResults={this.getStatsMessages(favoriteTeam, 'team')}
-                />)
+            if (!isLoaded(userTrivia)) {
+                return <Loading height='68vh' />
+            } else {
+                return (
+                    <OthersProfile
+                        othersProfileContent={location.state.user}
+                        pokemonIQ={[userTrivia[0].triviaRecord.correctAnswers, userTrivia[0].triviaRecord.wrongAnswers]}
+                        loggedUserFriends={this.props.profileContent.friends}
+                        favoritesResults={this.getStatsMessages(favoritePokemons, 'favorites')}
+                        teamResults={this.getStatsMessages(favoriteTeam, 'team')}
+                    />)
+            }
         }
     }
 }
 
 const mapStateToProps = (state) => {
-    console.log(state)
     return {
-        user: state.firestore.ordered.users,
-        pokemonIQ: state.apiCalls.apiData.getPokemonIQ
+        userTrivia: state.firestore.ordered['trivia']
     }
 }
 
 export default compose(
     firestoreConnect(props => [
-        { collection: 'users', where: [['username', '==', props.match.params.username]] }
+        { collection: 'users', storeAs: 'trivia', where: [['username', '==', props.match.params.username]] }
     ]),
     connect(mapStateToProps)
 )(Profile)

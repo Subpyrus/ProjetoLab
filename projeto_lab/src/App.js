@@ -50,7 +50,7 @@ class App extends Component {
   }
 
   render() {
-    const { error, isLoading, profile, profileContent, auth } = this.props;
+    const { error, isLoading, profile, profileContent, auth, users } = this.props;
 
     if (!profile) {
       return (
@@ -79,7 +79,9 @@ class App extends Component {
                           <Route exact path="/pokemon-list/:search" component={PokemonList} />
                           <Route exact path="/pokemon-list/:search/pokemon-page/:pokemon" component={PokemonPage} />
                           <Route exact path="/pokemon-trivia" component={Trivia} />
-                          <Route exact path="/pokemon-trainers" component={PokemonTrainers}
+                          <Route exact path="/pokemon-trainers" render={(props) =>
+                            <PokemonTrainers {...props} auth={auth.uid} profileContent={profileContent} users={users} />}
+                          />
                           />
                           <Route exact path="/pokemon-trainers/profile/:username" render={(props) =>
                             <Profile {...props} isLoggedIn={auth.uid} profileContent={profileContent} />}

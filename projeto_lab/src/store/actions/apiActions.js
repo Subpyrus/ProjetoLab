@@ -86,7 +86,6 @@ export const getDataPokeListPage = () => {
 /* PROFILE ACTIONS */
 
 export const getPokemonForProfileIQ = (userCorrectAnswers, userWrongAnswers) => {
-  console.log('olá')
    return (dispatch) => {
     dispatch({ type: 'API_REQUEST_START' });
     var pokemon;

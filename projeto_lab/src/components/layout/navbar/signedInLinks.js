@@ -6,10 +6,7 @@ import { signOut } from '../../../store/actions/authActions';
 import { getPokemonForProfileIQ } from '../../../store/actions/apiActions'
 
 const signedInLinks = (props) => {
-    const {correctAnswers, wrongAnswers} = props.profileContent.triviaRecord
-    console.log(correctAnswers);
-    console.log(wrongAnswers)
-
+    const { correctAnswers, wrongAnswers } = props.profileContent.triviaRecord
     return (
         <>
             <NavItem>
