@@ -51,7 +51,7 @@ class SignIn extends Component {
                             {authError && <Alert color="danger">{string.startCase(authError)}</Alert>}
                         </div>
                         <FormGroup className='d-flex justify-content-center'>
-                            <Button color='warning' className='w-50' block>Submit</Button>
+                            <Button color='warning' className='w-50' block>Sign In</Button>
                         </FormGroup>
                         <Row className='py-3'>
                             <Col xs='12' md='6'>

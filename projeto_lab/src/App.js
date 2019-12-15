@@ -19,9 +19,6 @@ import Error from './components/layout/Error';
 import NoMatch from './components/layout/NoMatch';
 import ScrollToTop from './components/layout/ScrollToTop';
 import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
-
 
 const AnimatedRoute = ({ children }) => (
   <Route
@@ -80,7 +77,7 @@ class App extends Component {
                           <Route exact path="/pokemon-list/:search/pokemon-page/:pokemon" component={PokemonPage} />
                           <Route exact path="/pokemon-trivia" component={Trivia} />
                           <Route exact path="/pokemon-trainers" render={(props) =>
-                            <PokemonTrainers {...props} auth={auth.uid} profileContent={profileContent} users={users} />}
+                            <PokemonTrainers {...props} auth={auth.uid} profileContent={profileContent} />}
                           />
                           />
                           <Route exact path="/pokemon-trainers/profile/:username" render={(props) =>
@@ -113,14 +110,8 @@ const mapStateToProps = (state) => {
     auth: state.firebase.auth,
     authError: state.authError,
     profile: state.firebase.profile.isLoaded,
-    profileContent: state.firebase.profile,
-    users: state.firestore.ordered.users
+    profileContent: state.firebase.profile
   }
 }
 
-export default compose(
-  firestoreConnect([
-    { collection: 'users' }
-  ]),
-  connect(mapStateToProps)
-)(App)
+export default connect(mapStateToProps)(App)

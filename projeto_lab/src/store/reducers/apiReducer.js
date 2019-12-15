@@ -4,6 +4,8 @@ const initState = {
         signUpData: '',
         getPokemon: '',
         getPokemonIQ: '',
+        getAllUsers: '',
+        getLinkUserInfo: '',
         getPokedex: '',
         getPokedexDropdowns: {
             regions: '',
@@ -77,7 +79,7 @@ const apiReducer = (state = initState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                error: action.error,
+                error: null,
                 apiData: { ...state.apiData, getPokedexDropdowns: { regions: action.payload[0].results, types: action.payload[1].results } }
             }
         case 'POKELIST_PAGE_DATA_ERROR':
@@ -90,14 +92,15 @@ const apiReducer = (state = initState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                error: action.error,
-                apiData: { ...state.apiData, getPokemonIQ: action.payload }
+                error: null,
+                apiData: { ...state.apiData, getLinkUserInfo: action.payload.user, getPokemonIQ: action.payload.pokemonIQ }
             }
         case 'POKE_PROFILE_IQ_DATA_ERROR':
             return {
                 ...state,
                 isLoading: false,
-                error: action.error
+                apiData: { ...state.apiData, getLinkUserInfo: action.payload.user, getPokemonIQ: action.payload.pokemonIQ },
+                error: action.payload.pokemonIQ
             }
         case 'GETMOVE_DATA_SUCCESS':
             return {
@@ -111,6 +114,18 @@ const apiReducer = (state = initState, action) => {
                 ...state,
                 isLoading: false,
                 error: action.error
+            }
+        case 'GET_ALL_USERS_SUCCESS':
+            return {
+                ...state,
+                isLoading: false,
+                apiData: { ...state.apiData, getAllUsers: action.payload }
+            }
+        case 'GET_ALL_USERS_ERROR':
+            return {
+                ...state,
+                isLoading: false,
+                apiData: { ...state.apiData, getAllUsers: action.error }
             }
         default:
             return state

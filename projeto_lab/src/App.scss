@@ -359,9 +359,10 @@ nav {
     }
 
     a {
+      font-weight: bold;
       text-decoration: none;
       transition: all 0.5s;
-      padding: 15px;
+      padding: 10px;
       position: relative;
       color: $red;
       margin: 0 0.625rem 0 0.625rem;

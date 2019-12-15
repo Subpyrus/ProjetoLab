@@ -233,7 +233,7 @@ class ownProfile extends Component {
                         </Col>
                         <Col xs='12'>
                             <Row className='text-center align-items-center'>
-                                {width < 600 &&
+                                {width < 768 &&
                                     <Col className='d-flex justify-content-center p-2 p-md-0' xs='12' md='2' lg='2'>
                                         <img alt={avatar} src={`https://www.serebii.net/diamondpearl/avatar/${avatar}.png`} />
                                     </Col>
@@ -257,7 +257,7 @@ class ownProfile extends Component {
                                         (<p className='col-12'>{nationality}</p>)
                                     }
                                 </Col>
-                                {width > 600 &&
+                                {width > 768 &&
                                     <Col className='d-flex justify-content-center p-2 p-md-0' xs='12' md='2' lg='2'>
                                         <img alt={avatar} src={`https://www.serebii.net/diamondpearl/avatar/${avatar}.png`} />
                                     </Col>
@@ -382,9 +382,14 @@ class ownProfile extends Component {
                                         <p>You still haven't added any Pokémon Trainers to your friends list! Check cool trainers on the PokéTrainers tab!</p>
                                     ) : (
                                         friends.map((item, key) =>
-                                            <Col key={key} xs='12' md='4' lg='2'>
+                                            <Col key={key} xs='6' md='4' lg='2'>
                                                 <i style={{ position: 'relative', top: '-40px' }} id={item.name} onClick={() => removeFriend(item.name)} className="far fa-times-circle"></i>
-                                                <Link className='basic-link' key={key} to={`pokemon-trainers/profile/${item.name}`}>
+                                                <Link className='basic-link' key={key} to={{
+                                                    pathname: `/pokemon-trainers/profile/${item.username}`,
+                                                    state: {
+                                                        user: item
+                                                    }
+                                                }}>
                                                     <img alt={item.avatar} src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} />
                                                     <p>{item.username}</p>
                                                 </Link>

@@ -3,10 +3,11 @@ import { NavItem } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signOut } from '../../../store/actions/authActions';
-import { getPokemonForProfileIQ } from '../../../store/actions/apiActions'
+import { getAllUsers } from '../../../store/actions/apiActions';
 
 const signedInLinks = (props) => {
-    const { correctAnswers, wrongAnswers } = props.profileContent.triviaRecord
+    const { getAllUsers, profileContent, signOut } = props;
+
     return (
         <>
             <NavItem>
@@ -16,22 +17,21 @@ const signedInLinks = (props) => {
                 </NavLink>
             </NavItem>
             <NavItem>
-                <NavLink
+                <NavLink onClick={() => getAllUsers(profileContent.username)}
                     activeClassName="navbar__link-active" className="navbar__link" to="/pokemon-trainers">
                     PokéTrainers
                 </NavLink>
             </NavItem>
             <NavItem>
-                <NavLink onClick={() => getPokemonForProfileIQ(correctAnswers, wrongAnswers)}
-                    activeClassName="navbar__link-active" className="navbar__link" to={`/profile/${props.username}`} >
-                    {props.username}
+                <NavLink
+                    activeClassName="navbar__link-active" className="navbar__link" to={`/profile/${profileContent.username}`} >
+                    {profileContent.username}
                 </NavLink>
             </NavItem>
             <NavItem>
                 <NavLink
-                    onClick={props.signOut} className="navbar__link" to="/">
+                    onClick={signOut} className="navbar__link" to="/">
                     <i className="fas fa-sign-out-alt"></i>
-                    Log-Out
                 </NavLink>
             </NavItem>
         </>
@@ -47,7 +47,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         signOut: () => dispatch(signOut()),
-        getPokemonForProfileIQ: (correctAnswers, wrongAnswers) => dispatch(getPokemonForProfileIQ(correctAnswers, wrongAnswers))
+        getAllUsers: (loggedUser) => dispatch(getAllUsers(loggedUser))
     }
 }
 

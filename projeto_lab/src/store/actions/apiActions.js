@@ -85,40 +85,72 @@ export const getDataPokeListPage = () => {
 
 /* PROFILE ACTIONS */
 
-export const getPokemonForProfileIQ = (userCorrectAnswers, userWrongAnswers) => {
-   return (dispatch) => {
+export const getUserAndPokemonForProfileIQ = (user) => {
+  return (dispatch, getState, { getFirestore, getFirebase }) => {
     dispatch({ type: 'API_REQUEST_START' });
-    var pokemon;
-    let allAnswers = userCorrectAnswers + userWrongAnswers;
-    let averageCorrectAnswers = userCorrectAnswers / allAnswers;
-    averageCorrectAnswers *= 100;
-    averageCorrectAnswers = parseInt(averageCorrectAnswers);
+    const firebase = getFirebase();
+    firebase.firestore().collection('users').where("username", "==", user).get()
+      .then((data) => {
+        var userInfo
+        data.forEach(doc => {
+          userInfo = doc.data();
+          console.log(userInfo)
+          var pokemon = null;
+          let allAnswers = userInfo.triviaRecord.correctAnswers + userInfo.triviaRecord.wrongAnswers;
+          let averageCorrectAnswers = userInfo.triviaRecord.correctAnswers / allAnswers;
+          averageCorrectAnswers *= 100;
+          averageCorrectAnswers = parseInt(averageCorrectAnswers);
 
-    if (isNaN(averageCorrectAnswers)) {
-      dispatch({ type: 'POKEPROFILEIQ_NOT_NEEDED' });
-    } else if (averageCorrectAnswers >= 90) {
-      pokemon = 'alakazam';
-    } else if (averageCorrectAnswers >= 75) {
-      pokemon = 'metagross';
-    } else if (averageCorrectAnswers >= 50) {
-      pokemon = 'beheeyem';
-    } else if (averageCorrectAnswers >= 25) {
-      pokemon = 'quagsire';
-    } else if (averageCorrectAnswers >= 10) {
-      pokemon = 'slowpoke';
-    } else {
-      pokemon = 'magikarp';
-    }
+          if (isNaN(averageCorrectAnswers)) {
+            dispatch({ type: 'POKE_PROFILE_IQ_DATA_SUCCESS', payload: { user: userInfo, pokemonIQ: undefined } })
+          } else if (averageCorrectAnswers >= 90) {
+            pokemon = 'alakazam';
+          } else if (averageCorrectAnswers >= 75) {
+            pokemon = 'metagross';
+          } else if (averageCorrectAnswers >= 50) {
+            pokemon = 'beheeyem';
+          } else if (averageCorrectAnswers >= 25) {
+            pokemon = 'quagsire';
+          } else if (averageCorrectAnswers >= 10) {
+            pokemon = 'slowpoke';
+          } else {
+            pokemon = 'magikarp';
+          }
 
-    var url = `https://pokeapi.co/api/v2/pokemon-species/${pokemon}/`
-    fetch(url)
-      .then((response) => {
-        return response.json().then(function (json) {
-          return response.ok ? json : Promise.reject(json);
+          console.log(pokemon)
+
+          if (pokemon) {
+            var url = `https://pokeapi.co/api/v2/pokemon-species/${pokemon}/`
+            fetch(url)
+              .then((response) => {
+                return response.json().then(function (json) {
+                  return response.ok ? json : Promise.reject(json);
+                });
+              })
+              .then((data) => dispatch({ type: 'POKE_PROFILE_IQ_DATA_SUCCESS', payload: { user: userInfo, pokemonIQ: data } }))
+              .catch((error) => dispatch({ type: 'POKE_PROFILE_IQ_DATA_ERROR', payload: { user: userInfo, pokemonIQ: error } }))
+          }
         });
+      }).catch((error) => {
+        dispatch({ type: 'POKE_PROFILE_IQ_DATA_ERROR', payload: { user: error.error, pokemonIQ: error.error } })
       })
-      .then((data) => dispatch({ type: 'POKE_PROFILE_IQ_DATA_SUCCESS', payload: data }))
-      .catch((error) => dispatch({ type: 'POKE_PROFILE_IQ_DATA_ERROR', error: error }))
   }
 }
 
+export const getAllUsers = (loggedUser) => {
+  return (dispatch, getState, { getFirestore, getFirebase }) => {
+    dispatch({ type: 'API_REQUEST_START' });
+    const firebase = getFirebase();
+    firebase.firestore().collection('users').get()
+      .then((data) => {
+        var returnData = [];
+        data.forEach(doc => {
+          let docInfo = doc.data();
+          docInfo.username !== loggedUser && returnData.push(docInfo)
+        });
+        dispatch({ type: 'GET_ALL_USERS_SUCCESS', payload: returnData })
+      }).catch((error) => {
+        dispatch({ type: 'GET_ALL_USERS_ERROR', error: error })
+      })
+  }
+}

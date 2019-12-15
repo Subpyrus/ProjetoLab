@@ -1,5 +1,7 @@
 const initState = {
-    actionFriendError: null
+    actionFriendError: null,
+    friendData: '',
+    allUsers: ''
 }
 
 const friendsReducer = (state = initState, action) => {
@@ -23,6 +25,16 @@ const friendsReducer = (state = initState, action) => {
             return {
                 ...state,
                 actionFriendError: action.error
+            }
+        case 'GET_FRIEND_SUCCESS':
+            return {
+                ...state,
+                friendData: action.payload
+            }
+        case 'GET_FRIEND_ERROR':
+            return {
+                ...state,
+                friendData: action.error
             }
         default:
             return state
