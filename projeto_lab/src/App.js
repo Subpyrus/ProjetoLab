@@ -47,7 +47,7 @@ class App extends Component {
   }
 
   render() {
-    const { error, isLoading, profile, profileContent, auth, users } = this.props;
+    const { error, isLoading, profile, profileContent, auth } = this.props;
 
     if (!profile) {
       return (
@@ -102,7 +102,6 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state)
   return {
     error: state.apiCalls.error,
     isLoading: state.apiCalls.isLoading,

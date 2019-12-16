@@ -63,6 +63,26 @@ export const getPokedex = (region) => {
   }
 }
 
+export const getPokedexChangeValue = (param, secondParam) => {
+  return (dispatch) => {
+    dispatch({ type: 'API_REQUEST_START' });
+    var url, pokemonData, defineSelectList;
+    secondParam === 'Region' ? (url = `https://pokeapi.co/api/v2/pokedex/${param}/`) : (url = `https://pokeapi.co/api/v2/type/${param}/`);
+
+    fetch(url)
+      .then(async (response) => {
+        return response.json().then(function (json) {
+          return response.ok ? json : Promise.reject(json);
+        })
+      }).then((data) => {
+        secondParam === 'Region' ? (pokemonData = data.pokemon_entries) : (pokemonData = data.pokemon);
+        secondParam === 'Region' ? (defineSelectList = this.props.regions) : (defineSelectList = this.props.types);
+        dispatch({ type: 'POKEDEX_DATA_SUCCESS', payload: { items: this.calculatePage(pokemonData, 1), currentIndex: 1, allPokedexEntries: pokemonData, selectValue: param, selectList: defineSelectList } })
+      })
+      .catch((error) => dispatch({ type: 'POKEDEX_CHANGE_DATA_ERROR', error: error }));
+  }
+}
+
 export const getDataPokeListPage = () => {
   return (dispatch) => {
     dispatch({ type: 'API_REQUEST_START' });
@@ -94,7 +114,6 @@ export const getUserAndPokemonForProfileIQ = (user) => {
         var userInfo
         data.forEach(doc => {
           userInfo = doc.data();
-          console.log(userInfo)
           var pokemon = null;
           let allAnswers = userInfo.triviaRecord.correctAnswers + userInfo.triviaRecord.wrongAnswers;
           let averageCorrectAnswers = userInfo.triviaRecord.correctAnswers / allAnswers;
@@ -116,8 +135,6 @@ export const getUserAndPokemonForProfileIQ = (user) => {
           } else {
             pokemon = 'magikarp';
           }
-
-          console.log(pokemon)
 
           if (pokemon) {
             var url = `https://pokeapi.co/api/v2/pokemon-species/${pokemon}/`

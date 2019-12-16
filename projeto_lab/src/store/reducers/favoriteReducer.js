@@ -1,13 +1,19 @@
 const initState = {
-    actionError: null
+    actionError: null,
+    actionFavoritesFeedback: null
 }
 
 const favoriteReducer = (state = initState, action) => {
     switch (action.type) {
+        case 'REMOVE_FAVORITES_FEEDBACK':
+            return {
+                ...state,
+                actionFavoritesFeedback: null
+            }
         case 'ADD_FAVORITE_SUCCESS':
             return {
                 ...state,
-                actionError: 'Favorite Added'
+                actionFavoritesFeedback: 'Favorite Added'
             }
         case 'ADD_FAVORITE_ERROR':
             return {
@@ -17,7 +23,7 @@ const favoriteReducer = (state = initState, action) => {
         case 'REMOVE_FAVORITE_SUCCESS':
             return {
                 ...state,
-                actionError: 'Favorite Removed'
+                actionFavoritesFeedback: 'Favorite Removed'
             }
         case 'REMOVE_FAVORITE_ERROR':
             return {
@@ -27,7 +33,7 @@ const favoriteReducer = (state = initState, action) => {
         case 'ADD_POKEMON_TEAM_SUCCESS':
             return {
                 ...state,
-                actionError: 'Added Pokémon to Team'
+                actionFavoritesFeedback: 'Added Pokémon to Team'
             }
         case 'ADD_POKEMON_TEAM_ERROR':
             return {
@@ -37,19 +43,9 @@ const favoriteReducer = (state = initState, action) => {
         case 'REMOVE_POKEMON_TEAM_SUCCESS':
             return {
                 ...state,
-                actionError: 'Removed Pokémon from Team'
+                actionFavoritesFeedback: 'Removed Pokémon from Team'
             }
         case 'REMOVE_POKEMON_TEAM_ERROR':
-            return {
-                ...state,
-                actionError: action.error.message
-            }
-        case 'CHANGE_PROFILE_SUCCESS':
-            return {
-                ...state,
-                actionError: 'Profile edited'
-            }
-        case 'CHANGE_PROFILE_ERROR':
             return {
                 ...state,
                 actionError: action.error.message

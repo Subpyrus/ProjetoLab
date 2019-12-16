@@ -41,14 +41,26 @@ const Home = (props) => {
                                 {notifications.map((item, key) =>
                                     <Col xs='12' key={key}>
                                         <Row className='p-2 text-center d-flex align-items-center'>
-                                            <Col xs='12' sm='6' md='2' className='py-2 py-md-0'>
-                                                <img src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} alt={item.avatar} />
-                                            </Col>
-                                            <Col xs='12' sm='6' md='4' className='py-2 py-md-0'>
-                                                <p className='m-0' style={{ color: '#f24643' }}><b>{item.user}</b> - <small>{moment(item.time.toDate()).fromNow()}</small></p>
-                                            </Col>
-                                            <Col xs='12' md='6' className='py-2 py-md-0'>
+                                            <Link onClick={() => getUserAndPokemonForProfileIQ(item.user)} className='col-12 col-md-3 text-center containerLink p-0' to={{
+                                                pathname: `/pokemon-trainers/profile/${item.user}`,
+                                                state: {
+                                                    user: item
+                                                }
+                                            }}>
+                                                <Col xs='12' className='py-2 py-md-0 text-center justify-content-center'>
+                                                    <img src={`https://www.serebii.net/diamondpearl/avatar/${item.avatar}.png`} alt={item.avatar} />
+                                                </Col>
+                                                <Col xs='12' className='py-2 py-md-0'>
+                                                    <p className='m-0'>{item.user}</p>
+                                                </Col>
+                                            </Link>
+                                            <Col xs='12' md='7' className='py-2 py-md-0'>
                                                 {item.content}
+                                            </Col>
+                                            <Col xs='12' md='2'>
+                                                <p className='m-0' style={{ color: '#ffe066' }}>
+                                                    <small>{moment(item.time.toDate()).fromNow()}</small>
+                                                </p>
                                             </Col>
                                         </Row>
                                         <hr className='my-2' />

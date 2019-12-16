@@ -3,10 +3,11 @@ import { NavItem } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signOut } from '../../../store/actions/authActions';
-import { getAllUsers } from '../../../store/actions/apiActions';
+import { getAllUsers, getUserAndPokemonForProfileIQ } from '../../../store/actions/apiActions';
 
 const signedInLinks = (props) => {
     const { getAllUsers, profileContent, signOut } = props;
+    const { username } = profileContent
 
     return (
         <>
@@ -17,15 +18,15 @@ const signedInLinks = (props) => {
                 </NavLink>
             </NavItem>
             <NavItem>
-                <NavLink onClick={() => getAllUsers(profileContent.username)}
+                <NavLink onClick={() => getAllUsers(username)}
                     activeClassName="navbar__link-active" className="navbar__link" to="/pokemon-trainers">
                     PokéTrainers
                 </NavLink>
             </NavItem>
             <NavItem>
                 <NavLink
-                    activeClassName="navbar__link-active" className="navbar__link" to={`/profile/${profileContent.username}`} >
-                    {profileContent.username}
+                    activeClassName="navbar__link-active" onClick={() => getUserAndPokemonForProfileIQ(username)} className="navbar__link" to={`/profile/${username}`} >
+                    {username}
                 </NavLink>
             </NavItem>
             <NavItem>
@@ -47,7 +48,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         signOut: () => dispatch(signOut()),
-        getAllUsers: (loggedUser) => dispatch(getAllUsers(loggedUser))
+        getAllUsers: (loggedUser) => dispatch(getAllUsers(loggedUser)),
+        getUserAndPokemonForProfileIQ: (user) => dispatch(getUserAndPokemonForProfileIQ(user))
     }
 }
 

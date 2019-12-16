@@ -1,22 +1,29 @@
 const initState = {
-    authError: null,
+    error: null,
     isLoggedIn: false,
-    recoverPasswordMessage: null
+    recoverPasswordMessage: null,
+    actionAuthFeedback: null
 }
 
 const authReducer = (state = initState, action) => {
     switch (action.type) {
+        case 'REMOVE_AUTH_FEEDBACK':
+            return {
+                ...state,
+                actionAuthFeedback: null
+            }
         case 'LOGIN_ERROR':
             return {
                 ...state,
-                authError: 'login-failed',
-                isLoggedIn: false
+                error: 'login-failed',
+                isLoggedIn: false,
+                actionAuthFeedback: ''
             }
         case 'LOGIN_SUCCESS':
             return {
                 ...state,
-                authError: null,
-                isLoggedIn: true
+                isLoggedIn: true,
+                actionAuthFeedback: ''
             }
         case 'SIGNOUT_SUCCESS':
             return {
@@ -37,12 +44,23 @@ const authReducer = (state = initState, action) => {
         case 'RESET_PASSWORD_SUCCESS':
             return {
                 ...state,
-                recoverPasswordMessage: action.payload
+                recoverPasswordMessage: action.payload,
+                actionAuthFeedback: ''
             }
         case 'RESET_PASSWORD_ERROR':
             return {
                 ...state,
-                recoverPasswordMessage: action.payload
+                actionAuthFeedback: ''
+            }
+        case 'CHANGE_PROFILE_SUCCESS':
+            return {
+                ...state,
+                actionAuthFeedback: 'Profile edited'
+            }
+        case 'CHANGE_PROFILE_ERROR':
+            return {
+                ...state,
+                error: action.error.message
             }
         default:
             return state

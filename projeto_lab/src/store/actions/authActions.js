@@ -1,12 +1,14 @@
 export const signIn = (credentials) => {
     return (dispatch, getState, { getFirebase }) => {
         const firebase = getFirebase();
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() =>
+        let signInType;
+        credentials.rememberMe ? (signInType = firebase.auth.Auth.Persistence.LOCAL) : 
+        (signInType = firebase.auth.Auth.Persistence.SESSION)
+        firebase.auth().setPersistence(signInType).then(() =>
             firebase.auth().signInWithEmailAndPassword(
                 credentials.email,
                 credentials.password
             )).then((response) => {
-                console.log(response)
                 dispatch({ type: 'LOGIN_SUCCESS' })
             }).catch((error) => {
                 dispatch({ type: 'LOGIN_ERROR', error })
@@ -51,8 +53,8 @@ export const signUp = (newUser) => {
             })
         }).then(() => {
             dispatch({ type: 'SIGNUP_SUCCESS' })
-        }).catch(() => {
-            dispatch({ type: 'SIGNUP-ERROR' })
+        }).catch((error) => {
+            dispatch({ type: 'SIGNUP-ERROR', error: error })
         })
     }
 }
@@ -74,5 +76,25 @@ export const recoverPassword = (email) => {
                     payload: error.message
                 });
             });
+    }
+}
+
+
+export const editProfile = (nationalityForm, gameForm, regionForm) => {
+    return (dispatch, getState, { getFirestore }) => {
+        const firestore = getFirestore();
+        const uid = getState().firebase.auth.uid;
+        firestore.collection('users').where("uid", "==", uid).get()
+            .then(() => {
+                return firestore.collection("users").doc(uid).update({
+                    nationality: nationalityForm,
+                    favoriteGame: gameForm,
+                    favoriteRegion: regionForm
+                });
+            }).then(() => {
+                dispatch({ type: 'CHANGE_PROFILE_SUCCESS' })
+            }).catch(() => {
+                dispatch({ type: 'CHANGE_PROFILE_ERROR' })
+            })
     }
 }

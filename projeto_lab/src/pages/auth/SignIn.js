@@ -45,13 +45,15 @@ class SignIn extends Component {
                             <Input onChange={this.handleChange} type="password" name="password" id="password" placeholder="type your password" />
                         </FormGroup>
                         <FormGroup>
-                            <CustomInput type="checkbox" id="rememberMe" label="Remember me" />
+                            <CustomInput checked={this.state.rememberMe} onChange={(event) => this.setState({
+                                [event.target.id]: !this.state.rememberMe
+                            })} type="checkbox" id="rememberMe" label="Remember me" />
                         </FormGroup>
                         <div>
                             {authError && <Alert color="danger">{string.startCase(authError)}</Alert>}
                         </div>
-                        <FormGroup className='d-flex justify-content-center'>
-                            <Button color='warning' className='w-50' block>Sign In</Button>
+                        <FormGroup className='col-12 col-md-8 d-flex justify-content-center mx-auto'>
+                            <Button color='warning' block>Sign In</Button>
                         </FormGroup>
                         <Row className='py-3'>
                             <Col xs='12' md='6'>

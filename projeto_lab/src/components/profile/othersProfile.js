@@ -31,7 +31,7 @@ class othersProfile extends Component {
 
     render() {
         const { username, avatar, gender, nationality, favoriteGame, favoriteRegion, favoritePokemons, favoriteTeam, triviaRecord, friends } = this.props.othersProfileContent
-        const { loggedUserFriends, favoritesResults, teamResults, pokemonIQ, getPokemonForProfileIQ } = this.props;
+        const { loggedUserFriends, favoritesResults, teamResults, pokemonIQ } = this.props;
         const { width } = this.state;
 
         var pokemon = require('pokemon');
@@ -110,7 +110,9 @@ class othersProfile extends Component {
                                 <Col xs='6' lg='3' className='py-3'>
                                     <img alt={pokemonName} src={`http://www.pokestadium.com/sprites/xy/${pokemonName.toLowerCase()}.gif`} />
                                 </Col>
-                                <p>{pokemonIQ.flavor_text_entries[2].flavor_text}</p>
+                                {pokemonIQ.flavor_text_entries.map((item, key) =>
+                                    (item.language.name === 'en' && item.version.name === 'alpha-sapphire') && <p key={key} className='col-12 col-sm-10 mx-auto'>{item.flavor_text}</p>
+                                )}
                             </>)
                         }
                     </Row>

@@ -5,6 +5,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import LazyLoad from 'react-lazyload';
 import Select from 'react-select';
 import { connect } from 'react-redux';
+import Loading from '../components/layout/Loading';
 import { getInfoPokemonPage } from '../store/actions/apiActions';
 
 class PokemonList extends Component {
@@ -18,7 +19,9 @@ class PokemonList extends Component {
             items: [],
             typeSearch: 'Region',
             selectValue: 'National',
-            selectList: this.props.regions
+            selectList: this.props.regions,
+            isLoading: false,
+            error: null
         }
     }
 
@@ -38,17 +41,18 @@ class PokemonList extends Component {
     }
 
     getPokedex = (param, param2) => {
+        this.setState({ isLoading: true })
         var url, pokemonData, defineSelectList;
         param2 === 'Region' ? (url = `https://pokeapi.co/api/v2/pokedex/${param}/`) : (url = `https://pokeapi.co/api/v2/type/${param}/`);
 
         const handleData = (data) => {
             param2 === 'Region' ? (pokemonData = data.pokemon_entries) : (pokemonData = data.pokemon);
             param2 === 'Region' ? (defineSelectList = this.props.regions) : (defineSelectList = this.props.types);
-            this.setState({ items: this.calculatePage(pokemonData, 1), currentIndex: 1, allPokedexEntries: pokemonData, selectValue: param, selectList: defineSelectList })
+            this.setState({ items: this.calculatePage(pokemonData, 1), currentIndex: 1, allPokedexEntries: pokemonData, selectValue: param, selectList: defineSelectList, isLoading: false })
         }
 
         const handleError = (error) => {
-            this.setState({ error: error.message });
+            this.setState({ error: error.message, isLoading: false });
         }
 
         fetch(url).then(async (response) => {
@@ -104,7 +108,7 @@ class PokemonList extends Component {
     //Render
     render() {
         const pokemon = require('pokemon');
-        const { items, typeSearch, selectValue } = this.state;
+        const { items, typeSearch, selectValue, isLoading } = this.state;
         const { getInfoPokemonPage, match } = this.props
         var string = require('lodash/string');
         let optionsSelectSpecifics = []
@@ -195,59 +199,49 @@ class PokemonList extends Component {
                         isSearchable={false}
                     />
                 </Row>
-                <InfiniteScroll
-                    className='row col-12'
-                    dataLength={items.length}
-                    next={this.fetchMoreData}
-                    hasMore={true}
-                >
-                    {items.map((pokedexItem, key) => {
-                        if (typeSearch === "Region" && pokedexItem.pokemon_species !== undefined) {
-                            let url = pokedexItem.pokemon_species.url.trim();
-                            let pokemonName = pokemon.getName(url.split('/')[6]);
+                {isLoading ? (<Loading />) :
+                    (<InfiniteScroll
+                        className='row col-12'
+                        dataLength={items.length}
+                        next={this.fetchMoreData}
+                        hasMore={true}>
+                        {items.map((pokedexItem, key) => {
+                            var img, url, pokemonName, pokeNumber;
+                            if (typeSearch === "Region" && pokedexItem.pokemon_species !== undefined) {
+                                url = pokedexItem.pokemon_species.url.trim();
+                                pokeNumber = url.split('/')[6]
+                                pokemonName = pokemon.getName(pokeNumber);
+                            } else if (typeSearch === "Type" && pokedexItem.pokemon !== undefined) {
+                                url = pokedexItem.pokemon.url.trim();
+                                pokeNumber = url.split('/')[6]
+                                if (pokeNumber < 10000) {
+                                    pokemonName = pokemon.getName(pokeNumber);
+                                }
+                            } else {
+                                return <Loading />
+                            }
+
+                            if (pokemonName > 722) {
+                                img = `https://serebii.net/sunmoon/pokemon/${pokemonName}.png`
+                            } else {
+                                img = `https://img.pokemondb.net/sprites/x-y/normal/${pokemonName.toLowerCase()}.png`
+                            }
+
                             return (
                                 <Col key={key} className='py-md-2' xs='12' sm='6' md='4' lg='2'>
                                     <Link className='h-100 containerLink' to={`/pokemon-list/${match.params.search}/pokemon-page/${pokemonName.toLowerCase()}`} onClick={() => getInfoPokemonPage(pokemonName.toLowerCase())}>
-                                        <div>
-                                            <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
-                                                <LazyLoad height={200} once={true}>
-                                                    <img alt={pokemonName} src={`https://img.pokemondb.net/sprites/x-y/normal/${pokemonName.toLowerCase()}.png`} />
-                                                </LazyLoad>
-                                            </div>
-                                            <h5 className='text-center'>{pokemonName}</h5>
+                                        <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
+                                            <LazyLoad height={200} once={true}>
+                                                <img alt={pokemonName} src={img} />
+                                            </LazyLoad>
                                         </div>
+                                        <h5 className='text-center'>{pokemonName}</h5>
                                     </Link>
                                 </Col>
                             )
-                        } else {
-                            if (typeSearch === "Type" && pokedexItem.pokemon !== undefined) {
-                                var url = pokedexItem.pokemon.url.trim();
-                                var pokeNumber = url.split('/')[6];
-                                if (pokeNumber < 10000) {
-                                    var pokemonName = pokemon.getName(pokeNumber);
-                                    return (
-                                        <Col key={key} className='py-md-2' xs='12' sm='6' md='4' lg='2'>
-                                            <Link className='poke-list-link' to={`/pokemon-list/${match.params.search}/pokemon-page/${pokemonName.toLowerCase()}`} onClick={() => getInfoPokemonPage(pokemonName.toLowerCase())}>
-                                                <div>
-                                                    <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
-                                                        <LazyLoad height={200} once={true}>
-                                                            <img alt={pokemonName} src={`https://img.pokemondb.net/sprites/x-y/normal/${pokemonName.toLowerCase()}.png`} />
-                                                        </LazyLoad>
-                                                    </div>
-                                                    <h5 className='text-center'>{pokemonName}</h5>
-                                                </div>
-                                            </Link>
-                                        </Col>
-                                    )
-                                } else {
-                                    return (<></>)
-                                }
-                            } else {
-                                return (<></>)
-                            }
-                        }
-                    })}
-                </InfiniteScroll>
+                        })}
+                    </InfiniteScroll>)
+                }
             </>
         )
     }
@@ -263,7 +257,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getInfoPokemonPage: (pokemon) => dispatch(getInfoPokemonPage(pokemon))
+        getInfoPokemonPage: (pokemon) => dispatch(getInfoPokemonPage(pokemon)),
+        /*getPokedexChangeValue: (param, secondParam) => dispatch(getPokedexChangeValue(param, secondParam))*/
     }
 }
 

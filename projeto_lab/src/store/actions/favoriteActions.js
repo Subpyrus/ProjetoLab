@@ -89,22 +89,3 @@ export const removePokemonFromTeam = (pokemon) => {
             })
     }
 }
-
-export const editProfile = (nationalityForm, gameForm, regionForm) => {
-    return (dispatch, getState, { getFirestore }) => {
-        const firestore = getFirestore();
-        const uid = getState().firebase.auth.uid;
-        firestore.collection('users').where("uid", "==", uid).get()
-            .then(() => {
-                return firestore.collection("users").doc(uid).update({
-                    nationality: nationalityForm,
-                    favoriteGame: gameForm,
-                    favoriteRegion: regionForm
-                });
-            }).then(() => {
-                dispatch({ type: 'CHANGE_PROFILE_SUCCESS' })
-            }).catch(() => {
-                dispatch({ type: 'CHANGE_PROFILE_ERROR' })
-            })
-    }
-}

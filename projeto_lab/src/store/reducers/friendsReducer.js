@@ -1,11 +1,17 @@
 const initState = {
     actionFriendError: null,
     friendData: '',
-    allUsers: ''
+    allUsers: '',
+    actionFriendsFeedback: null
 }
 
 const friendsReducer = (state = initState, action) => {
     switch (action.type) {
+        case 'REMOVE_FRIENDS_FEEDBACK':
+            return {
+                ...state,
+                actionFriendsFeedback: null
+            }
         case 'ADD_FRIEND_SUCCESS':
             return {
                 ...state,

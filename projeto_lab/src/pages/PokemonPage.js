@@ -51,15 +51,15 @@ class PokePage extends PureComponent {
                 <Col xs='12' className='pb-4'>
                     <Row>
                         <Col xs='12' lg={auth.uid ? ('6') : ('12')}>
-                            <h1 style={{paddingBottom: '0.80rem'}} className={auth.uid ? ('text-lg-left text-center') : ('text-center')}>
+                            <h1 style={{ paddingBottom: '0.80rem' }} className={auth.uid ? ('text-lg-left text-center') : ('text-center')}>
                                 <img alt={`${pokemonName}Miniature`} src={`http://www.pokestadium.com/assets/img/sprites/misc/icons/${this.props.match.params.pokemon}.png`} />
                                 {pokemonName}
                                 <span style={{ fontSize: '55%' }}> {genera[2].genus}</span>
                             </h1>
                         </Col>
                         {auth.uid &&
-                            <Col xs='12'>
-                                <Row className='justify-content-lg-end justify-content-center'>
+                            <Col xs='12' lg='6'>
+                                <Row className='justify-content-lg-end align-items-md-center justify-content-center h-100'>
                                     {foundPokemonTeam !== undefined ?
                                         (<Button className='my-2 my-lg-0 mx-2' onClick={() => {
                                             removePokemonFromTeam(pokemonName);
@@ -70,21 +70,25 @@ class PokePage extends PureComponent {
                                             }} color="warning">Add to Favorite Team</Button>)
                                     }
                                     {foundPokemonFavorites !== undefined ?
-                                        (<Button className='my-2 my-lg-0 mx-2' onClick={() => {
-                                            removeFavoritePokemon(pokemonName);
-                                        }} color="danger">Remove From Favorites</Button>
+                                        (<Button className='my-2 my-lg-0 mx-2'
+                                            onClick={() => {
+                                                removeFavoritePokemon(pokemonName);
+                                            }}
+                                            color="danger">Remove From Favorites</Button>
                                         ) : profilePokemonFavorites.length === 50 ?
                                             (<Button className='my-2 my-lg-0 mx-2' color="warning" disabled>Your Favorites are Full</Button>) :
-                                            (<Button className='my-2 my-lg-0 mx-2' onClick={() => {
-                                                addFavoritePokemon([pokemonName, stats]);
-                                            }} color="warning">Add to Favorites</Button>
+                                            (<Button className='my-2 my-lg-0 mx-2'
+                                                onClick={() => {
+                                                    addFavoritePokemon([pokemonName, stats]);
+                                                }}
+                                                color="warning">Add to Favorites</Button>
                                             )
                                     }
                                 </Row>
                             </Col>
                         }
                         <Col xs='12'>
-                            <h6 className={auth.uid ? ('col-12 text-center text-md-left') : ('col-12 text-center')}>
+                            <h6 className={auth.uid ? ('col-12 text-center text-lg-left pt-3 pt-lg-0') : ('col-12 text-center')}>
                                 {Array.from(uniqueNames).map((uniqueNameItem, key) => <span key={key} className='p-2'>{uniqueNameItem}</span>)}
                             </h6>
                         </Col>
@@ -95,21 +99,23 @@ class PokePage extends PureComponent {
 
                 <PokemonPageGenericInfo info={pokemonInfo} />
 
-                <Col xs='12' md='6' className='py-4 py-lg-5'>
+                <Col xs='12' md='6' lg='5' className='py-4 py-lg-5'>
                     <Row>
                         <h3 className='col-12 text-center'>Description</h3>
                         <Col xs='12'>
-                            <p>{flavor_text_entries[1].flavor_text}</p>
+                            {flavor_text_entries.map((item, key) =>
+                                (item.language.name === 'en' && item.version.name === 'ultra-sun') && <p key={key}>{item.flavor_text}</p>
+                            )}
                         </Col>
                     </Row>
                 </Col>
 
-                <Col xs='12' md='6' className='py-4 py-lg-5'>
+                <Col xs='12' md='6' lg='6' className='py-4 py-lg-5 offset-lg-1'>
                     <Row>
                         <h3 className='col-12 text-center'>Stats</h3>
                         {stats.map((statsItem, key) =>
                             <Col key={key} xs='6' sm='6' md='4' lg='2'>
-                                <Row className='d-flex text-center align-items-center justify-content-center'>
+                                <Row className='d-flex text-center align-items-center justify-content-center h-100'>
                                     <Col xs='12'>
                                         <h5>{string.startCase(statsItem.stat.name)}</h5>
                                     </Col>

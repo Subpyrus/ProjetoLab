@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom';
 import OwnProfile from '../components/profile/ownProfile';
 import OthersProfile from '../components/profile/othersProfile';
 import { connect } from 'react-redux';
-import Loading from '../components/layout/Loading';
 class Profile extends Component {
 
     getStats = (array) => {
@@ -111,14 +110,12 @@ class Profile extends Component {
     }
 
     render() {
-        const { isLoggedIn, location, profileContent, userInfo, userPokemonIQ } = this.props;
-        console.log(userInfo)
+        const { isLoggedIn, location, profileContent, userInfo, userPokemonIQ, profileUsername } = this.props;
         let messageFavorites = this.getStatsMessages(userInfo.favoritePokemons, 'favorites');
         let messageTeam = this.getStatsMessages(userInfo.favoriteTeam, 'team');
         if (!isLoggedIn) {
             return <Redirect to='/sign-in' />
-        } else if (!location.state) {
-            console.log('object')
+        } else if (!location.state || userInfo.username === profileUsername) {
             return (
                 userInfo !== undefined && <OwnProfile
                     ownProfileContent={profileContent}
@@ -127,7 +124,6 @@ class Profile extends Component {
                     teamResults={messageTeam}
                 />)
         } else {
-            console.log(1)
             return (
                 userInfo !== undefined && <OthersProfile
                     othersProfileContent={userInfo}
@@ -143,6 +139,7 @@ class Profile extends Component {
 
 const mapStateToProps = (state) => {
     return {
+        profileUsername: state.firebase.profile.username,
         userInfo: state.apiCalls.apiData.getLinkUserInfo,
         userPokemonIQ: state.apiCalls.apiData.getPokemonIQ
     }

@@ -4,7 +4,7 @@ const Error = (props) => {
     console.log(props)
     return (
         <div>
-            <h1>{props.error}</h1>
+            <h1>{props.error.error}</h1>
         </div>
     )
 }

@@ -12,6 +12,7 @@ body {
   font-size: 16px;
   font-family: $text-font;
   color: $white;
+  margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
@@ -65,11 +66,9 @@ body {
     &:active {
       text-decoration: none;
       background-color: $blue;
-      & > p {
-        font-weight: bold;
-        color: $yellow;
-      }
-      & > div > h5 {
+      & > p,
+      & > div > p,
+      & > h5 {
         font-weight: bold;
         color: $yellow;
       }
