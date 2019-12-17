@@ -25,7 +25,7 @@ class UserHome extends Component {
     }
 
     getStatsValues = (firstArray, secondArray, stats) => {
-        for (let firstItem in firstArray) {
+        for(let x = 0; x < firstArray.length; x++) {
             for (let [index, secondItem] of secondArray.entries()) {
                 stats[index].value.push(secondItem.base_stat)
                 let sum = stats[index].value.reduce((a, b) => a + b, 0);
