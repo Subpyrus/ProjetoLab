@@ -89,8 +89,11 @@ class pokemonPageEvChain extends Component {
                             <Col xs='12' sm='3' key={key}>
                             {evolutionMethodName.length > 1 && evolutionMethodName[key] !== '' &&
                                 <Col xs='12' className='text-center'>
-                                    <p>Method: {string.startCase(`${evolutionMethodName[key]}`)}</p>
-                                    <div>Requirement:
+                                    <div className="align-items-center justify-content-center text-center">
+                                        <p>Method:<br></br>{string.startCase(`${evolutionMethodName[key]}`)}</p>
+                                    </div>
+                                    <div className="align-items-center justify-content-center text-center">
+                                        Requirement:
                                         {evolutionMethod[key].map((methodSpecifics) =>
                                             methodSpecifics.map((methodSpecifics, key) => {
                                                 if (typeof methodSpecifics === 'object') {
