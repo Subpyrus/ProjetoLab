@@ -140,7 +140,7 @@ class UserHome extends Component {
         var recentFriends = array.takeRight(friends, 6);
         return (
             <>
-                <h1 className='col-12 text-center text-md-left px-0'>Home - <small>Wecolme {username}</small></h1>
+                <h1 className='col-12 text-center text-md-left px-0'>Home - <small>Welcome {username}</small></h1>
                 {!notifications ? (<Loading height='50vh' />) : (
                     <Row>
                         <Col xs='12' lg='8' className='px-0 pb-5'>

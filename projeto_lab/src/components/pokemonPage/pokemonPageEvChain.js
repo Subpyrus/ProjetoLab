@@ -70,7 +70,7 @@ class pokemonPageEvChain extends Component {
                 <Col xs='12'>
                     <Row className='d-flex align-items-center justify-content-center text-center'>
                         {pokemonName.map((pokeEvName, key) =>
-                            <Col xs='12' sm='4' key={key}>
+                            <Col xs='12' sm='3' key={key}>
                                 <Row>
                                     <Col xs='12' className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
                                         <LazyLoad height={200} once={true}>
@@ -81,22 +81,28 @@ class pokemonPageEvChain extends Component {
                                             </Link>
                                         </LazyLoad>
                                     </Col>
-                                    {evolutionMethodName.length > 1 && evolutionMethodName[key] !== '' &&
-                                        <Col xs='12' className='text-center'>
-                                            <p>Method: {string.startCase(`${evolutionMethodName[key]}`)}</p>
-                                            <div>Requirement:
-                                            {evolutionMethod[key].map((methodSpecifics) =>
-                                                methodSpecifics.map((methodSpecifics, key) => {
-                                                    if (typeof methodSpecifics === 'object') {
-                                                        return <p className='small' key={key}>{string.startCase(methodSpecifics.name)}</p>
-                                                    } else {
-                                                        return <p className='small' key={key}>{string.startCase(methodSpecifics)}</p>
-                                                    }
-                                                }))}
-                                            </div>
-                                        </Col>}
                                 </Row>
-                            </Col>)}
+                        </Col>)}
+                    </Row>
+                    <Row className='d-flex align-items-center justify-content-center text-center'>
+                        {pokemonName.map((pokeEvName, key) =>
+                            <Col xs='12' sm='3' key={key}>
+                            {evolutionMethodName.length > 1 && evolutionMethodName[key] !== '' &&
+                                <Col xs='12' className='text-center'>
+                                    <p>Method: {string.startCase(`${evolutionMethodName[key]}`)}</p>
+                                    <div>Requirement:
+                                        {evolutionMethod[key].map((methodSpecifics) =>
+                                            methodSpecifics.map((methodSpecifics, key) => {
+                                                if (typeof methodSpecifics === 'object') {
+                                                    return <p className='small' key={key}>{string.startCase(methodSpecifics.name)}</p>
+                                                } else {
+                                                    return <p className='small' key={key}>{string.startCase(methodSpecifics)}</p>
+                                                }
+                                        }))}
+                                    </div>
+                                </Col>
+                            }
+                        </Col>)}
                     </Row>
                 </Col>
             </Row >
