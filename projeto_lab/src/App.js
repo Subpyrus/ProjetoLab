@@ -19,6 +19,7 @@ import Error from './components/layout/Error';
 import NoMatch from './components/layout/NoMatch';
 import ScrollToTop from './components/layout/ScrollToTop';
 import { connect } from 'react-redux';
+import AlertComponent from './components/layout/Alert';
 
 const AnimatedRoute = ({ children }) => (
   <Route
@@ -47,7 +48,7 @@ class App extends Component {
   }
 
   render() {
-    const { error, isLoading, profile, profileContent, auth } = this.props;
+    const { errorApi, isLoading, profile, profileContent, auth, authNotifications } = this.props;
 
     if (!profile) {
       return (
@@ -66,8 +67,10 @@ class App extends Component {
           <NavigationBar getPokedex={this.getPokedex} />
           <AbsoluteWrapper>
             <Layout>
+              {authNotifications &&
+                <AlertComponent message={authNotifications[0]} typeAlert={authNotifications[1]} />}
               {isLoading ? (<Loading height={'65vh'} />) :
-                error ? (<Error error={error} />) :
+                errorApi ? (<Error error={errorApi} />) :
                   (
                     <AnimatedRoute>
                       {location => (
@@ -103,11 +106,11 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    error: state.apiCalls.error,
+    errorApi: state.apiCalls.error,
     isLoading: state.apiCalls.isLoading,
     isLoggedIn: state.auth.isLoggedIn,
     auth: state.firebase.auth,
-    authError: state.authError,
+    authNotifications: state.auth.actionAuthFeedback,
     profile: state.firebase.profile.isLoaded,
     profileContent: state.firebase.profile
   }

@@ -49,8 +49,8 @@ class othersProfile extends Component {
                 </Col>
                 <Col xs='12' md='6' className='' className='text-center py-3 py-md-0'>
                     {findFriends === undefined ?
-                        (<Button color='warning' onClick={() => this.props.addFriend(this.props.othersProfileContent)}>Add to Friends List</Button>) :
-                        (<Button color='danger' onClick={() => this.props.removeFriend(this.props.othersProfileContent)}>Remove from Friends List</Button>)}
+                        (<Button color='warning' onClick={() => this.props.addFriend(this.props.othersProfileContent)}>Add to Following List</Button>) :
+                        (<Button color='danger' onClick={() => this.props.removeFriend(this.props.othersProfileContent)}>Remove from Following List</Button>)}
                 </Col>
                 <Col xs='12'>
                     <Row className='text-center align-items-center'>
@@ -162,10 +162,10 @@ class othersProfile extends Component {
                 </Col>
                 <Col xs='12'>
                     <Row className='justify-content-center text-center'>
-                        <h3 className='col-12'>Friends</h3>
+                        <h3 className='col-12'>Following</h3>
                         {friends &&
                             friends.length === 0 ? (
-                                <p>{username} still doesn't have any Pokémon Trainers in their friends list.</p>
+                                <p>{username} still doesn't have any Pokémon Trainers in their follow list.</p>
                             ) : (
                                 friends.map((item, key) =>
                                     <Col key={key} xs='6' md='4' lg='2'>

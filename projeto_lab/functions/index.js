@@ -50,15 +50,16 @@ exports.userDataChanged = functions.firestore
             }
         } else if (before.friends.length !== after.friends.length) {
             const notification = {
-                content: `Added ${after.friends[after.friends.length - 1].username} to their friend list`,
+                content: `Added ${after.friends[after.friends.length - 1].username} to their following list`,
                 user: `${after.username}`,
                 avatar: `${after.avatar}`,
                 time: admin.firestore.FieldValue.serverTimestamp()
             }
             return createNotification(notification)
         } else if (before.triviaRecord !== after.triviaRecord) {
+            var string = require('lodash/string')
             const notification = {
-                content: `Concluded a PokéTrivia and currently has a record of ${after.triviaRecord.correctAnswers} correct answers and ${after.triviaRecord.wrongAnswers} of incorrect answers, which makes their pokémon IQ ${after.triviaRecord.pokemonIQ}.`,
+                content: `Concluded a PokéTrivia and currently has a record of ${after.triviaRecord.correctAnswers} correct answers and ${after.triviaRecord.wrongAnswers} of incorrect answers, which makes their pokémon IQ ${string.startCase(after.triviaRecord.pokemonIQ)}.`,
                 user: `${after.username}`,
                 avatar: `${after.avatar}`,
                 time: admin.firestore.FieldValue.serverTimestamp()

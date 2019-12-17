@@ -1,29 +1,27 @@
 import React from 'react';
 import { Alert } from 'reactstrap';
-import connect from 'react-redux'
+import { removeNotification } from '../../store/actions/authActions'
+import { connect } from 'react-redux'
 
-class AlertComponent extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            visible: true
-        }
-    }
+const AlertComponent = (props) => {
+    const { message, typeAlert, removeNotification } = props
 
-    onDismiss = () => {
-        /*const { resetNotification } = this.props*/
-        this.setState({ visible: !this.state.visible })
-    }
+    setTimeout(() => {
+        removeNotification();
+    }, 4000)
 
-    render() {
-        const { message, typeAlert } = this.props
-        return (
-            <Alert color={typeAlert} isOpen={visible} toggle={onDismiss}>
-                {message}
-            </Alert>
-        )
+    return (
+        <Alert color={typeAlert} className='text-center font-weight-bold'>
+            {message}
+        </Alert>
+    )
+
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        removeNotification: (pokemon) => dispatch(removeNotification(pokemon)),
     }
 }
 
-export default AlertComponent;
-/*export default connect(null, mapDispatchToProps)(AlertComponent)*/
+export default connect(null, mapDispatchToProps)(AlertComponent);

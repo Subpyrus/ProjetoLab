@@ -290,10 +290,10 @@ class ownProfile extends Component {
                 </Col>
                 <Col xs='12'>
                     <Row className='justify-content-center text-center'>
-                        <h3 className='col-12'>Friends</h3>
+                        <h3 className='col-12'>Following</h3>
                         {friends &&
                             friends.length === 0 ? (
-                                <p>You still haven't added any Pokémon Trainers to your friends list! Check cool trainers on the PokéTrainers tab!</p>
+                                <p>You still haven't added any Pokémon Trainers to your follow list! Check cool trainers on the PokéTrainers tab!</p>
                             ) : (
                                 friends.map((item, key) =>
                                     <Col key={key} xs='6' md='4' lg='2'>

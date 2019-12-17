@@ -5,7 +5,6 @@ import UserHome from '../components/Home/UserHome';
 
 const Home = (props) => {
     let { auth } = props
-
     return !auth.uid ? (<StaticHome />) : (<UserHome />)
 }
 

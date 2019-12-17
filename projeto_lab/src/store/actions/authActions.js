@@ -2,8 +2,8 @@ export const signIn = (credentials) => {
     return (dispatch, getState, { getFirebase }) => {
         const firebase = getFirebase();
         let signInType;
-        credentials.rememberMe ? (signInType = firebase.auth.Auth.Persistence.LOCAL) : 
-        (signInType = firebase.auth.Auth.Persistence.SESSION)
+        credentials.rememberMe ? (signInType = firebase.auth.Auth.Persistence.LOCAL) :
+            (signInType = firebase.auth.Auth.Persistence.SESSION)
         firebase.auth().setPersistence(signInType).then(() =>
             firebase.auth().signInWithEmailAndPassword(
                 credentials.email,
@@ -97,5 +97,11 @@ export const editProfile = (nationalityForm, gameForm, regionForm) => {
             }).catch(() => {
                 dispatch({ type: 'CHANGE_PROFILE_ERROR' })
             })
+    }
+}
+
+export const removeNotification = () => {
+    return (dispatch) => {
+        dispatch({ type: 'REMOVE_AUTH_FEEDBACK' })
     }
 }

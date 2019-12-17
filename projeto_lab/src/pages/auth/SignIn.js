@@ -49,9 +49,6 @@ class SignIn extends Component {
                                 [event.target.id]: !this.state.rememberMe
                             })} type="checkbox" id="rememberMe" label="Remember me" />
                         </FormGroup>
-                        <div>
-                            {authError && <Alert color="danger">{string.startCase(authError)}</Alert>}
-                        </div>
                         <FormGroup className='col-12 col-md-8 d-flex justify-content-center mx-auto'>
                             <Button color='warning' block>Sign In</Button>
                         </FormGroup>

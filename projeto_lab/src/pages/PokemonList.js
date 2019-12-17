@@ -197,7 +197,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         getInfoPokemonPage: (pokemon) => dispatch(getInfoPokemonPage(pokemon)),
-        /*getPokedexChangeValue: (param, secondParam) => dispatch(getPokedexChangeValue(param, secondParam))*/
     }
 }
 
