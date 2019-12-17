@@ -10,9 +10,6 @@ import { compose } from 'redux';
 import { getUserAndPokemonForProfileIQ, getInfoPokemonPage, getYoutubeVideo } from '../../store/actions/apiActions'
 
 class UserHome extends Component {
-    state = {
-        selectNotifications: { value: 'All Users Activity', label: 'All Users Activity' }
-    }
 
     getStats = (array) => {
         var saveStats = [];
@@ -25,7 +22,7 @@ class UserHome extends Component {
     }
 
     getStatsValues = (firstArray, secondArray, stats) => {
-        for(let x = 0; x < firstArray.length; x++) {
+        for (let x = 0; x < firstArray.length; x++) {
             for (let [index, secondItem] of secondArray.entries()) {
                 stats[index].value.push(secondItem.base_stat)
                 let sum = stats[index].value.reduce((a, b) => a + b, 0);
@@ -138,7 +135,7 @@ class UserHome extends Component {
                         <Col xs='12' lg='8' className='px-0 pb-5'>
                             <Col xs='12'>
                                 <Row>
-                                    <h3 className='col-12 col-md-6 col-lg-8'>All Users Activity</h3>
+                                    <h3 className='col-12 col-md-6 col-lg-8 text-center text-md-left'>All Users Activity</h3>
                                 </Row>
                             </Col>
                             <Col xs='12'>
@@ -175,69 +172,73 @@ class UserHome extends Component {
                         <Col xs='12' md='12' lg='4'>
                             <Row>
                                 <Col xs='12' md='6' lg='12'>
-                                    <Row className='text-lg-left text-center'>
+                                    <Row className='text-md-left text-center'>
                                         <h3 className='col-12'>Your Stats</h3>
-                                        <div className='py-2'>
-                                            <h4 className='col-12'>Favorite Lists</h4>
-                                            <p className='col-12'>
-                                                No. of Favorite Pokemons -
+                                        <div className='col-12 py-2'>
+                                            <Row>
+                                                <h4 className='col-12'>Favorite Lists</h4>
+                                                <p className='col-12'>
+                                                    No. of Favorite Pokemons -
                                                 <span style={{ color: '#ffe066', fontWeight: 'bold' }}>
-                                                    {` ${favoritePokemons.length}`}
-                                                </span>
-                                            </p>
-                                            <p className='col-12'>
-                                                No. of Favorite Pokemon Team -
+                                                        {` ${favoritePokemons.length}`}
+                                                    </span>
+                                                </p>
+                                                <p className='col-12'>
+                                                    No. of Favorite Pokemon Team -
                                                 <span style={{ color: '#ffe066', fontWeight: 'bold' }}>
-                                                    {` ${favoriteTeam.length}`}
-                                                </span>
-                                            </p>
-                                            <p className='col-12'>
-                                                Personality Trait -
+                                                        {` ${favoriteTeam.length}`}
+                                                    </span>
+                                                </p>
+                                                <p className='col-12'>
+                                                    Personality Trait -
                                                 <span style={{ color: '#ffe066', fontWeight: 'bold' }}>
-                                                    {` ${messageFavorites[0]}`}
-                                                </span>
-                                            </p>
-                                            <p className='col-12'>
-                                                Battle Personality Trait -
+                                                        {` ${messageFavorites[0]}`}
+                                                    </span>
+                                                </p>
+                                                <p className='col-12'>
+                                                    Battle Personality Trait -
                                                 <span style={{ color: '#ffe066', fontWeight: 'bold' }}>
-                                                    {` ${messageTeam[0]}`}
-                                                </span>
-                                            </p>
+                                                        {` ${messageTeam[0]}`}
+                                                    </span>
+                                                </p>
+                                            </Row>
                                         </div>
-                                        <div className='py-2'>
-                                            <h4 className='col-12'>Trivia</h4>
-                                            <p className='col-12'>
-                                                No. of Realized Trivias -
+                                        <div className='py-2 col-12'>
+                                            <Row>
+                                                <h4 className='col-12'>Trivia</h4>
+                                                <p className='col-12'>
+                                                    No. of Realized Trivias -
                                                 <span style={{ color: '#ffe066', fontWeight: 'bold' }}>
-                                                    {` ${triviaRecord.realizedTrivias}`}
-                                                </span>
-                                            </p>
-                                            <p className='col-12'>
-                                                No. of Correct Answers -
+                                                        {` ${triviaRecord.realizedTrivias}`}
+                                                    </span>
+                                                </p>
+                                                <p className='col-12'>
+                                                    No. of Correct Answers -
                                                 <span style={{ color: '#ffe066', fontWeight: 'bold' }}>
-                                                    {` ${triviaRecord.correctAnswers}`}
-                                                </span>
-                                            </p>
-                                            <p className='col-12'>
-                                                No. of Wrong Answers -
+                                                        {` ${triviaRecord.correctAnswers}`}
+                                                    </span>
+                                                </p>
+                                                <p className='col-12'>
+                                                    No. of Wrong Answers -
                                                 <span style={{ color: '#ffe066', fontWeight: 'bold' }}>
-                                                    {` ${triviaRecord.wrongAnswers}`}
-                                                </span>
-                                            </p>
-                                            <p className='col-12'>
-                                                Inner Pokémon IQ - {triviaRecord.pokemonIQ ? (
-                                                    <Link className='basicLink d-inline' to={`/pokemon-list/national/pokemon-page/${triviaRecord.pokemonIQ}`}
-                                                        onClick={() => {
-                                                            getInfoPokemonPage(triviaRecord.pokemonIQ); getYoutubeVideo(triviaRecord.pokemonIQ)
-                                                        }}>
-                                                        {string.startCase(triviaRecord.pokemonIQ)}</Link>
-                                                ) : ("You still haven't played PokéTrivia to calculate this result")}
-                                            </p>
+                                                        {` ${triviaRecord.wrongAnswers}`}
+                                                    </span>
+                                                </p>
+                                                <p className='col-12'>
+                                                    Inner Pokémon IQ - {triviaRecord.pokemonIQ ? (
+                                                        <Link className='basicLink d-inline' to={`/pokemon-list/national/pokemon-page/${triviaRecord.pokemonIQ}`}
+                                                            onClick={() => {
+                                                                getInfoPokemonPage(triviaRecord.pokemonIQ); getYoutubeVideo(triviaRecord.pokemonIQ)
+                                                            }}>
+                                                            {string.startCase(triviaRecord.pokemonIQ)}</Link>
+                                                    ) : ("You still haven't played PokéTrivia to calculate this result")}
+                                                </p>
+                                            </Row>
                                         </div>
                                     </Row>
                                 </Col>
-                                <Col xs='12' md='6' lg='12' className='pt-4'>
-                                    <Row className='text-lg-left text-center'>
+                                <Col xs='12' md='6' lg='12' className='pt-lg-4'>
+                                    <Row className='text-md-left text-center'>
                                         <h3 className='col-12'>Following List</h3>
                                         {!recentFriends ? (
                                             <Col xs='12'>

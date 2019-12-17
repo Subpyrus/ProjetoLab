@@ -57,11 +57,12 @@ const authReducer = (state = initState, action) => {
         case 'CHANGE_PROFILE_SUCCESS':
             return {
                 ...state,
-                actionAuthFeedback: 'Profile edited'
+                actionAuthFeedback: ['Profile edited successfully', 'success']
             }
         case 'CHANGE_PROFILE_ERROR':
             return {
                 ...state,
+                actionAuthFeedback: ['Profile failed to edit', 'danger'],
                 error: action.error.message
             }
         default:

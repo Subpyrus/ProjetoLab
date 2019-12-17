@@ -160,21 +160,6 @@ body {
   }
 }
 
-a.poke-list-link:hover {
-  background-color: $yellow;
-  color: $blue;
-}
-
-a.poke-list-link {
-  transition: all 0.5s;
-
-  &:hover,
-  &:active {
-    background-color: $yellow;
-    color: $blue;
-  }
-}
-
 table {
   border: 1px solid $yellow !important;
 

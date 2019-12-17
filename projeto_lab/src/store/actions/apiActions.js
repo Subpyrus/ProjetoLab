@@ -36,7 +36,7 @@ export const getYoutubeVideo = (pokemon) => {
         });
       })
       .then((data) => dispatch({ type: 'YOUTEBE_DATA_SUCCESS', payload: data.items }))
-      .catch((error) => dispatch({ type: 'YOUTEBE_DATA_ERROR', errorYtData: error }))
+      .catch((error) => dispatch({ type: 'YOUTEBE_DATA_ERROR', errorYtData: error.message }))
   }
 }
 
@@ -76,36 +76,6 @@ export const getPokedex = (region) => {
   }
 }
 
-/*export const getPokedexChangeValue = (param, secondParam, region, types) => {
-  return (dispatch) => {
-    dispatch({ type: 'API_REQUEST_START' });
-    var url, pokemonData, defineSelectList;
-    secondParam === 'Region' ?
-      (url = `https://pokeapi.co/api/v2/pokedex/${param}/`) :
-      (url = `https://pokeapi.co/api/v2/type/${param}/`);
-
-    fetch(url)
-      .then(async (response) => {
-        return response.json().then(function (json) {
-          return response.ok ? json : Promise.reject(json);
-        })
-      }).then((data) => {
-        secondParam === 'Region' ? (pokemonData = data.pokemon_entries) : (pokemonData = data.pokemon);
-        secondParam === 'Region' ? (defineSelectList = regions) : (defineSelectList = types);
-
-        const indexOfLastResults = 1 * 24;
-        const indexOfFirstResults = indexOfLastResults - 24;
-        const currentResults = pokemonData.slice(indexOfFirstResults, indexOfLastResults);
-
-        dispatch({
-          type: 'POKEDEX_DATA_SUCCESS',
-          payload: { items: currentResults, allPokedexEntries: pokemonData, selectValue: param, selectList: defineSelectList }
-        })
-      })
-      .catch((error) => dispatch({ type: 'POKEDEX_CHANGE_DATA_ERROR', error: error }));
-  }
-}*/
-
 export const getDataPokeListPage = () => {
   return (dispatch) => {
     dispatch({ type: 'API_REQUEST_START' });
@@ -129,6 +99,7 @@ export const getDataPokeListPage = () => {
 /* PROFILE ACTIONS */
 
 export const getUserAndPokemonForProfileIQ = (user) => {
+  console.log(user)
   return (dispatch, getState, { getFirestore, getFirebase }) => {
     dispatch({ type: 'API_REQUEST_START' });
     const firebase = getFirebase();

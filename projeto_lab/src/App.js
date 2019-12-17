@@ -16,10 +16,10 @@ import SignIn from './pages/auth/SignIn';
 import RecoverPassword from './pages/auth/RecoverPassword';
 import Loading from './components/layout/Loading';
 import Error from './components/layout/Error';
+import AlertComponent from './components/layout/Alert';
 import NoMatch from './components/layout/NoMatch';
 import ScrollToTop from './components/layout/ScrollToTop';
 import { connect } from 'react-redux';
-import AlertComponent from './components/layout/Alert';
 
 const AnimatedRoute = ({ children }) => (
   <Route
@@ -38,14 +38,6 @@ const AnimatedRoute = ({ children }) => (
 )
 
 class App extends Component {
-
-  componentDidMount() {
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
 
   render() {
     const { errorApi, isLoading, profile, profileContent, auth, authNotifications } = this.props;

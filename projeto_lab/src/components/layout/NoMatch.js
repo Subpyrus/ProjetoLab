@@ -1,9 +1,9 @@
 import React from 'react';
 
-const NoMatch = (props) => {
+const NoMatch = () => {
     return (
         <div>
-            <h1>No Match</h1>
+            <h1>Ops, something went wrong! No Match</h1>
         </div>
     )
 }

@@ -13,7 +13,8 @@ var firebaseConfig = {
     measurementId: "G-07R5JMZ72F",
     userProfile: "users",
     useFirestoreForProfile: true,
-    attachAuthIsReady: true
+    attachAuthIsReady: true,
+    logErrors: false
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);

@@ -56,7 +56,7 @@ exports.userDataChanged = functions.firestore
                 time: admin.firestore.FieldValue.serverTimestamp()
             }
             return createNotification(notification)
-        } else if (before.triviaRecord !== after.triviaRecord) {
+        } else if (before.triviaRecord.realizedTrivias !== after.triviaRecord.realizedTrivias) {
             var string = require('lodash/string')
             const notification = {
                 content: `Concluded a PokéTrivia and currently has a record of ${after.triviaRecord.correctAnswers} correct answers and ${after.triviaRecord.wrongAnswers} of incorrect answers, which makes their pokémon IQ ${string.startCase(after.triviaRecord.pokemonIQ)}.`,

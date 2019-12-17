@@ -123,7 +123,8 @@ class Profile extends Component {
                     pokemonIQ={userPokemonIQ}
                     favoritesResults={messageFavorites}
                     teamResults={messageTeam}
-                />)
+                />
+            )
         } else {
             return (
                 userInfo !== undefined &&
@@ -133,7 +134,8 @@ class Profile extends Component {
                     loggedUserFriends={this.props.profileContent.friends}
                     favoritesResults={messageFavorites}
                     teamResults={messageTeam}
-                />)
+                />
+            )
         }
     }
 }

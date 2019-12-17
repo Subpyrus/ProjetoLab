@@ -55,7 +55,7 @@ class PokemonTrivia extends Component {
     }
 
     correctAnswer = () => {
-        this.setState({ btnColorCorrect: true, btnColorWrong: true})
+        this.setState({ btnColorCorrect: true, btnColorWrong: true })
         var changeQuestion = this.state.questionNumber + 1;
         var correct = this.state.correctAnswers + 1;
         if (changeQuestion === 10) {
@@ -97,11 +97,13 @@ class PokemonTrivia extends Component {
     }
 
     render() {
+        const { ready, randomized, correctAnswers, incorrectAnswers, ObjectQuestion } = this.state;
+        const { profileContent } = this.props;
         const changeColorCorrect = this.state.btnColorCorrect ? 'success' : 'warning';
         const changeColorWrong = this.state.btnColorWrong ? 'danger' : 'warning';
         const disabledBtn = this.state.btnColorWrong || this.state.btnColorCorrect ? true : false
 
-        if (this.state.ready === false) {
+        if (ready === false) {
             return (
                 <Row className='justify-content-between'>
                     <h1 className='col-12'>PokéTrivia</h1>
@@ -117,11 +119,11 @@ class PokemonTrivia extends Component {
                 </Row>
             )
         } else {
-            if ((this.state.randomized === false) && (this.state.ObjectQuestion !== undefined)) {
+            if ((randomized === false) && (ObjectQuestion !== undefined)) {
                 this.randomizeAnswers();
                 return (<Loading height='68vh' />);
             } else {
-                if ((this.state.randomized === true) && (this.state.ObjectQuestion !== undefined)) {
+                if ((randomized === true) && (ObjectQuestion !== undefined)) {
                     return (
                         <Row className='justify-content-center text-center'>
                             <h1 className='col-12'>Question {this.state.questionNumber + 1}</h1>
@@ -139,14 +141,34 @@ class PokemonTrivia extends Component {
                     return (
                         <Row>
                             <h1 className='col-12 text-center'>PokéTrivia Results</h1>
-                            <Col className='d-flex justify-content-center py-2 py-md-0' xs='12' md='6'>
-                                <Button className='w-50' disabled color='success'>Correct Answers:<b>{this.state.correctAnswers}</b></Button>
+                            <Col xs='12' lg='6' className='pb-4'>
+                                <Row>
+                                    <h3 className='col-12 text-center'>Trivia Session</h3>
+                                    <Col className='d-flex justify-content-center py-2 py-md-0 text-center' xs='12' md='6'>
+                                        <Button className='w-50' disabled color='success'>Correct Answers:<b>{correctAnswers}</b></Button>
+                                    </Col>
+                                    <Col className='d-flex justify-content-center py-2 py-md-0 text-center' xs='12' md='6'>
+                                        <Button className='w-50' disabled color='danger'>Incorrect Answers:
+                                <b>{incorrectAnswers}</b></Button>
+                                    </Col>
+                                </Row>
                             </Col>
-                            <Col className='d-flex justify-content-center py-2 py-md-0' xs='12' md='6'>
-                                <Button className='w-50' disabled color='danger'>Incorrect Answers:
-                                <b>{this.state.incorrectAnswers}</b></Button>
+                            <Col xs='12' lg='6' className='pb-4'>
+                                <Row>
+                                    <h3 className='col-12 text-center'>
+                                        Overall Trivia Results
+                                    </h3>
+                                    <Col className='d-flex justify-content-center my-2 my-md-0 text-center' xs='12' md='6'>
+                                        <Button className='w-50' disabled color='success'>Correct Answers:
+                                <b>{profileContent.triviaRecord.correctAnswers}</b></Button>
+                                    </Col>
+                                    <Col className='d-flex justify-content-center my-2 my-md-0 text-center' xs='12' md='6'>
+                                        <Button className='w-50' disabled color='danger'>Incorrect Answers:
+                                <b>{profileContent.triviaRecord.wrongAnswers}</b></Button>
+                                    </Col>
+                                </Row>
                             </Col>
-                            <Col className='d-flex justify-content-center py-3' xs='12'>
+                            <Col className='d-flex justify-content-center py-3 mx-auto' xs='6'>
                                 <Button color="warning" className='w-75' onClick={() => window.location.reload()}>Play Again</Button>
                             </Col>
                         </Row>
@@ -165,6 +187,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
     return {
+        profileContent: state.firebase.profile,
         updateTrivia: state.trivia.updateTriviaResult
     }
 }

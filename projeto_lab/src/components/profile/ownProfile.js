@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { editProfile } from '../../store/actions/authActions'
 import { removeFavoritePokemon, removePokemonFromTeam } from '../../store/actions/favoriteActions';
 import { removeFriend } from '../../store/actions/friendsActions';
-import { getInfoPokemonPage, getYoutubeVideo } from '../../store/actions/apiActions';
+import { getInfoPokemonPage, getYoutubeVideo, getUserAndPokemonForProfileIQ } from '../../store/actions/apiActions';
 
 class ownProfile extends Component {
     constructor(props) {
@@ -98,7 +98,7 @@ class ownProfile extends Component {
     }
 
     render() {
-        const { removeFavoritePokemon, removePokemonFromTeam, removeFriend, getInfoPokemonPage, getYoutubeVideo, pokemonIQ, editProfile, teamResults, favoritesResults } = this.props;
+        const { removeFavoritePokemon, removePokemonFromTeam, removeFriend, getInfoPokemonPage, getYoutubeVideo, pokemonIQ, editProfile, teamResults, favoritesResults, getUserAndPokemonForProfileIQ } = this.props;
         const { username, avatar, gender, nationality, favoritePokemons, favoriteTeam, triviaRecord, friends, favoriteGame, favoriteRegion } = this.props.profileContent
         const { name, action } = this.state.modalContent;
         const { editProfileContent, width, editProfileData, selectNationality, selectGame, selectRegion } = this.state;
@@ -244,9 +244,12 @@ class ownProfile extends Component {
                                             <img alt={pokemonName} src={`http://www.pokestadium.com/sprites/xy/${pokemonName.toLowerCase()}.gif`} />
                                         </Link>
                                     </Col>
-                                    {pokemonIQ.flavor_text_entries.map((item, key) =>
-                                        (item.language.name === 'en' && item.version.name === 'alpha-sapphire') && <p className='text-left col-6 mx-auto' key={key}>{item.flavor_text}</p>
-                                    )}
+                                    {pokemonIQ.flavor_text_entries.map((item, key) => {
+                                        return <React.Fragment key={key}>
+                                            {(item.language.name === 'en' && item.version.name === 'ultra-sun') && <p key={key}>{item.flavor_text}</p>}
+                                            {(item.language.name === 'en' && item.version.name === 'alpha-sapphire') && <p key={key}>{item.flavor_text}</p>}
+                                        </React.Fragment>
+                                    })}
                                 </Row>
                             )
                         }
@@ -280,7 +283,7 @@ class ownProfile extends Component {
                                         {favoriteTeam.map((item, key) =>
                                             <React.Fragment key={key}>
                                                 <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} functionVideo={getYoutubeVideo} lg='3' />
-                                                <i style={{ position: 'relative',  top: '20px', left: '-40px' }} id={item.name} onClick={() => this.toggleFirstTime(item.name, 'Favorite Pokémon Team')} className="far fa-times-circle h-25"></i>
+                                                <i style={{ position: 'relative', top: '20px', left: '-40px' }} id={item.name} onClick={() => this.toggleFirstTime(item.name, 'Favorite Pokémon Team')} className="far fa-times-circle h-25"></i>
                                             </React.Fragment>
                                         )}
                                     </Row>
@@ -298,7 +301,7 @@ class ownProfile extends Component {
                                 friends.map((item, key) =>
                                     <Col key={key} xs='6' md='4' lg='2'>
                                         <i style={{ position: 'relative', top: '0px', left: '35%' }} id={item.name} onClick={() => removeFriend(item.name)} className="far fa-times-circle"></i>
-                                        <Link className='basicLink d-block' key={key} to={{
+                                        <Link onClick={() => getUserAndPokemonForProfileIQ(item.username)} className='basicLink d-block' key={key} to={{
                                             pathname: `/pokemon-trainers/profile/${item.username}`,
                                             state: {
                                                 user: item
@@ -343,7 +346,8 @@ const mapDispatchToProps = (dispatch) => {
         removePokemonFromTeam: (pokemon) => dispatch(removePokemonFromTeam(pokemon)),
         removeFriend: (user) => dispatch(removeFriend(user)),
         editProfile: (nationalityForm, genderForm, gameForm, regionForm) => dispatch(editProfile(nationalityForm, genderForm, gameForm, regionForm)),
-        getYoutubeVideo: (pokemon) => dispatch(getYoutubeVideo(pokemon))
+        getYoutubeVideo: (pokemon) => dispatch(getYoutubeVideo(pokemon)),
+        getUserAndPokemonForProfileIQ: (user) => dispatch(getUserAndPokemonForProfileIQ(user))
     }
 }
 

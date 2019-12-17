@@ -3,7 +3,7 @@ import { Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import LazyLoad from 'react-lazyload';
-import { getInfoPokemonPage } from '../../store/actions/apiActions';
+import { getInfoPokemonPage, getYoutubeVideo } from '../../store/actions/apiActions';
 
 class pokemonPageEvChain extends Component {
 
@@ -33,7 +33,7 @@ class pokemonPageEvChain extends Component {
     render() {
         var url;
         var string = require('lodash/string');
-        const { getInfoPokemonPage, evChainData } = this.props
+        const { getInfoPokemonPage, getYoutubeVideo, evChainData } = this.props
         let evolutionMethod = [''];
         let evolutionMethodName = [''];
         let pokemon = require('pokemon');
@@ -74,8 +74,9 @@ class pokemonPageEvChain extends Component {
                                 <Row>
                                     <Col xs='12' className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
                                         <LazyLoad height={200} once={true}>
-                                            <Link id={pokeEvName.toLowerCase()} to={`/pokemon-list/national/pokemon-page/${pokeEvName.toLowerCase()}`} onClick={(event) => {
+                                            <Link id={pokeEvName.toLowerCase()} to={`/pokemon-list/national/pokemon-page/${pokeEvName.toLowerCase()}`} onClick={() => {
                                                 getInfoPokemonPage(pokeEvName.toLowerCase());
+                                                getYoutubeVideo(pokeEvName.toLowerCase());
                                             }}>
                                                 <img alt={pokeEvName} src={`http://www.pokestadium.com/sprites/xy/${pokeEvName.toLowerCase()}.gif`} />
                                             </Link>
@@ -115,7 +116,8 @@ class pokemonPageEvChain extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getInfoPokemonPage: (pokemon) => dispatch(getInfoPokemonPage(pokemon))
+        getInfoPokemonPage: (pokemon) => dispatch(getInfoPokemonPage(pokemon)),
+        getYoutubeVideo: (pokemon) => dispatch(getYoutubeVideo(pokemon))
     }
 }
 
