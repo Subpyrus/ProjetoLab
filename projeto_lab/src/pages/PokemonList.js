@@ -159,25 +159,31 @@ class PokemonList extends Component {
                                 url = pokedexItem.pokemon_species.url.trim();
                                 pokeNumber = url.split('/')[6]
                                 pokemonName = pokemon.getName(pokeNumber);
+                                if (pokemonName > 722) {
+                                    img = `https://serebii.net/sunmoon/pokemon/${pokemonName}.png`
+                                } else {
+                                    img = `https://img.pokemondb.net/sprites/x-y/normal/${pokemonName.toLowerCase()}.png`
+                                }
+                                return (
+                                    <PokemonImage key={key} pokemonName={pokemonName} img={img} pokedexSearch={match.params.search} functionPokemon={getInfoPokemonPage} functionVideo={getYoutubeVideo} lg='2' />
+                                )
                             } else if (typeSearch === "Type" && pokedexItem.pokemon !== undefined) {
                                 url = pokedexItem.pokemon.url.trim();
                                 pokeNumber = url.split('/')[6]
                                 if (pokeNumber < 10000) {
                                     pokemonName = pokemon.getName(pokeNumber);
+                                    if (pokemonName > 722) {
+                                        img = `https://serebii.net/sunmoon/pokemon/${pokemonName}.png`
+                                    } else {
+                                        img = `https://img.pokemondb.net/sprites/x-y/normal/${pokemonName.toLowerCase()}.png`
+                                    }
                                 }
+                                return (
+                                    <PokemonImage key={key} pokemonName={pokemonName} img={img} pokedexSearch={match.params.search} functionPokemon={getInfoPokemonPage} functionVideo={getYoutubeVideo} lg='2' />
+                                )
                             } else {
                                 return <Loading />
                             }
-
-                            if (pokemonName > 722) {
-                                img = `https://serebii.net/sunmoon/pokemon/${pokemonName}.png`
-                            } else {
-                                img = `https://img.pokemondb.net/sprites/x-y/normal/${pokemonName.toLowerCase()}.png`
-                            }
-
-                            return (
-                                <PokemonImage key={key} pokemonName={pokemonName} img={img} pokedexSearch={match.params.search} functionPokemon={getInfoPokemonPage} functionVideo={getYoutubeVideo} lg='2' />
-                            )
                         })}
                     </InfiniteScroll>)
                 }
