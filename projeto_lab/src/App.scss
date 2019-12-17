@@ -68,9 +68,25 @@ body {
       background-color: $blue;
       & > p,
       & > div > p,
+      & > div > div > p,
       & > h5 {
         font-weight: bold;
         color: $yellow;
+      }
+    }
+  }
+
+  a.containerProfileLink {
+    display: block;
+    transition: all 0.5s;
+    text-decoration: none;
+    color: $red;
+
+    &:hover,
+    &:active {
+      & > p {
+        color: $yellow;
+        border-bottom: 0.5px solid $blue;
       }
     }
   }
@@ -147,6 +163,15 @@ body {
     color: $yellow;
     background-color: $yellow;
     opacity: 0.5;
+  }
+
+  i.fa-times-circle {
+    cursor: pointer;
+    transition: all 0.5s;
+
+    &:hover {
+      color: $yellow;
+    }
   }
 }
 

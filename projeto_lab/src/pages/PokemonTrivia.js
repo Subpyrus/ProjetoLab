@@ -99,6 +99,7 @@ class PokemonTrivia extends Component {
     render() {
         const changeColorCorrect = this.state.btnColorCorrect ? 'success' : 'warning';
         const changeColorWrong = this.state.btnColorWrong ? 'danger' : 'warning';
+        const disabledBtn = this.state.btnColorWrong || this.state.btnColorCorrect ? true : false
 
         if (this.state.ready === false) {
             return (
@@ -128,8 +129,8 @@ class PokemonTrivia extends Component {
                             <Col xs='11' md='10'>
                                 {this.state.answers.map((index, key) =>
                                     index.res === 'correct' ?
-                                        (<Button className='my-3' key={key} block outline color={changeColorCorrect} onClick={() => { this.correctAnswer() }}>{index.answer}</Button>) :
-                                        (<Button className='my-3' key={key} block outline color={changeColorWrong} onClick={() => { this.incorrectAnswer() }}>{index.answer}</Button>)
+                                        (<Button className='my-3' key={key} block outline disabled={disabledBtn} color={changeColorCorrect} onClick={() => { this.correctAnswer() }}>{index.answer}</Button>) :
+                                        (<Button className='my-3' key={key} block outline disabled={disabledBtn} color={changeColorWrong} onClick={() => { this.incorrectAnswer() }}>{index.answer}</Button>)
                                 )}
                             </Col>
                         </Row>

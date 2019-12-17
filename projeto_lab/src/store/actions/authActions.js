@@ -46,6 +46,8 @@ export const signUp = (newUser) => {
                 favoriteTeam: [],
                 favoritePokemons: [],
                 triviaRecord: {
+                    pokemonIQ: null,
+                    realizedTrivias: 0,
                     correctAnswers: 0,
                     wrongAnswers: 0
                 },
@@ -60,7 +62,6 @@ export const signUp = (newUser) => {
 }
 
 export const recoverPassword = (email) => {
-    console.log(email)
     return (dispatch, getState, { getFirebase }) => {
         const firebase = getFirebase();
         firebase.auth().sendPasswordResetEmail(email)

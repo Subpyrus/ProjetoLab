@@ -8,7 +8,10 @@ const initState = {
         getLinkUserInfo: '',
         getPokedex: '',
         getPokedexChange: {
-
+            items: '',
+            typeSearch: '',
+            selectValue: '',
+            allPokedexEntries: ''
         },
         getPokedexDropdowns: {
             regions: '',
@@ -78,6 +81,28 @@ const apiReducer = (state = initState, action) => {
                 isLoading: false,
                 error: action.error
             }
+        /*case 'POKEDEX_CHANGE_DATA_SUCCESS':
+            return {
+                ...state,
+                isLoading: false,
+                error: null,
+                apiData: {
+                    ...state.apiData,
+                    getPokedexChange:
+                    {
+                        items: action.payload.items,
+                        selectValue: action.payload.selectValue,
+                        selectList: action.payload.selectList,
+                        allPokedexEntries: action.payload.allPokedexEntries
+                    }
+                }
+            }
+        case 'POKEDEX_CHANGE_DATA_ERROR':
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error
+            }*/
         case 'POKELIST_PAGE_DATA_SUCCESS':
             return {
                 ...state,

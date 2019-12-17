@@ -89,7 +89,6 @@ class PokemonList extends Component {
         }
     }
 
-
     handleSelectChange = (value, action) => {
         if (action.name === 'typeSearch') {
             if (value.value === 'Region') {
@@ -105,7 +104,6 @@ class PokemonList extends Component {
         }
     }
 
-    //Render
     render() {
         const pokemon = require('pokemon');
         const { items, typeSearch, selectValue, isLoading } = this.state;

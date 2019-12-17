@@ -45,8 +45,6 @@ export const getSignUpData = () => {
   }
 }
 
-/* POKÉLIST ACTIONS */
-
 export const getPokedex = (region) => {
   return (dispatch) => {
     dispatch({ type: 'API_REQUEST_START' });
@@ -63,11 +61,13 @@ export const getPokedex = (region) => {
   }
 }
 
-export const getPokedexChangeValue = (param, secondParam) => {
+/*export const getPokedexChangeValue = (param, secondParam, region, types) => {
   return (dispatch) => {
     dispatch({ type: 'API_REQUEST_START' });
     var url, pokemonData, defineSelectList;
-    secondParam === 'Region' ? (url = `https://pokeapi.co/api/v2/pokedex/${param}/`) : (url = `https://pokeapi.co/api/v2/type/${param}/`);
+    secondParam === 'Region' ?
+      (url = `https://pokeapi.co/api/v2/pokedex/${param}/`) :
+      (url = `https://pokeapi.co/api/v2/type/${param}/`);
 
     fetch(url)
       .then(async (response) => {
@@ -76,12 +76,20 @@ export const getPokedexChangeValue = (param, secondParam) => {
         })
       }).then((data) => {
         secondParam === 'Region' ? (pokemonData = data.pokemon_entries) : (pokemonData = data.pokemon);
-        secondParam === 'Region' ? (defineSelectList = this.props.regions) : (defineSelectList = this.props.types);
-        dispatch({ type: 'POKEDEX_DATA_SUCCESS', payload: { items: this.calculatePage(pokemonData, 1), currentIndex: 1, allPokedexEntries: pokemonData, selectValue: param, selectList: defineSelectList } })
+        secondParam === 'Region' ? (defineSelectList = regions) : (defineSelectList = types);
+
+        const indexOfLastResults = 1 * 24;
+        const indexOfFirstResults = indexOfLastResults - 24;
+        const currentResults = pokemonData.slice(indexOfFirstResults, indexOfLastResults);
+
+        dispatch({
+          type: 'POKEDEX_DATA_SUCCESS',
+          payload: { items: currentResults, allPokedexEntries: pokemonData, selectValue: param, selectList: defineSelectList }
+        })
       })
       .catch((error) => dispatch({ type: 'POKEDEX_CHANGE_DATA_ERROR', error: error }));
   }
-}
+}*/
 
 export const getDataPokeListPage = () => {
   return (dispatch) => {
@@ -107,6 +115,7 @@ export const getDataPokeListPage = () => {
 
 export const getUserAndPokemonForProfileIQ = (user) => {
   return (dispatch, getState, { getFirestore, getFirebase }) => {
+    console.log('object')
     dispatch({ type: 'API_REQUEST_START' });
     const firebase = getFirebase();
     firebase.firestore().collection('users').where("username", "==", user).get()
@@ -114,30 +123,8 @@ export const getUserAndPokemonForProfileIQ = (user) => {
         var userInfo
         data.forEach(doc => {
           userInfo = doc.data();
-          var pokemon = null;
-          let allAnswers = userInfo.triviaRecord.correctAnswers + userInfo.triviaRecord.wrongAnswers;
-          let averageCorrectAnswers = userInfo.triviaRecord.correctAnswers / allAnswers;
-          averageCorrectAnswers *= 100;
-          averageCorrectAnswers = parseInt(averageCorrectAnswers);
-
-          if (isNaN(averageCorrectAnswers)) {
-            dispatch({ type: 'POKE_PROFILE_IQ_DATA_SUCCESS', payload: { user: userInfo, pokemonIQ: undefined } })
-          } else if (averageCorrectAnswers >= 90) {
-            pokemon = 'alakazam';
-          } else if (averageCorrectAnswers >= 75) {
-            pokemon = 'metagross';
-          } else if (averageCorrectAnswers >= 50) {
-            pokemon = 'beheeyem';
-          } else if (averageCorrectAnswers >= 25) {
-            pokemon = 'quagsire';
-          } else if (averageCorrectAnswers >= 10) {
-            pokemon = 'slowpoke';
-          } else {
-            pokemon = 'magikarp';
-          }
-
-          if (pokemon) {
-            var url = `https://pokeapi.co/api/v2/pokemon-species/${pokemon}/`
+          if (userInfo.triviaRecord.pokemonIQ) {
+            var url = `https://pokeapi.co/api/v2/pokemon-species/${userInfo.triviaRecord.pokemonIQ}/`
             fetch(url)
               .then((response) => {
                 return response.json().then(function (json) {
@@ -146,6 +133,8 @@ export const getUserAndPokemonForProfileIQ = (user) => {
               })
               .then((data) => dispatch({ type: 'POKE_PROFILE_IQ_DATA_SUCCESS', payload: { user: userInfo, pokemonIQ: data } }))
               .catch((error) => dispatch({ type: 'POKE_PROFILE_IQ_DATA_ERROR', payload: { user: userInfo, pokemonIQ: error } }))
+          } else {
+            dispatch({ type: 'POKE_PROFILE_IQ_DATA_SUCCESS', payload: { user: userInfo, pokemonIQ: null } })
           }
         });
       }).catch((error) => {

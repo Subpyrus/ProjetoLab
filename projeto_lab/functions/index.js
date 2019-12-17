@@ -58,7 +58,7 @@ exports.userDataChanged = functions.firestore
             return createNotification(notification)
         } else if (before.triviaRecord !== after.triviaRecord) {
             const notification = {
-                content: `Concluded a PokéTrivia and currently has a record of ${after.triviaRecord.correctAnswers} correct answers and ${after.triviaRecord.wrongAnswers} of incorrect answers.`,
+                content: `Concluded a PokéTrivia and currently has a record of ${after.triviaRecord.correctAnswers} correct answers and ${after.triviaRecord.wrongAnswers} of incorrect answers, which makes their pokémon IQ ${after.triviaRecord.pokemonIQ}.`,
                 user: `${after.username}`,
                 avatar: `${after.avatar}`,
                 time: admin.firestore.FieldValue.serverTimestamp()
@@ -71,7 +71,7 @@ exports.userJoined = functions.auth.user().onCreate(user => {
     return admin.firestore().collection('users').doc(user.uid).get().then(doc => {
         const newUser = doc.data();
         const notification = {
-            content: 'Welcome to Pokéfavorite',
+            content: 'Just joined PokéFavo!',
             user: `${newUser.username}`,
             avatar: `${newUser.avatar}`,
             time: admin.firestore.FieldValue.serverTimestamp()

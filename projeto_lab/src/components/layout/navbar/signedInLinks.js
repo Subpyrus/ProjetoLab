@@ -6,21 +6,21 @@ import { signOut } from '../../../store/actions/authActions';
 import { getAllUsers, getUserAndPokemonForProfileIQ } from '../../../store/actions/apiActions';
 
 const signedInLinks = (props) => {
-    const { getAllUsers, profileContent, signOut } = props;
+    const { getAllUsers, profileContent, signOut, getUserAndPokemonForProfileIQ } = props;
     const { username } = profileContent
 
     return (
         <>
             <NavItem>
-                <NavLink exact
-                    activeClassName="navbar__link-active" className="navbar__link" to="/pokemon-trivia">
-                    PokéTrivia
-                </NavLink>
-            </NavItem>
-            <NavItem>
                 <NavLink onClick={() => getAllUsers(username)}
                     activeClassName="navbar__link-active" className="navbar__link" to="/pokemon-trainers">
                     PokéTrainers
+                </NavLink>
+            </NavItem>
+            <NavItem>
+                <NavLink exact
+                    activeClassName="navbar__link-active" className="navbar__link" to="/pokemon-trivia">
+                    PokéTrivia
                 </NavLink>
             </NavItem>
             <NavItem>

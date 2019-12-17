@@ -54,7 +54,7 @@ class App extends Component {
         <Router>
           <AbsoluteWrapper>
             <Layout>
-              <Loading height={'100vh'} />
+              <Loading height={'90vh'} />
             </Layout>
           </AbsoluteWrapper>
         </Router>

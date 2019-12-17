@@ -83,7 +83,7 @@ class othersProfile extends Component {
                     </Row>
                 </Col>
                 <hr className='col-8 mx-auto my-4 my-lg-5' />
-                <Col xs='12' md='6' lg='12'>
+                <Col xs='12'>
                     <Row className='text-center justify-content-center'>
                         <Col xs='12' md='6'>
                             <h3>Personality</h3>
@@ -127,7 +127,7 @@ class othersProfile extends Component {
                                 ) : (
                                     <Row className='justify-content-center'>
                                         {favoritePokemons.map((item, key) =>
-                                            <Col className='d-flex align-items-center justify-content-center' xs='6' md='4' key={key} style={{ height: '150px' }}>
+                                            <Col className='d-flex align-items-center justify-content-center' xs='6' lg='4' key={key} style={{ height: '150px' }}>
                                                 <LazyLoad height={200} once={true}>
                                                     <Link to={`/pokemon-list/national/pokemon-page/${item.name.toLowerCase()}`}
                                                         onClick={() => getInfoPokemonPage(item.name.toLowerCase())}>
@@ -146,7 +146,7 @@ class othersProfile extends Component {
                                 ) : (
                                     <Row className='justify-content-center'>
                                         {favoriteTeam.map((item, key) =>
-                                            <Col className='containerLink d-flex align-items-center justify-content-center' xs='6' md='4' key={key} style={{ height: '150px' }}>
+                                            <Col className='containerLink d-flex align-items-center justify-content-center' xs='6' lg='4' key={key} style={{ height: '150px' }}>
                                                 <LazyLoad height={200} once={true}>
                                                     <Link to={`/pokemon-list/national/pokemon-page/${item.name.toLowerCase()}`} onClick={() => getInfoPokemonPage(item.name.toLowerCase())}>
                                                         <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />

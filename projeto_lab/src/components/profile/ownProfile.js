@@ -248,17 +248,25 @@ class ownProfile extends Component {
                 <hr className='col-8 mx-auto my-4 my-lg-5' />
                 <Col xs='12'>
                     <Row className='text-center justify-content-center'>
-                        <Col xs='12' md='6' lg='4'>
+                        <Col xs='12' md='6' lg='5'>
                             <h3>Personality</h3>
                             {favoritePokemons &&
-                                favoritePokemons.length !== 0 ? (<div><h4>{favoritesResults[0]}</h4><p>Trait: {favoritesResults[1]}</p></div>) : (
-                                    <p>You still don't have any pokémons on your Favorites to calculate this result! Search for your favorites in the PokéList!</p>)}
+                                favoritePokemons.length !== 0 ?
+                                (<div>
+                                    <h4>{favoritesResults[0]}</h4>
+                                    <p className='text-left'>{favoritesResults[1]}</p>
+                                </div>) :
+                                (<p>You still don't have any pokémons on your Favorites to calculate this result! Search for your favorites in the PokéList!</p>)}
                         </Col>
-                        <Col xs='12' md='6' lg='4'>
+                        <Col xs='12' md='6' lg='5'>
                             <h3>Battle Personality</h3>
                             {favoriteTeam &&
-                                favoriteTeam.length !== 0 ? (<div><h4>{teamResults[0]}</h4><p>Trait: {teamResults[1]}</p></div>) : (
-                                    <p>You still don't have any pokémons on your Favorite Team to calculate this result! Search for your team members in the PokéList!</p>)}
+                                favoriteTeam.length !== 0 ?
+                                (<div>
+                                    <h4>{teamResults[0]}</h4>
+                                    <p className='text-left'>{teamResults[1]}</p>
+                                </div>) :
+                                (<p>You still don't have any pokémons on your Favorite Team to calculate this result! Search for your team members in the PokéList!</p>)}
                         </Col>
                     </Row>
                 </Col>
@@ -266,16 +274,29 @@ class ownProfile extends Component {
                 <Col xs='12'>
                     <Row className='text-center justify-content-center'>
                         <h3 className='col-12'>Inner Pokémon IQ</h3>
+                        <h4 className='col-12'>Trivia Stats</h4>
+                        <p className='col-12 col-md-3'>No. Realized Trivias -
+                        <span style={{ color: '#ffe066', fontWeight: 'bold' }}>{` ${triviaRecord.realizedTrivias}`}</span>
+                        </p>
+                        <p className='col-12 col-md-3'>No. Correct Answers -
+                        <span style={{ color: '#ffe066', fontWeight: 'bold' }}>{` ${triviaRecord.correctAnswers}`}</span>
+                        </p>
+                        <p className='col-12 col-md-3'>No. Wrong Answers -
+                        <span style={{ color: '#ffe066', fontWeight: 'bold' }}>{` ${triviaRecord.wrongAnswers}`}</span>
+                        </p>
                         {triviaRecord &&
                             !pokemonIQ ? (
-                                <p className='col-12'>You still haven't played any PokéTrivia to calculte your Inner Pokémon IQ, start playing by <Link className='basicLink' to='/pokemon-trivia'>clicking here!</Link></p>) : (
-                                <Row className='justify-content-center align-items-center'>
+                                <p className='col-12 pt-4'>You still haven't played any PokéTrivia to calculte your Inner Pokémon IQ, start playing by <Link className='basicLink' to='/pokemon-trivia'>clicking here!</Link></p>) : (
+                                <Row className='justify-content-center align-items-center pt-4'>
                                     <h4 className='col-12'>You're intelligent as a <b>{pokemonName}</b>!</h4>
-                                    <Col xs='12' sm='4' md='3' className='py-3'>
-                                        <img alt={pokemonName} src={`http://www.pokestadium.com/sprites/xy/${pokemonName.toLowerCase()}.gif`} />
+                                    <Col xs='12' className='py-3'>
+                                        <Link to={`/pokemon-list/national/pokemon-page/${pokemonName.toLowerCase()}`}
+                                            onClick={() => getInfoPokemonPage(pokemonName.toLowerCase())}>
+                                            <img alt={pokemonName} src={`http://www.pokestadium.com/sprites/xy/${pokemonName.toLowerCase()}.gif`} />
+                                        </Link>
                                     </Col>
                                     {pokemonIQ.flavor_text_entries.map((item, key) =>
-                                        (item.language.name === 'en' && item.version.name === 'alpha-sapphire') && <p className='col-12 col-sm-10 mx-auto' key={key}>{item.flavor_text}</p>
+                                        (item.language.name === 'en' && item.version.name === 'alpha-sapphire') && <p className='text-left col-6 mx-auto' key={key}>{item.flavor_text}</p>
                                     )}
                                 </Row>
                             )
@@ -283,9 +304,9 @@ class ownProfile extends Component {
                     </Row>
                 </Col>
                 <hr className='col-8 mx-auto my-4 my-lg-5' />
-                <Col className='pb-4 pb-lg-5' xs='12'>
+                <Col className='pb-4 pb-lg-5 mx-auto' xs='12' md='11'>
                     <Row className='text-center justify-content-center'>
-                        <Col className='py-3 py-lg-4' xs='12' md='6'>
+                        <Col className='py-3 py-lg-4' xs='12'>
                             <h3>Favorite Pokémons</h3>
                             {favoritePokemons &&
                                 favoritePokemons.length === 0 ? (
@@ -293,18 +314,18 @@ class ownProfile extends Component {
                                 ) : (
                                     <Row className='justify-content-center'>
                                         {favoritePokemons.map((item, key) =>
-                                            <Col className='d-flex align-items-center justify-content-center' xs='6' md='4' key={key} style={{ height: '150px' }}>
+                                            <Col className='d-flex align-items-center justify-content-center' xs='6' md='2' key={key} style={{ height: '150px' }}>
                                                 <LazyLoad height={200} once={true}>
                                                     <Link to={`/pokemon-list/national/pokemon-page/${item.name.toLowerCase()}`}
-                                                        onClick={(event) => getInfoPokemonPage(item.name.toLowerCase())}>
-                                                        <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
+                                                        onClick={() => getInfoPokemonPage(item.name.toLowerCase())}>
+                                                        <img alt={item.name} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
                                                     </Link>
                                                 </LazyLoad>
                                                 <i style={{ position: 'relative', top: '-40px' }} onClick={() => this.toggleFirstTime(item.name, 'Favorites Pokémon List')} className="far fa-times-circle"></i>
                                             </Col>)}
                                     </Row>)}
                         </Col>
-                        <Col className='py-3 py-lg-4' xs='12' md='6'>
+                        <Col className='py-3 py-lg-4 offset-lg-1 mx-auto' xs='12' md='11'>
                             <h3>Favorite Pokémon Team</h3>
                             {favoriteTeam &&
                                 favoriteTeam.length === 0 ? (
@@ -315,8 +336,8 @@ class ownProfile extends Component {
                                             <Col className='d-flex align-items-center justify-content-center' xs='6' md='4' key={key} style={{ height: '150px' }}>
                                                 <LazyLoad height={200} once={true}>
                                                     <Link to={`/pokemon-list/national/pokemon-page/${item.name.toLowerCase()}`}
-                                                        onClick={(event) => getInfoPokemonPage(item.name.toLowerCase())}>
-                                                        <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
+                                                        onClick={() => getInfoPokemonPage(item.name.toLowerCase())}>
+                                                        <img alt={item.name} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
                                                     </Link>
                                                 </LazyLoad>
                                                 <i style={{ position: 'relative', top: '-40px' }} id={item.name} onClick={() => this.toggleFirstTime(item.name, 'Favorite Pokémon Team')} className="far fa-times-circle"></i>
@@ -336,8 +357,8 @@ class ownProfile extends Component {
                             ) : (
                                 friends.map((item, key) =>
                                     <Col key={key} xs='6' md='4' lg='2'>
-                                        <i style={{ position: 'relative', top: '-40px' }} id={item.name} onClick={() => removeFriend(item.name)} className="far fa-times-circle"></i>
-                                        <Link className='basic-link' key={key} to={{
+                                        <i style={{ position: 'relative', top: '0px', left: '35%' }} id={item.name} onClick={() => removeFriend(item.name)} className="far fa-times-circle"></i>
+                                        <Link className='containerProfileLink' key={key} to={{
                                             pathname: `/pokemon-trainers/profile/${item.username}`,
                                             state: {
                                                 user: item
