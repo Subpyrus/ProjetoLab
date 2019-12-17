@@ -67,9 +67,7 @@ class PokePage extends PureComponent {
                 slidesToSlide: 1
             },
         };
-
-        console.log(pokemonVideos)
-
+        
         return (
             <Row className="justify-content-center">
                 <Col xs='12' className='pb-4'>
