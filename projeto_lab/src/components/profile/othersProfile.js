@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import LazyLoad from 'react-lazyload';
+import PokemonImage from '../layout/PokemonImage';
 import { addFriend, removeFriend } from '../../store/actions/friendsActions';
 import { connect } from 'react-redux';
 import { getInfoPokemonPage, getUserAndPokemonForProfileIQ } from '../../store/actions/apiActions';
@@ -119,7 +120,7 @@ class othersProfile extends Component {
                 </Col>
                 <Col className='pb-4 pb-lg-5' xs='12'>
                     <Row className='text-center justify-content-center'>
-                        <Col className='py-3 py-lg-4' xs='12' md='6'>
+                        <Col className='py-3 py-lg-4' xs='12'>
                             <h3>Favorite Pokémons</h3>
                             {favoritePokemons &&
                                 favoritePokemons.length === 0 ? (
@@ -127,17 +128,13 @@ class othersProfile extends Component {
                                 ) : (
                                     <Row className='justify-content-center'>
                                         {favoritePokemons.map((item, key) =>
-                                            <Col className='d-flex align-items-center justify-content-center' xs='6' lg='4' key={key} style={{ height: '150px' }}>
-                                                <LazyLoad height={200} once={true}>
-                                                    <Link to={`/pokemon-list/national/pokemon-page/${item.name.toLowerCase()}`}
-                                                        onClick={() => getInfoPokemonPage(item.name.toLowerCase())}>
-                                                        <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
-                                                    </Link>
-                                                </LazyLoad>
-                                            </Col>)}
+                                            <React.Fragment key={key}>
+                                                <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} lg='3' />
+                                            </React.Fragment>
+                                        )}
                                     </Row>)}
                         </Col>
-                        <Col className='py-3 py-lg-4' xs='12' md='6'>
+                        <Col className='py-3 py-lg-4' xs='12'>
                             <h3>Favorite Pokémon Team</h3>
                             {favoriteTeam &&
                                 favoriteTeam.length === 0 ? (
@@ -145,13 +142,9 @@ class othersProfile extends Component {
                                 ) : (
                                     <Row className='justify-content-center'>
                                         {favoriteTeam.map((item, key) =>
-                                            <Col className='containerLink d-flex align-items-center justify-content-center' xs='6' lg='4' key={key} style={{ height: '150px' }}>
-                                                <LazyLoad height={200} once={true}>
-                                                    <Link to={`/pokemon-list/national/pokemon-page/${item.name.toLowerCase()}`} onClick={() => getInfoPokemonPage(item.name.toLowerCase())}>
-                                                        <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
-                                                    </Link>
-                                                </LazyLoad>
-                                            </Col>
+                                            <React.Fragment key={key}>
+                                                <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} lg='3' />
+                                            </React.Fragment>
                                         )}
                                     </Row>
                                 )}
@@ -167,7 +160,7 @@ class othersProfile extends Component {
                             ) : (
                                 friends.map((item, key) =>
                                     <Col key={key} xs='6' md='4' lg='2'>
-                                        <Link onClick={() => getUserAndPokemonForProfileIQ(item.username)} className='containerLink' to={{
+                                        <Link onClick={() => getUserAndPokemonForProfileIQ(item.username)} className='basicLink' to={{
                                             pathname: `/pokemon-trainers/profile/${item.username}`,
                                             state: {
                                                 user: item
