@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import StaticHome from '../components/Home/StaticHome';
-import UserHome from '../components/Home/UserHome';
+import StaticHome from '../components/home/StaticHome';
+import UserHome from '../components/home/UserHome';
 
 const Home = (props) => {
     let { auth } = props

@@ -76,21 +76,6 @@ body {
     }
   }
 
-  a.containerProfileLink {
-    display: block;
-    transition: all 0.5s;
-    text-decoration: none;
-    color: $red;
-
-    &:hover,
-    &:active {
-      & > p {
-        color: $yellow;
-        border-bottom: 0.5px solid $blue;
-      }
-    }
-  }
-
   p {
     &::selection {
       background: $yellow;

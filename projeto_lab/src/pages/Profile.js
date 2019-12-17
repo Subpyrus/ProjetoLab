@@ -117,7 +117,8 @@ class Profile extends Component {
             return <Redirect to='/sign-in' />
         } else if (!location.state || userInfo.username === profileUsername) {
             return (
-                userInfo !== undefined && <OwnProfile
+                userInfo !== undefined &&
+                <OwnProfile
                     ownProfileContent={profileContent}
                     pokemonIQ={userPokemonIQ}
                     favoritesResults={messageFavorites}
@@ -125,7 +126,8 @@ class Profile extends Component {
                 />)
         } else {
             return (
-                userInfo !== undefined && <OthersProfile
+                userInfo !== undefined &&
+                <OthersProfile
                     othersProfileContent={userInfo}
                     pokemonIQ={userPokemonIQ}
                     loggedUserFriends={this.props.profileContent.friends}

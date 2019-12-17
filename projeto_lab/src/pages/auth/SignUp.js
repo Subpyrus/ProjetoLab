@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, Button, Form, FormGroup, Input } from 'reactstrap';
 import { Redirect } from 'react-router-dom'
 import Select from 'react-select';
+import SelectStyles from '../../components/layout/SelectStyles'
 import { connect } from 'react-redux';
 import { signUp } from '../../store/actions/authActions';
 import { getSignUpData } from '../../store/actions/apiActions';
@@ -154,182 +155,133 @@ class SignUp extends Component {
             optionsRegion.push({ value: string.startCase(item.name), label: string.startCase(item.name) })
         }
 
-        const customStyles = {
-            singleValue: (provided, state) => {
-                const opacity = state.isDisabled ? 0.5 : 1;
-                const transition = 'opacity 300ms';
-
-                return { ...provided, opacity, transition, color: '#ebebd3' };
-            },
-            option: (provided, state) => ({
-                ...provided,
-                color: state.isSelected ? '#f24643' : '#ffe066',
-                backgroundColor: state.isSelected ? '#ffe066' : '#f24643',
-                "&:hover": {
-                    backgroundColor: "#1688b9",
-                    fontWeight: 'bold',
-                    color: "#ebebd3"
-                }
-            }),
-            menu: (provided) => ({
-                ...provided,
-                borderRadius: 0,
-                marginTop: 0,
-            }),
-            menuList: (provided, state) => ({
-                ...provided,
-                backgroundColor: '#f24643',
-                color: '#ffe066',
-                padding: 0
-            }),
-            control: (provided, state) => ({
-                ...provided,
-                color: '#ffe066',
-                border: '1px solid #ffe066',
-                borderRadius: 3,
-                backgroundColor: state.isFocused ? '#f24643' : '#1688b9',
-                boxShadow: state.isFocused ? null : null,
-                "&:hover": {
-                    borderColor: "ffe066"
-                }
-            }),
-            dropdownIndicator: (provided, state) => ({
-                ...provided,
-                color: '#ffe066'
-            }),
-            placeholder: (provided, state) => ({
-                ...provided,
-                color: state.isFocused ? '#ffe066' : '#ebebd3',
-                fontWeight: state.isFocused ? 'bold' : 'normal',
-            }),
-        }
-
         const femaleAvatars = ['acetrainerf', 'lady', 'lass', 'idol', 'battlegirl', 'cowgirl']
         const maleAvatars = ['acetrainerm', 'richboy', 'ruinmaniac', 'blackbelt', 'roughneck', 'bugcatcher']
 
         if (auth.uid) {
             return <Redirect to='/' />
+        } else {
+            return (
+                <Row className='d-flex justify-content-center align-items-center'>
+                    <Col xs='12' md='10' className='text-center'>
+                        <h1>Sign Up</h1>
+                        <Form onSubmit={this.handleSubmit}>
+                            <Row>
+                                <FormGroup className='col-12 col-md-6'>
+                                    <Input required onChange={this.handleChange} type="email" name="email" id="email" placeholder="email address" />
+                                    {errors.email.length > 0 &&
+                                        <span className='error'>{errors.email}</span>}
+                                </FormGroup>
+                                <FormGroup className='col-12 col-md-6'>
+                                    <Input required onChange={this.handleChange} type="text" name="username" id="username" placeholder="username" />
+                                    {errors.username.length > 0 &&
+                                        <span className='error'>{errors.username}</span>}
+                                </FormGroup>
+                                <FormGroup className='col-12 col-md-6'>
+                                    <Input required onChange={this.handleChange} type="password" name="password" id="password" placeholder="password" />
+                                    {errors.password.length > 0 &&
+                                        <span className='error'>{errors.password}</span>}
+                                </FormGroup>
+                                <FormGroup className='col-12 col-md-6'>
+                                    <Input required onChange={this.handleChange} type="password" name="reEnterPassword" id="reEnterPassword" placeholder="re-enter password" />
+                                    {errors.reEnterPassword.length > 0 &&
+                                        <span className='error'>{errors.reEnterPassword}</span>}
+                                </FormGroup>
+                                <FormGroup className='col-12 col-md-6'>
+                                    <Select required
+                                        name='selectGender'
+                                        styles={SelectStyles}
+                                        value={this.selectGender}
+                                        onChange={this.handleSelectChange}
+                                        options={optionsGender}
+                                        placeholder='select your gender'
+                                        isSearchable={false}
+                                    />
+                                    {showErrors &&
+                                        <span className='col-12 error text-center'>{errors.selectGender}</span>
+                                    }
+                                </FormGroup>
+                                <FormGroup className='col-12 col-md-6'>
+                                    <Select required
+                                        name='selectNationality'
+                                        styles={SelectStyles}
+                                        value={this.selectNationality}
+                                        onChange={this.handleSelectChange}
+                                        options={optionsNationality}
+                                        placeholder='select your nationality'
+                                        isSearchable={false}
+                                    />
+                                    {showErrors &&
+                                        <span className='col-12 error text-center'>{errors.selectNationality}</span>
+                                    }
+                                </FormGroup>
+                                <FormGroup className='col-12 col-md-6'>
+                                    <Select required
+                                        name='game'
+                                        styles={SelectStyles}
+                                        value={this.game}
+                                        onChange={this.handleSelectChange}
+                                        options={optionsGame}
+                                        placeholder='select your favorite pokémon game'
+                                        isSearchable={false}
+                                    />
+                                    {showErrors &&
+                                        <span className='col-12 error text-center'>{errors.game}</span>
+                                    }
+                                </FormGroup>
+                                <FormGroup className='col-12 col-md-6'>
+                                    <Select required
+                                        name='region'
+                                        styles={SelectStyles}
+                                        value={this.region}
+                                        onChange={this.handleSelectChange}
+                                        options={optionsRegion}
+                                        placeholder='select your favorite pokémon region'
+                                        isSearchable={false}
+                                    />
+                                    {showErrors &&
+                                        <span className='col-12 error text-center'>{errors.region}</span>
+                                    }
+                                </FormGroup>
+                            </Row>
+                            <FormGroup className='py-3'>
+                                <h4>Avatar</h4>
+                                {selectGender === 'Female' ? (
+                                    <Row>
+                                        {femaleAvatars.map((item, key) =>
+                                            <Col className='p-1' sm='4' md='2' key={key} onClick={() => { this.handleAvatarChange(item) }}>
+                                                <img alt={item} className={this.state.avatar === item ? 'active-avatar pb-2' : 'avatar pb-2'} src={`https://www.serebii.net/diamondpearl/avatar/${item}.png`} />
+                                            </Col>)}
+                                        {showErrors &&
+                                            <span className='col-12 error text-center'>{errors.avatar}</span>
+                                        }
+                                    </Row>
+                                ) : selectGender === 'Male' ? (
+                                    <Row>
+                                        {maleAvatars.map((item, key) =>
+                                            <Col className='p-1' sm='4' md='2' key={key} onClick={() => { this.handleAvatarChange(item) }}>
+                                                <img alt={item} className={this.state.avatar === item ? 'active-avatar pb-2' : 'avatar pb-2'} src={`https://www.serebii.net/diamondpearl/avatar/${item}.png`} />
+                                            </Col>)}
+                                        {showErrors &&
+                                            <span className='col-12 error text-center'>{errors.avatar}</span>
+                                        }
+                                    </Row>
+                                ) : (
+                                            <Row>
+                                                <p className='col-12 text-center'>You must choose your gender first to visualize the available avatars.</p>
+                                            </Row>)}
+                            </FormGroup>
+                            <Col xs='8' md='6' className='mx-auto'>
+                                <Button color='warning' block>Submit</Button>
+                            </Col>
+                            {authError &&
+                                <p className='col-12 text-center font-weight-bold'>{authError}</p>
+                            }
+                        </Form>
+                    </Col>
+                </Row >
+            )
         }
-        return (
-            <Row className='d-flex justify-content-center align-items-center'>
-                <Col xs='12' md='10' className='text-center'>
-                    <h1>Sign Up</h1>
-                    <Form onSubmit={this.handleSubmit}>
-                        <Row>
-                            <FormGroup className='col-12 col-md-6'>
-                                <Input required onChange={this.handleChange} type="email" name="email" id="email" placeholder="email address" />
-                                {errors.email.length > 0 &&
-                                    <span className='error'>{errors.email}</span>}
-                            </FormGroup>
-                            <FormGroup className='col-12 col-md-6'>
-                                <Input required onChange={this.handleChange} type="text" name="username" id="username" placeholder="username" />
-                                {errors.username.length > 0 &&
-                                    <span className='error'>{errors.username}</span>}
-                            </FormGroup>
-                            <FormGroup className='col-12 col-md-6'>
-                                <Input required onChange={this.handleChange} type="password" name="password" id="password" placeholder="password" />
-                                {errors.password.length > 0 &&
-                                    <span className='error'>{errors.password}</span>}
-                            </FormGroup>
-                            <FormGroup className='col-12 col-md-6'>
-                                <Input required onChange={this.handleChange} type="password" name="reEnterPassword" id="reEnterPassword" placeholder="re-enter password" />
-                                {errors.reEnterPassword.length > 0 &&
-                                    <span className='error'>{errors.reEnterPassword}</span>}
-                            </FormGroup>
-                            <FormGroup className='col-12 col-md-6'>
-                                <Select required
-                                    name='selectGender'
-                                    styles={customStyles}
-                                    value={this.selectGender}
-                                    onChange={this.handleSelectChange}
-                                    options={optionsGender}
-                                    placeholder='select your gender'
-                                    isSearchable={false}
-                                />
-                                {showErrors &&
-                                    <span className='col-12 error text-center'>{errors.selectGender}</span>
-                                }
-                            </FormGroup>
-                            <FormGroup className='col-12 col-md-6'>
-                                <Select required
-                                    name='selectNationality'
-                                    styles={customStyles}
-                                    value={this.selectNationality}
-                                    onChange={this.handleSelectChange}
-                                    options={optionsNationality}
-                                    placeholder='select your nationality'
-                                    isSearchable={false}
-                                />
-                                {showErrors &&
-                                    <span className='col-12 error text-center'>{errors.selectNationality}</span>
-                                }
-                            </FormGroup>
-                            <FormGroup className='col-12 col-md-6'>
-                                <Select required
-                                    name='game'
-                                    styles={customStyles}
-                                    value={this.game}
-                                    onChange={this.handleSelectChange}
-                                    options={optionsGame}
-                                    placeholder='select your favorite pokémon game'
-                                    isSearchable={false}
-                                />
-                                {showErrors &&
-                                    <span className='col-12 error text-center'>{errors.game}</span>
-                                }
-                            </FormGroup>
-                            <FormGroup className='col-12 col-md-6'>
-                                <Select required
-                                    name='region'
-                                    styles={customStyles}
-                                    value={this.region}
-                                    onChange={this.handleSelectChange}
-                                    options={optionsRegion}
-                                    placeholder='select your favorite pokémon region'
-                                    isSearchable={false}
-                                />
-                                {showErrors &&
-                                    <span className='col-12 error text-center'>{errors.region}</span>
-                                }
-                            </FormGroup>
-                        </Row>
-                        <FormGroup className='py-3'>
-                            <h4>Avatar</h4>
-                            {selectGender === 'Female' ? (
-                                <Row>
-                                    {femaleAvatars.map((item, key) =>
-                                        <Col className='p-1' sm='4' md='2' key={key} onClick={() => { this.handleAvatarChange(item) }}>
-                                            <img alt={item} className={this.state.avatar === item ? 'active-avatar pb-2' : 'avatar pb-2'} src={`https://www.serebii.net/diamondpearl/avatar/${item}.png`} />
-                                        </Col>)}
-                                    {showErrors &&
-                                        <span className='col-12 error text-center'>{errors.avatar}</span>
-                                    }
-                                </Row>
-                            ) : selectGender === 'Male' ? (
-                                <Row>
-                                    {maleAvatars.map((item, key) =>
-                                        <Col className='p-1' sm='4' md='2' key={key} onClick={() => { this.handleAvatarChange(item) }}>
-                                            <img alt={item} className={this.state.avatar === item ? 'active-avatar pb-2' : 'avatar pb-2'} src={`https://www.serebii.net/diamondpearl/avatar/${item}.png`} />
-                                        </Col>)}
-                                    {showErrors &&
-                                        <span className='col-12 error text-center'>{errors.avatar}</span>
-                                    }
-                                </Row>
-                            ) : (
-                                        <Row>
-                                            <p className='col-12 text-center'>You must choose your gender first to visualize the available avatars.</p>
-                                        </Row>)}
-                        </FormGroup>
-                        <Col xs='8' md='6' className='mx-auto'>
-                            <Button color='warning' block>Submit</Button>
-                        </Col>
-                        {authError &&
-                            <p className='col-12 text-center font-weight-bold'>{authError}</p>
-                        }
-                    </Form>
-                </Col>
-            </Row >
-        )
     }
 }
 

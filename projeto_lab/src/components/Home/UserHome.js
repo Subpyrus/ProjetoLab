@@ -4,6 +4,7 @@ import moment from 'moment';
 import Loading from '../layout/Loading';
 import { personalityFavorites, personalityTeams } from '../profile/personalityContent';
 import Select from 'react-select';
+import SelectStyles from '../layout/SelectStyles';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
@@ -128,56 +129,6 @@ class UserHome extends Component {
         const messageFavorites = this.getStatsMessages(favoritePokemons, 'favorites');
         const messageTeam = this.getStatsMessages(favoriteTeam, 'team');
 
-        const customStyles = {
-            singleValue: (provided, state) => {
-                const opacity = state.isDisabled ? 0.5 : 1;
-                const transition = 'opacity 300ms';
-
-                return { ...provided, opacity, transition, color: '#ebebd3' };
-            },
-            option: (provided, state) => ({
-                ...provided,
-                color: state.isSelected ? '#f24643' : '#ffe066',
-                backgroundColor: state.isSelected ? '#ffe066' : '#f24643',
-                "&:hover": {
-                    backgroundColor: "#1688b9",
-                    fontWeight: 'bold',
-                    color: "#ebebd3"
-                }
-            }),
-            menu: (provided) => ({
-                ...provided,
-                borderRadius: 0,
-                marginTop: 0,
-            }),
-            menuList: (provided, state) => ({
-                ...provided,
-                backgroundColor: '#f24643',
-                color: '#ffe066',
-                padding: 0
-            }),
-            control: (provided, state) => ({
-                ...provided,
-                color: '#ffe066',
-                border: '1px solid #ffe066',
-                borderRadius: 3,
-                backgroundColor: state.isFocused ? '#f24643' : '#1688b9',
-                boxShadow: state.isFocused ? null : null,
-                "&:hover": {
-                    borderColor: "ffe066"
-                }
-            }),
-            dropdownIndicator: (provided, state) => ({
-                ...provided,
-                color: '#ffe066'
-            }),
-            placeholder: (provided, state) => ({
-                ...provided,
-                color: state.isFocused ? '#ffe066' : '#ebebd3',
-                fontWeight: state.isFocused ? 'bold' : 'normal',
-            }),
-        }
-
         const optionsNotifications = [
             { value: 'All Users Activity', label: 'All Users Activity' },
             { value: 'Friends Activity', label: 'Friends Activity' },
@@ -199,7 +150,7 @@ class UserHome extends Component {
                                     <Col xs='12' md='6' lg='4'>
                                         <Select required
                                             name='selectNotifications'
-                                            styles={customStyles}
+                                            styles={SelectStyles}
                                             value={this.state.selectNotifications}
                                             onChange={this.handleSelectChange}
                                             options={optionsNotifications}
@@ -293,7 +244,7 @@ class UserHome extends Component {
                                             </p>
                                             <p className='col-12'>
                                                 Inner Pokémon IQ - {triviaRecord.pokemonIQ ? (
-                                                    <Link className='basicLink' to={`/pokemon-list/national/pokemon-page/${triviaRecord.pokemonIQ}`} onClick={() => getInfoPokemonPage(triviaRecord.pokemonIQ)}>{string.startCase(triviaRecord.pokemonIQ)}</Link>
+                                                    <Link className='basicLink d-inline' to={`/pokemon-list/national/pokemon-page/${triviaRecord.pokemonIQ}`} onClick={() => getInfoPokemonPage(triviaRecord.pokemonIQ)}>{string.startCase(triviaRecord.pokemonIQ)}</Link>
                                                 ) : ("You still haven't played PokéTrivia to calculate this result")}
                                             </p>
                                         </div>

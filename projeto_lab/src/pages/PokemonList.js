@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Row, Col, FormGroup, Input } from 'reactstrap';
-import { Link } from 'react-router-dom';
 import InfiniteScroll from "react-infinite-scroll-component";
-import LazyLoad from 'react-lazyload';
 import Select from 'react-select';
+import SelectStyles from '../components/layout/SelectStyles'
 import { connect } from 'react-redux';
 import Loading from '../components/layout/Loading';
 import { getInfoPokemonPage } from '../store/actions/apiActions';
+import PokemonImage from '../components/layout/PokemonImage';
 
 class PokemonList extends Component {
     constructor(props) {
@@ -115,56 +115,6 @@ class PokemonList extends Component {
             optionsSelectSpecifics.push({ value: item.name, label: string.startCase(item.name) })
         }
 
-        const customStyles = {
-            singleValue: (provided, state) => {
-                const opacity = state.isDisabled ? 0.5 : 1;
-                const transition = 'opacity 300ms';
-
-                return { ...provided, opacity, transition, color: '#ebebd3' };
-            },
-            option: (provided, state) => ({
-                ...provided,
-                color: state.isSelected ? '#f24643' : '#ffe066',
-                backgroundColor: state.isSelected ? '#ffe066' : '#f24643',
-                "&:hover": {
-                    backgroundColor: "#1688b9",
-                    fontWeight: 'bold',
-                    color: "#ebebd3"
-                }
-            }),
-            menu: (provided) => ({
-                ...provided,
-                borderRadius: 0,
-                marginTop: 0,
-            }),
-            menuList: (provided) => ({
-                ...provided,
-                backgroundColor: '#f24643',
-                color: '#ffe066',
-                padding: 0
-            }),
-            control: (provided, state) => ({
-                ...provided,
-                color: '#ffe066',
-                border: '1px solid #ffe066',
-                borderRadius: 3,
-                backgroundColor: state.isFocused ? '#f24643' : '#1688b9',
-                boxShadow: state.isFocused ? null : null,
-                "&:hover": {
-                    borderColor: "ffe066"
-                }
-            }),
-            dropdownIndicator: (provided, state) => ({
-                ...provided,
-                color: '#ffe066'
-            }),
-            placeholder: (provided, state) => ({
-                ...provided,
-                color: state.isFocused ? '#ffe066' : '#ebebd3',
-                fontWeight: state.isFocused ? 'bold' : 'normal',
-            }),
-        }
-
         return (
             <>
                 <Row className='align-items-md-center justify-content-between'>
@@ -180,7 +130,7 @@ class PokemonList extends Component {
                         className='col-12 col-md-6 col-lg-2 px-2 py-2 py-md-0'
                         name='typeSearch'
                         value={{ value: typeSearch, label: string.startCase(typeSearch) }}
-                        styles={customStyles}
+                        styles={SelectStyles}
                         onChange={this.handleSelectChange}
                         options={[{ label: 'Region', value: 'Region' }, { label: 'Type', value: 'Type' }]}
                         placeholder='Region'
@@ -190,7 +140,7 @@ class PokemonList extends Component {
                     <Select
                         className='col-12 col-md-6 col-lg-2 px-2 py-2 py-md-0'
                         name='selectValue'
-                        styles={customStyles}
+                        styles={SelectStyles}
                         value={{ value: selectValue, label: string.startCase(selectValue) }}
                         onChange={this.handleSelectChange}
                         options={optionsSelectSpecifics}
@@ -226,16 +176,7 @@ class PokemonList extends Component {
                             }
 
                             return (
-                                <Col key={key} className='py-md-2' xs='12' sm='6' md='4' lg='2'>
-                                    <Link className='h-100 containerLink' to={`/pokemon-list/${match.params.search}/pokemon-page/${pokemonName.toLowerCase()}`} onClick={() => getInfoPokemonPage(pokemonName.toLowerCase())}>
-                                        <div className='d-flex align-items-center justify-content-center' style={{ height: '150px' }}>
-                                            <LazyLoad height={200} once={true}>
-                                                <img alt={pokemonName} src={img} />
-                                            </LazyLoad>
-                                        </div>
-                                        <h5 className='text-center'>{pokemonName}</h5>
-                                    </Link>
-                                </Col>
+                                <PokemonImage key={key} pokemonName={pokemonName} img={img} pokedexSearch={match.params.search} functionPokemon={getInfoPokemonPage} lg='2' />
                             )
                         })}
                     </InfiniteScroll>)

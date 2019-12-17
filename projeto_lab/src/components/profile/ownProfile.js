@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Row, Col, Modal, ModalBody, ModalFooter, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import Select from 'react-select';
-import LazyLoad from 'react-lazyload';
+import SelectStyles from '../layout/SelectStyles';
+import PokemonImage from '../layout/PokemonImage';
 import { connect } from 'react-redux';
 import { editProfile } from '../../store/actions/authActions'
 import { removeFavoritePokemon, removePokemonFromTeam } from '../../store/actions/favoriteActions';
@@ -98,63 +99,13 @@ class ownProfile extends Component {
 
     render() {
         const { removeFavoritePokemon, removePokemonFromTeam, removeFriend, getInfoPokemonPage, pokemonIQ, editProfile, teamResults, favoritesResults } = this.props;
-        const { username, avatar, gender, nationality, favoritePokemons, favoriteTeam, triviaRecord, friends, favoriteGame, favoriteRegion } = this.props.ownProfileContent
+        const { username, avatar, gender, nationality, favoritePokemons, favoriteTeam, triviaRecord, friends, favoriteGame, favoriteRegion } = this.props.profileContent
         const { name, action } = this.state.modalContent;
         const { editProfileContent, width, editProfileData, selectNationality, selectGame, selectRegion } = this.state;
         var string = require('lodash/string');
         const optionsNationality = []
         const optionsGame = [];
         const optionsRegion = [];
-
-        const customStyles = {
-            singleValue: (provided, state) => {
-                const opacity = state.isDisabled ? 0.5 : 1;
-                const transition = 'opacity 300ms';
-
-                return { ...provided, opacity, transition, color: '#ebebd3' };
-            },
-            option: (provided, state) => ({
-                ...provided,
-                color: state.isSelected ? '#f24643' : '#ffe066',
-                backgroundColor: state.isSelected ? '#ffe066' : '#f24643',
-                "&:hover": {
-                    backgroundColor: "#1688b9",
-                    fontWeight: 'bold',
-                    color: "#ebebd3"
-                }
-            }),
-            menu: (provided) => ({
-                ...provided,
-                borderRadius: 0,
-                marginTop: 0,
-            }),
-            menuList: (provided, state) => ({
-                ...provided,
-                backgroundColor: '#f24643',
-                color: '#ffe066',
-                padding: 0
-            }),
-            control: (provided, state) => ({
-                ...provided,
-                color: '#ffe066',
-                border: '1px solid #ffe066',
-                borderRadius: 3,
-                backgroundColor: state.isFocused ? '#f24643' : '#1688b9',
-                boxShadow: state.isFocused ? null : null,
-                "&:hover": {
-                    borderColor: "ffe066"
-                }
-            }),
-            dropdownIndicator: (provided, state) => ({
-                ...provided,
-                color: '#ffe066'
-            }),
-            placeholder: (provided, state) => ({
-                ...provided,
-                color: state.isFocused ? '#ffe066' : '#ebebd3',
-                fontWeight: state.isFocused ? 'bold' : 'normal',
-            }),
-        }
 
         var pokemon = require('pokemon');
         var pokemonName;
@@ -164,11 +115,9 @@ class ownProfile extends Component {
             for (let item of editProfileData[0]) {
                 optionsNationality.push({ value: item.name, label: item.name })
             }
-
             for (let item of editProfileData[1].results) {
                 optionsGame.push({ value: string.startCase(item.name), label: string.startCase(item.name) })
             }
-
             for (let item of editProfileData[2].results) {
                 optionsRegion.push({ value: string.startCase(item.name), label: string.startCase(item.name) })
             }
@@ -201,7 +150,7 @@ class ownProfile extends Component {
                             {editProfileContent ?
                                 (<Select required
                                     name='selectNationality'
-                                    styles={customStyles}
+                                    styles={SelectStyles}
                                     value={selectNationality}
                                     onChange={this.handleSelectChange}
                                     options={optionsNationality}
@@ -220,7 +169,7 @@ class ownProfile extends Component {
                             {editProfileContent ?
                                 (<Select required
                                     name='selectGame'
-                                    styles={customStyles}
+                                    styles={SelectStyles}
                                     value={selectGame}
                                     onChange={this.handleSelectChange}
                                     options={optionsGame}
@@ -234,7 +183,7 @@ class ownProfile extends Component {
                             {editProfileContent ?
                                 (<Select required
                                     name='selectRegion'
-                                    styles={customStyles}
+                                    styles={SelectStyles}
                                     value={selectRegion}
                                     onChange={this.handleSelectChange}
                                     options={optionsRegion}
@@ -314,15 +263,11 @@ class ownProfile extends Component {
                                 ) : (
                                     <Row className='justify-content-center'>
                                         {favoritePokemons.map((item, key) =>
-                                            <Col className='d-flex align-items-center justify-content-center' xs='6' md='2' key={key} style={{ height: '150px' }}>
-                                                <LazyLoad height={200} once={true}>
-                                                    <Link to={`/pokemon-list/national/pokemon-page/${item.name.toLowerCase()}`}
-                                                        onClick={() => getInfoPokemonPage(item.name.toLowerCase())}>
-                                                        <img alt={item.name} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
-                                                    </Link>
-                                                </LazyLoad>
-                                                <i style={{ position: 'relative', top: '-40px' }} onClick={() => this.toggleFirstTime(item.name, 'Favorites Pokémon List')} className="far fa-times-circle"></i>
-                                            </Col>)}
+                                            <React.Fragment key={key}>
+                                                <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} lg='3' />
+                                                <i style={{ position: 'relative', top: '20px', left: '-40px' }} onClick={() => this.toggleFirstTime(item.name, 'Favorites Pokémon List')} className="far fa-times-circle h-25"></i>
+                                            </React.Fragment>
+                                        )}
                                     </Row>)}
                         </Col>
                         <Col className='py-3 py-lg-4 offset-lg-1 mx-auto' xs='12' md='11'>
@@ -333,15 +278,10 @@ class ownProfile extends Component {
                                 ) : (
                                     <Row className='justify-content-center'>
                                         {favoriteTeam.map((item, key) =>
-                                            <Col className='d-flex align-items-center justify-content-center' xs='6' md='4' key={key} style={{ height: '150px' }}>
-                                                <LazyLoad height={200} once={true}>
-                                                    <Link to={`/pokemon-list/national/pokemon-page/${item.name.toLowerCase()}`}
-                                                        onClick={() => getInfoPokemonPage(item.name.toLowerCase())}>
-                                                        <img alt={item.name} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
-                                                    </Link>
-                                                </LazyLoad>
-                                                <i style={{ position: 'relative', top: '-40px' }} id={item.name} onClick={() => this.toggleFirstTime(item.name, 'Favorite Pokémon Team')} className="far fa-times-circle"></i>
-                                            </Col>
+                                            <React.Fragment key={key}>
+                                                <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} lg='3' />
+                                                <i style={{ position: 'relative',  top: '20px', left: '-40px' }} id={item.name} onClick={() => this.toggleFirstTime(item.name, 'Favorite Pokémon Team')} className="far fa-times-circle h-25"></i>
+                                            </React.Fragment>
                                         )}
                                     </Row>
                                 )}
@@ -358,7 +298,7 @@ class ownProfile extends Component {
                                 friends.map((item, key) =>
                                     <Col key={key} xs='6' md='4' lg='2'>
                                         <i style={{ position: 'relative', top: '0px', left: '35%' }} id={item.name} onClick={() => removeFriend(item.name)} className="far fa-times-circle"></i>
-                                        <Link className='containerProfileLink' key={key} to={{
+                                        <Link className='basicLink d-block' key={key} to={{
                                             pathname: `/pokemon-trainers/profile/${item.username}`,
                                             state: {
                                                 user: item
