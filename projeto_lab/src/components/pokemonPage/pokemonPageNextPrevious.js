@@ -25,7 +25,7 @@ const pokemonPageNextPrevious = (props) => {
     }
 
     return (
-        <Col xs="12">
+        <Col xs="12" className='mt-5'>
             <Row className="justify-content-between align-items-center">
                 <Col xs="12" sm='6' className='py-2 py-sm-0'>
                     {props.pokemonId <= 808 && props.pokemonId !== 1 &&

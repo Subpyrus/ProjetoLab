@@ -5,7 +5,7 @@ import Select from 'react-select';
 import SelectStyles from '../components/layout/SelectStyles'
 import { connect } from 'react-redux';
 import Loading from '../components/layout/Loading';
-import { getInfoPokemonPage } from '../store/actions/apiActions';
+import { getInfoPokemonPage, getYoutubeVideo } from '../store/actions/apiActions';
 import PokemonImage from '../components/layout/PokemonImage';
 
 class PokemonList extends Component {
@@ -107,7 +107,7 @@ class PokemonList extends Component {
     render() {
         const pokemon = require('pokemon');
         const { items, typeSearch, selectValue, isLoading } = this.state;
-        const { getInfoPokemonPage, match } = this.props
+        const { getInfoPokemonPage, getYoutubeVideo, match } = this.props
         var string = require('lodash/string');
         let optionsSelectSpecifics = []
 
@@ -176,7 +176,7 @@ class PokemonList extends Component {
                             }
 
                             return (
-                                <PokemonImage key={key} pokemonName={pokemonName} img={img} pokedexSearch={match.params.search} functionPokemon={getInfoPokemonPage} lg='2' />
+                                <PokemonImage key={key} pokemonName={pokemonName} img={img} pokedexSearch={match.params.search} functionPokemon={getInfoPokemonPage} functionVideo={getYoutubeVideo} lg='2' />
                             )
                         })}
                     </InfiniteScroll>)
@@ -197,6 +197,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         getInfoPokemonPage: (pokemon) => dispatch(getInfoPokemonPage(pokemon)),
+        getYoutubeVideo: (pokemon) => dispatch(getYoutubeVideo(pokemon))
     }
 }
 

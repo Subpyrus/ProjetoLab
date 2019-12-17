@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { editProfile } from '../../store/actions/authActions'
 import { removeFavoritePokemon, removePokemonFromTeam } from '../../store/actions/favoriteActions';
 import { removeFriend } from '../../store/actions/friendsActions';
-import { getInfoPokemonPage } from '../../store/actions/apiActions';
+import { getInfoPokemonPage, getYoutubeVideo } from '../../store/actions/apiActions';
 
 class ownProfile extends Component {
     constructor(props) {
@@ -98,7 +98,7 @@ class ownProfile extends Component {
     }
 
     render() {
-        const { removeFavoritePokemon, removePokemonFromTeam, removeFriend, getInfoPokemonPage, pokemonIQ, editProfile, teamResults, favoritesResults } = this.props;
+        const { removeFavoritePokemon, removePokemonFromTeam, removeFriend, getInfoPokemonPage, getYoutubeVideo, pokemonIQ, editProfile, teamResults, favoritesResults } = this.props;
         const { username, avatar, gender, nationality, favoritePokemons, favoriteTeam, triviaRecord, friends, favoriteGame, favoriteRegion } = this.props.profileContent
         const { name, action } = this.state.modalContent;
         const { editProfileContent, width, editProfileData, selectNationality, selectGame, selectRegion } = this.state;
@@ -264,7 +264,7 @@ class ownProfile extends Component {
                                     <Row className='justify-content-center'>
                                         {favoritePokemons.map((item, key) =>
                                             <React.Fragment key={key}>
-                                                <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} lg='3' />
+                                                <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} functionVideo={getYoutubeVideo} lg='3' />
                                                 <i style={{ position: 'relative', top: '20px', left: '-40px' }} onClick={() => this.toggleFirstTime(item.name, 'Favorites Pokémon List')} className="far fa-times-circle h-25"></i>
                                             </React.Fragment>
                                         )}
@@ -279,7 +279,7 @@ class ownProfile extends Component {
                                     <Row className='justify-content-center'>
                                         {favoriteTeam.map((item, key) =>
                                             <React.Fragment key={key}>
-                                                <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} lg='3' />
+                                                <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} functionVideo={getYoutubeVideo} lg='3' />
                                                 <i style={{ position: 'relative',  top: '20px', left: '-40px' }} id={item.name} onClick={() => this.toggleFirstTime(item.name, 'Favorite Pokémon Team')} className="far fa-times-circle h-25"></i>
                                             </React.Fragment>
                                         )}
@@ -342,7 +342,8 @@ const mapDispatchToProps = (dispatch) => {
         removeFavoritePokemon: (pokemon) => dispatch(removeFavoritePokemon(pokemon)),
         removePokemonFromTeam: (pokemon) => dispatch(removePokemonFromTeam(pokemon)),
         removeFriend: (user) => dispatch(removeFriend(user)),
-        editProfile: (nationalityForm, genderForm, gameForm, regionForm) => dispatch(editProfile(nationalityForm, genderForm, gameForm, regionForm))
+        editProfile: (nationalityForm, genderForm, gameForm, regionForm) => dispatch(editProfile(nationalityForm, genderForm, gameForm, regionForm)),
+        getYoutubeVideo: (pokemon) => dispatch(getYoutubeVideo(pokemon))
     }
 }
 

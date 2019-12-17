@@ -3,8 +3,7 @@ export const getInfoPokemonPage = (pokemon) => {
     dispatch({ type: 'API_REQUEST_START' });
     const urls = [
       `https://pokeapi.co/api/v2/pokemon/${pokemon}`,
-      `https://pokeapi.co/api/v2/pokemon-species/${pokemon}`/*,
-    `https://www.googleapis.com/youtube/v3/search?part=snippet%2C%20id&type=video&maxResults=3&order=relevance&q=${pokemon}&key=AIzaSyAoOgGNUDdI0oGGAQLoJOgomd5NwjoFelE`*/
+      `https://pokeapi.co/api/v2/pokemon-species/${pokemon}`
     ]
 
     Promise.all(urls.map(url =>
@@ -22,6 +21,22 @@ export const getInfoPokemonPage = (pokemon) => {
             }).then((data) => dispatch({ type: 'POKEMONINFO_EVOLUTION_DATA_SUCCESS', payload: data }))
           }).catch((error) => dispatch({ type: 'POKEMONINFO_EVOLUTION_DATA_ERROR', error: error }))
       }).catch((error) => dispatch({ type: 'POKEMONINFO_DATA_ERROR', error: error }))
+  }
+}
+
+export const getYoutubeVideo = (pokemon) => {
+  return (dispatch) => {
+    dispatch({ type: 'API_REQUEST_START' });
+    var url = `https://www.googleapis.com/youtube/v3/search?part=snippet%2C%20id&type=video&maxResults=3&order=relevance&q=${pokemon}&key=AIzaSyAoOgGNUDdI0oGGAQLoJOgomd5NwjoFelE`
+
+    fetch(url)
+      .then((response) => {
+        return response.json().then(function (json) {
+          return response.ok ? json : Promise.reject(json);
+        });
+      })
+      .then((data) => dispatch({ type: 'YOUTEBE_DATA_SUCCESS', payload: data.items }))
+      .catch((error) => dispatch({ type: 'YOUTEBE_DATA_ERROR', errorYtData: error }))
   }
 }
 

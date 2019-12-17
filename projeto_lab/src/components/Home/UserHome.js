@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
-import { getUserAndPokemonForProfileIQ, getInfoPokemonPage } from '../../store/actions/apiActions'
+import { getUserAndPokemonForProfileIQ, getInfoPokemonPage, getYoutubeVideo } from '../../store/actions/apiActions'
 
 class UserHome extends Component {
     state = {
@@ -226,7 +226,11 @@ class UserHome extends Component {
                                             </p>
                                             <p className='col-12'>
                                                 Inner Pokémon IQ - {triviaRecord.pokemonIQ ? (
-                                                    <Link className='basicLink d-inline' to={`/pokemon-list/national/pokemon-page/${triviaRecord.pokemonIQ}`} onClick={() => getInfoPokemonPage(triviaRecord.pokemonIQ)}>{string.startCase(triviaRecord.pokemonIQ)}</Link>
+                                                    <Link className='basicLink d-inline' to={`/pokemon-list/national/pokemon-page/${triviaRecord.pokemonIQ}`}
+                                                        onClick={() => {
+                                                            getInfoPokemonPage(triviaRecord.pokemonIQ); getYoutubeVideo(triviaRecord.pokemonIQ)
+                                                        }}>
+                                                        {string.startCase(triviaRecord.pokemonIQ)}</Link>
                                                 ) : ("You still haven't played PokéTrivia to calculate this result")}
                                             </p>
                                         </div>
@@ -275,6 +279,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getUserAndPokemonForProfileIQ: (user) => dispatch(getUserAndPokemonForProfileIQ(user)),
         getInfoPokemonPage: (pokemon) => dispatch(getInfoPokemonPage(pokemon)),
+        getYoutubeVideo: (pokemon) => dispatch(getYoutubeVideo(pokemon))
     }
 }
 

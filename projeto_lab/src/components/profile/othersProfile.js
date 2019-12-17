@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import PokemonImage from '../layout/PokemonImage';
 import { addFriend, removeFriend } from '../../store/actions/friendsActions';
 import { connect } from 'react-redux';
-import { getInfoPokemonPage, getUserAndPokemonForProfileIQ } from '../../store/actions/apiActions';
+import { getInfoPokemonPage, getUserAndPokemonForProfileIQ, getYoutubeVideo } from '../../store/actions/apiActions';
 
 class othersProfile extends Component {
     constructor(props) {
@@ -128,7 +128,7 @@ class othersProfile extends Component {
                                     <Row className='justify-content-center'>
                                         {favoritePokemons.map((item, key) =>
                                             <React.Fragment key={key}>
-                                                <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} lg='3' />
+                                                <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} functionVideo={getYoutubeVideo} lg='3' />
                                             </React.Fragment>
                                         )}
                                     </Row>)}
@@ -142,7 +142,7 @@ class othersProfile extends Component {
                                     <Row className='justify-content-center'>
                                         {favoriteTeam.map((item, key) =>
                                             <React.Fragment key={key}>
-                                                <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} lg='3' />
+                                                <PokemonImage key={key} pokemonName={item.name} img={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} pokedexSearch={'national'} functionPokemon={getInfoPokemonPage} functionVideo={getYoutubeVideo} lg='3' />
                                             </React.Fragment>
                                         )}
                                     </Row>
@@ -182,7 +182,8 @@ const mapDispatchToProps = (dispatch) => {
         getInfoPokemonPage: (pokemon) => dispatch(getInfoPokemonPage(pokemon)),
         addFriend: (user) => dispatch(addFriend(user)),
         removeFriend: (user) => dispatch(removeFriend(user)),
-        getUserAndPokemonForProfileIQ: (user) => dispatch(getUserAndPokemonForProfileIQ(user))
+        getUserAndPokemonForProfileIQ: (user) => dispatch(getUserAndPokemonForProfileIQ(user)),
+        getYoutubeVideo: (pokemon) => dispatch(getYoutubeVideo(pokemon))
     }
 }
 

@@ -8,9 +8,9 @@ import PokemonPageGenericInfo from '../components/pokemonPage/pokemonPageGeneric
 import PokemonPageEvChain from '../components/pokemonPage/pokemonPageEvChain';
 import PokemonPageNextPrevious from '../components/pokemonPage/pokemonPageNextPrevious';
 import { addFavoritePokemon, removeFavoritePokemon, addPokemonToTeam, removePokemonFromTeam } from '../store/actions/favoriteActions';
-/*import LazyLoad from 'react-lazyload';
-import Slider from "react-slick";
-import YouTube from 'react-youtube';*/
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import YouTube from 'react-youtube';
 
 class PokePage extends PureComponent {
     constructor(props) {
@@ -26,8 +26,12 @@ class PokePage extends PureComponent {
         };
     }
 
+    _onReady(event) {
+        event.target.pauseVideo();
+    }
+
     render() {
-        const { auth, removePokemonFromTeam, addPokemonToTeam, removeFavoritePokemon, addFavoritePokemon, pokemonInfo, pokemonEvChainInfo } = this.props;
+        const { auth, removePokemonFromTeam, addPokemonToTeam, removeFavoritePokemon, addFavoritePokemon, pokemonInfo, pokemonEvChainInfo, pokemonVideos } = this.props;
         const { moves, stats, id } = this.props.pokemonInfo[0];
         const { genera, names, flavor_text_entries } = this.props.pokemonInfo[1];
         var string = require('lodash/string')
@@ -45,6 +49,26 @@ class PokePage extends PureComponent {
             var foundPokemonTeam = profilePokemonTeam.find(pokemon => pokemon.name === pokemonName);
             var foundPokemonFavorites = profilePokemonFavorites.find(pokemon => pokemon.name === pokemonName);
         }
+
+        const responsive = {
+            desktop: {
+                breakpoint: { max: 3000, min: 1024 },
+                items: 1,
+                slidesToSlide: 1
+            },
+            tablet: {
+                breakpoint: { max: 1024, min: 464 },
+                items: 1,
+                slidesToSlide: 1
+            },
+            mobile: {
+                breakpoint: { max: 464, min: 0 },
+                items: 1,
+                slidesToSlide: 1
+            },
+        };
+
+        console.log(pokemonVideos)
 
         return (
             <Row className="justify-content-center">
@@ -187,18 +211,34 @@ class PokePage extends PureComponent {
                     </div>
                 </Col>
 
-                <Col xs="12">
+                <Col xs="12" className='mb-4'>
                     <h3 className='col-12 text-center'>Videos</h3>
-                    {/*<Slider {...settings}>
-                            {props.pokemonVideos.items.map((videoItem, key) =>
-                                <div key={key}>
-                                    <YouTube
-                                        videoId={videoItem.id.videoId}
-                                        opts={opts}
-                                    />
-                                </div>
-                            )}
-                            </Slider>*/}
+                    <Carousel
+                        swipeable={false}
+                        draggable={false}
+                        responsive={responsive}
+                        infinite={true}
+                        keyBoardControl={true}
+                        customTransition="all .5"
+                        transitionDuration={500}
+                        containerClass="carousel-container"
+                        deviceType={this.props.deviceType}
+                        dotListClass="custom-dot-list-style"
+                        itemClass="carousel-item-padding-40-px"
+                    >
+                        {pokemonVideos.map((videoItem, key) =>
+                            <div className='text-center' key={key}>
+                                <YouTube
+                                    videoId={videoItem.id.videoId}
+                                    opts={{
+                                        height: '360',
+                                        width: '600',
+                                    }}
+                                    onReady={this._onReady}
+                                />
+                            </div>
+                        )}
+                    </Carousel>
                 </Col>
 
                 <PokemonPageNextPrevious pokemonId={pokemonInfo[0].id} pokemonName={pokemonName} />
@@ -208,9 +248,11 @@ class PokePage extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
+    console.log(state)
     return {
         auth: state.firebase.auth,
         pokemonInfo: state.apiCalls.apiData.getPokemon,
+        pokemonVideos: state.apiCalls.apiData.getPokemonVideos,
         pokemonEvChainInfo: state.apiCalls.apiData.getEvChain,
         profilePokemonTeam: state.firebase.profile.favoriteTeam,
         profilePokemonFavorites: state.firebase.profile.favoritePokemons

@@ -4,6 +4,7 @@ const initState = {
         signUpData: '',
         getPokemon: '',
         getPokemonIQ: '',
+        getPokemonVideos: '',
         getAllUsers: '',
         getLinkUserInfo: '',
         getPokedex: '',
@@ -20,7 +21,8 @@ const initState = {
         getMove: '',
         getEvChain: ''
     },
-    error: null
+    error: null,
+    errorYtData: null
 }
 
 const apiReducer = (state = initState, action) => {
@@ -52,8 +54,20 @@ const apiReducer = (state = initState, action) => {
         case 'POKEMONINFO_DATA_ERROR':
             return {
                 ...state,
-                isLoading: false,
                 error: action.error
+            }
+        case 'YOUTEBE_DATA_SUCCESS':
+            return {
+                ...state,
+                isLoading: false,
+                apiData: { ...state.apiData, getPokemonVideos: action.payload },
+                errorYtData: null
+            }
+        case 'YOUTEBE_DATA_ERROR':
+            return {
+                ...state,
+                isLoading: false,
+                errorYtData: action.error
             }
         case 'POKEMONINFO_EVOLUTION_DATA_SUCCESS':
             return {
