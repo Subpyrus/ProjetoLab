@@ -33,12 +33,12 @@ class pokemonPageMoves extends Component {
         return firstName !== firstCondition &&
             <>
                 {firstCondition !== 0 ? (
-                    <Col xs='6'>
+                    <Col  xs='6'>
                         <h5>{firstString}:</h5>
                         <p>{firstName}</p>
                     </Col>
                 ) : (
-                        <Col className='py-2' xs='12' sm='6'>
+                        <Col  className='py-2' xs='12' sm='6'>
                             <h5>{firstString}:</h5>
                             <p>{firstName}%</p>
                         </Col>
@@ -70,8 +70,7 @@ class pokemonPageMoves extends Component {
         if (move) {
             var conditions = [
                 [move.meta.crit_rate, 'Crit Chance', 0],
-                [move.meta.crit_rate, 'Crit Chance', 0],
-                [move.meta.flinch_chance, 'Flinch Chance'],
+                [move.meta.flinch_chance, 'Flinch Chance', 0],
                 [move.priority, 'Priority', 0],
                 [move.meta.stat_chance, 'Status Chance', 0],
                 [move.meta.max_hits, 'Max Hits', null],
@@ -106,7 +105,7 @@ class pokemonPageMoves extends Component {
                                         <td>{string.startCase(moveItem.name)}</td>
                                     )}
                             </tr>
-                        )) : (<td>There weren't found any moves that this pokémon can learn by this method </td>)}
+                        )) : (<tr><td>There weren't found any moves that this pokémon can learn by this method</td></tr>)}
                     </tbody>
                 </Table>
 
@@ -144,7 +143,7 @@ class pokemonPageMoves extends Component {
                                     </Col>
                                     <Col xs='12'>
                                         <Row className='justify-content-center'>
-                                            {conditions.map((item) => this.conditionMove(item[0], item[1], item[2]))}
+                                            {conditions.map((item,key) => <React.Fragment key={key}> {this.conditionMove(item[0], item[1], item[2])}</React.Fragment>)}
                                         </Row>
                                     </Col>
                                 </Row>
