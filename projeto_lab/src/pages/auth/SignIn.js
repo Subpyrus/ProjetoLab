@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Button, Form, FormGroup, Input, CustomInput, Alert } from 'reactstrap';
+import { Row, Col, Button, Form, FormGroup, Input, CustomInput } from 'reactstrap';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { signIn } from '../../store/actions/authActions';
@@ -26,8 +26,7 @@ class SignIn extends Component {
     }
 
     render() {
-        const { authError, auth } = this.props
-        let string = require('lodash/string')
+        const { auth } = this.props
 
         if (auth.uid) {
             return <Redirect to='/' />
@@ -75,7 +74,6 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
     return {
-        authError: state.auth.authError,
         auth: state.firebase.auth
     }
 }

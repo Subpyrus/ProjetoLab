@@ -103,9 +103,12 @@ class PokePage extends PureComponent {
                     <Row>
                         <h3 className='col-12 text-center'>Description</h3>
                         <Col xs='12'>
-                            {flavor_text_entries.map((item, key) =>
-                                (item.language.name === 'en' && item.version.name === 'ultra-sun') && <p key={key}>{item.flavor_text}</p>
-                            )}
+                            {flavor_text_entries.map((item, key) => {
+                                return <React.Fragment key={key}>
+                                    {(item.language.name === 'en' && item.version.name === 'ultra-sun') && <p key={key}>{item.flavor_text}</p>}
+                                    {(item.language.name === 'en' && item.version.name === 'alpha-sapphire') && <p key={key}>{item.flavor_text}</p>}
+                                </React.Fragment>
+                            })}
                         </Col>
                     </Row>
                 </Col>

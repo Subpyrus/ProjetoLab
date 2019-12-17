@@ -134,7 +134,6 @@ class othersProfile extends Component {
                                                         <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
                                                     </Link>
                                                 </LazyLoad>
-                                                <i style={{ position: 'relative', top: '-40px' }} onClick={() => this.toggleFirstTime(item.name, 'Favorites Pokémon List')} className="far fa-times-circle"></i>
                                             </Col>)}
                                     </Row>)}
                         </Col>
@@ -152,7 +151,6 @@ class othersProfile extends Component {
                                                         <img alt={item} src={`http://www.pokestadium.com/sprites/xy/${item.name.toLowerCase()}.gif`} />
                                                     </Link>
                                                 </LazyLoad>
-                                                <i style={{ position: 'relative', top: '-40px' }} id={item.name} onClick={() => this.toggleFirstTime(item.name, 'Favorite Pokémon Team')} className="far fa-times-circle"></i>
                                             </Col>
                                         )}
                                     </Row>
