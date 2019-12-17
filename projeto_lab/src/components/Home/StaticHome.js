@@ -1,8 +1,6 @@
 import React from 'react';
 import { Row, Col } from 'reactstrap';
 
-/*olá*/
-
 const StaticHome = () => {
     return (
         <Row className='justify-content-between'>
