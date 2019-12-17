@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import LazyLoad from 'react-lazyload';
 import PokemonImage from '../layout/PokemonImage';
 import { addFriend, removeFriend } from '../../store/actions/friendsActions';
 import { connect } from 'react-redux';
