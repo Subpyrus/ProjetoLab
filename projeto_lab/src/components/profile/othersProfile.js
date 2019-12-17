@@ -47,7 +47,7 @@ class othersProfile extends Component {
                 <Col xs='12' md='6' className='text-center'>
                     <h1>{username}</h1>
                 </Col>
-                <Col xs='12' md='6' className='' className='text-center py-3 py-md-0'>
+                <Col xs='12' md='6' className='text-center py-3 py-md-0'>
                     {findFriends === undefined ?
                         (<Button color='warning' onClick={() => this.props.addFriend(this.props.othersProfileContent)}>Add to Following List</Button>) :
                         (<Button color='danger' onClick={() => this.props.removeFriend(this.props.othersProfileContent)}>Remove from Following List</Button>)}
