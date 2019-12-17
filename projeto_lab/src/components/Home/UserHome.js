@@ -3,8 +3,6 @@ import { Row, Col } from 'reactstrap';
 import moment from 'moment';
 import Loading from '../layout/Loading';
 import { personalityFavorites, personalityTeams } from '../profile/personalityContent';
-import Select from 'react-select';
-import SelectStyles from '../layout/SelectStyles';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
@@ -128,12 +126,6 @@ class UserHome extends Component {
         const { username, triviaRecord, favoritePokemons, favoriteTeam, friends } = profileContent
         const messageFavorites = this.getStatsMessages(favoritePokemons, 'favorites');
         const messageTeam = this.getStatsMessages(favoriteTeam, 'team');
-
-        const optionsNotifications = [
-            { value: 'All Users Activity', label: 'All Users Activity' },
-            { value: 'Friends Activity', label: 'Friends Activity' },
-            { value: 'Your Activity', label: 'Your Activity' }
-        ];
 
         var string = require('lodash/string')
         var array = require('lodash/array')

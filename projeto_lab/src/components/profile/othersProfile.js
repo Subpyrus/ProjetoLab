@@ -31,15 +31,15 @@ class othersProfile extends Component {
 
     render() {
         const { username, avatar, gender, nationality, favoriteGame, favoriteRegion, favoritePokemons, favoriteTeam, triviaRecord, friends } = this.props.othersProfileContent
-        const { loggedUserFriends, favoritesResults, teamResults, pokemonIQ } = this.props;
+        const { loggedUserFollowers, favoritesResults, teamResults, pokemonIQ } = this.props;
         const { width } = this.state;
 
         var pokemon = require('pokemon');
         var pokemonName;
         pokemonIQ ? (pokemonName = pokemon.getName(pokemonIQ.id)) : (pokemonName = null)
 
-        if (loggedUserFriends) {
-            var findFriends = loggedUserFriends.find(friend => friend.username === username)
+        if (loggedUserFollowers) {
+            var findFriends = loggedUserFollowers.find(friend => friend.username === username)
         }
 
         return (
@@ -199,7 +199,7 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
     return {
         friendAction: state.friends.actionFriendError,
-        loggedUserFriends: state.firebase.profile.friends
+        loggedUserFollowers: state.firebase.profile.friends
     }
 }
 
