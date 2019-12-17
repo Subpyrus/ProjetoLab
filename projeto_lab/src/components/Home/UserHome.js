@@ -3,8 +3,6 @@ import { Row, Col } from 'reactstrap';
 import moment from 'moment';
 import Loading from '../layout/Loading';
 import { personalityFavorites, personalityTeams } from '../profile/personalityContent';
-import Select from 'react-select';
-import SelectStyles from '../layout/SelectStyles';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
@@ -129,12 +127,6 @@ class UserHome extends Component {
         const messageFavorites = this.getStatsMessages(favoritePokemons, 'favorites');
         const messageTeam = this.getStatsMessages(favoriteTeam, 'team');
 
-        const optionsNotifications = [
-            { value: 'All Users Activity', label: 'All Users Activity' },
-            { value: 'Friends Activity', label: 'Friends Activity' },
-            { value: 'Your Activity', label: 'Your Activity' }
-        ];
-
         var string = require('lodash/string')
         var array = require('lodash/array')
         var recentFriends = array.takeRight(friends, 6);
@@ -147,16 +139,6 @@ class UserHome extends Component {
                             <Col xs='12'>
                                 <Row>
                                     <h3 className='col-12 col-md-6 col-lg-8'>All Users Activity</h3>
-                                    <Col xs='12' md='6' lg='4'>
-                                        <Select required
-                                            name='selectNotifications'
-                                            styles={SelectStyles}
-                                            value={this.state.selectNotifications}
-                                            onChange={this.handleSelectChange}
-                                            options={optionsNotifications}
-                                            placeholder='select your gender'
-                                            isSearchable={false} />
-                                    </Col>
                                 </Row>
                             </Col>
                             <Col xs='12'>
@@ -252,7 +234,7 @@ class UserHome extends Component {
                                 </Col>
                                 <Col xs='12' md='6' lg='12' className='pt-4'>
                                     <Row className='text-lg-left text-center'>
-                                        <h3 className='col-12'>Recent Friends</h3>
+                                        <h3 className='col-12'>Following List</h3>
                                         {!recentFriends ? (
                                             <Col xs='12'>
                                                 <p>You don't have any friends in your list, check out the <Link to='/pokemon-trainers'>PokéTrainers</Link> to add fellow Pokémon Trainers.</p>

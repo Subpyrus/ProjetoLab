@@ -115,7 +115,6 @@ export const getDataPokeListPage = () => {
 
 export const getUserAndPokemonForProfileIQ = (user) => {
   return (dispatch, getState, { getFirestore, getFirebase }) => {
-    console.log('object')
     dispatch({ type: 'API_REQUEST_START' });
     const firebase = getFirebase();
     firebase.firestore().collection('users').where("username", "==", user).get()

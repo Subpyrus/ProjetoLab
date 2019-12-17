@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 const PokemonImage = (props) => {
     const { pokemonName, img, pokedexSearch, functionPokemon, lg } = props
-    console.log(`/pokemon-list/${pokedexSearch}/pokemon-page/${pokemonName.toLowerCase()}`)
     return (
         <Col className='py-md-2' sm='6' md='4' lg={lg}>
             <Link className='h-100 containerLink' to={`/pokemon-list/${pokedexSearch}/pokemon-page/${pokemonName.toLowerCase()}`} onClick={() => functionPokemon(pokemonName.toLowerCase())}>
